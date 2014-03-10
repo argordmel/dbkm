@@ -1,0 +1,82 @@
+body {
+    background: url("img/body-bg.png") repeat scroll 0 0 #E9E9E9;
+    font-size: 13px/1.7em;
+}
+.navbar, footer {    
+    font-family: Play,Lucila,Verdana,sans-serif; 
+}
+
+.navbar-inner {
+    background: none repeat scroll 0 0 #292929;
+    border-bottom: 1px solid #121212;    
+}
+.user-nav .brand, footer a { color: #FFFFFF;  }
+.user-nav .nav > li > a, footer { color: #999999; text-shadow: none; }
+.user-nav .nav li.dropdown > .dropdown-toggle .caret, .navbar .nav li.dropdown.open > .dropdown-toggle .caret, 
+.user-nav .nav li.dropdown.active > .dropdown-toggle .caret, .navbar .nav li.dropdown.open.active > .dropdown-toggle .caret { border-bottom-color: #FF9900; border-top-color: #FF9900; }
+.user-nav .nav > li > a:hover, .navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle, footer a:hover {
+    color: #ffffff; background-color: transparent;
+}
+
+.main-nav .navbar-inner {
+    background: -moz-linear-gradient(center top , #414141, #323232) repeat-x scroll 0 0 #3A3A3A;
+}
+.main-nav li.active.main-nav-arrow a {
+    color: #FF9900 !important;
+    background-image:url("img/top-arrow.png");
+}
+.main-nav li.main-nav-arrow a {    
+    background-image:url("img/top-arrow.png");
+}
+
+.main-nav li.active a {        
+    background-color: #333333 !important;
+    color: #FF9900 !important;    
+    font-weight: bold;
+}
+
+.main-nav li {
+    border-left: 1px solid #4A4A4A;
+    border-right: 1px solid #292929;    
+}
+.main-nav li > a {    
+    color: #999 !important;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2) !important;
+}
+.main-nav li > a:hover {
+    color: #f5f5f5 !important;
+}
+
+
+.subnav {
+    background-color: #ffffff; 
+    border-bottom: 1px solid #e5e5e5;    
+}
+
+.subnav .nav > li > a {
+    color: #369BD7;
+    border-left: 1px solid #f5f5f5;
+    border-right: 1px solid #e5e5e5;
+}
+
+.subnav .nav > li > a > i {
+    color: #555555;
+}
+
+.subnav .nav > li > a:hover, .subnav .nav > li a:focus {
+    text-decoration: none;
+    background-color: #f5f5f5 !important;
+}
+
+.subnav .nav > .active > a,
+.subnav .nav > .active > a:hover {
+    color: #2071A1;
+    background-color: inherit;
+    border-right-color: #ddd;
+}
+
+@media (max-width: 768px) {              
+    .nav-collapse .nav > li .active a > i {    
+        color: #FF9900 !important;        
+    }
+}
