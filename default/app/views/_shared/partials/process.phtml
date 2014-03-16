@@ -1,0 +1,16 @@
+<div class="page-header container-fluid">    
+    <?php if(!empty($titulo)) { ?>
+    <script type="text/javascript">
+        changeTitle('<?php echo $proceso; ?>');
+    </script>
+    <?php } ?>
+    <div class="row">
+        <div class="col-md-8">
+            <h4>
+                <?php echo ucfirst($modulo); ?>
+                <?php if(isset($proceso) && $proceso!=null) { $proceso = explode(' |', $proceso); echo " | <small>",ucfirst(trim($proceso[0])),"</small>"; } ?>
+            </h4>
+        </div>
+        <div class="col-md-4" id="opt-process"></div>
+    </div>       
+</div>

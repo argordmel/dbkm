@@ -14,16 +14,18 @@ require_once CORE_PATH . 'kumbia/controller.php';
  * @category Kumbia
  * @package Controller
  */
-class AppController extends Controller
-{
 
-    final protected function initialize()
-    {
+Load::lib('dw_config');
+
+DwConfig::load();
+
+class AppController extends Controller {
+
+    final protected function initialize() {
 
     }
 
-    final protected function finalize()
-    {
+    final protected function finalize() {
         
     }
 

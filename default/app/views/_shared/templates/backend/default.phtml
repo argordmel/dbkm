@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title><?php echo $page_title; ?></title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="<?php echo APP_CHARSET; ?>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex,nofollow" /> 
+        <link rel="shortcut icon" href="<?php echo PUBLIC_PATH; ?>img/favicon.ico" type="image/x-icon" />
+        <?php Tag::css('bootstrap/bootstrap.min'); ?>
+        <?php Tag::css('bootstrap/bootstrap-theme.min'); ?>
+        <?php Tag::css('font-awesome.min'); ?>        
+        <?php Tag::css('backend/base'); ?>
+        <?php Tag::css('backend/style'); ?>
+        <?php Tag::css('backend/themes/'.SKIN.'/'.SKIN); ?>
+        <?php echo Html::includeCss(); ?>
+        <?php if(!APP_LOCAL) { ?>
+            <link href="http://fonts.googleapis.com/css?family=Play:400,700" rel="stylesheet" type="text/css">
+        <?php } ?>
+        <style type="text/css">
+            <?php if(APP_MAYUS) { ?>            
+            .input-lower, .input-email, email, .mask-email, .js-datepicker { text-transform: none !important; font-size: 14px !important}
+            textarea, select, input[type="text"], input[type="search"], .uneditable-input { text-transform: uppercase; font-size: 13px }
+            <?php } ?>                          
+        </style>
+        <?php echo Tag::js('jquery/jquery.min').PHP_EOL; ?>
+        <script type="text/javascript">
+            function changeTitle(title) { if($(document).attr('title') != title) { $(document).attr('title', title); } }
+        </script>
+                
+    </head>
+    <body>
+
+        <?php DwMenu::load(Menu::BACKEND, Session::get('perfil_id')); ?>
+
+        <?php View::partial('backend/header'); ?>
+
+        <?php if(!IS_MOBILE) {?>
+            <?php View::partial('backend/main'); ?>
+        <?php } ?>
+
+        <div id="shell-load">
+            <div id="console" class="container"></div>
+            <div id="shell-content" class="container-fluid">
+                <noscript><h5 style="text-align: center;">¡Tu navegador no soporta Javascript!.. Activa el uso de Javascript en tu navegador.</h5><meta http-equiv="refresh" content="1; URL=<?php echo PUBLIC_PATH; ?>sistema/login/salir/no-script/" /></noscript>
+                <?php View::content(); ?>
+            </div>
+        </div>
+
+        <?php View::partial('backend/footer'); ?>
+
+        <div id="loading-content" class="alpha60"></div>
+        <div id="spinner" class="preview corner-all shadow-dark"></div>
+                
+        <?php echo Tag::js('bootstrap/bootstrap.min').PHP_EOL; ?>
+        <?php echo Tag::js('bootstrap/bootstrap-datetimepicker.min').PHP_EOL; ?>        
+        <?php echo Tag::js('bootstrap/bootstrap.typehead.min').PHP_EOL; ?>
+        <?php echo Tag::js('jquery/jquery.kumbiaphp').PHP_EOL; ?>
+        <?php echo Tag::js('jquery/jquery.keyfilter').PHP_EOL; ?>
+        <?php echo Tag::js('jquery/jquery.kgrid').PHP_EOL; ?>
+        <?php echo Tag::js('jquery/jquery.kload').PHP_EOL; ?>        
+        <?php echo Tag::js('jquery/jquery.spin').PHP_EOL; ?>        
+        <?php echo Tag::js('html5shiv').PHP_EOL; ?>        
+        
+        <?php echo Tag::js('backend').PHP_EOL; ?>
+        <?php echo Tag::js('validador').PHP_EOL; ?>
+
+
+        <script type="text/javascript">
+            <?php if(!IS_MOBILE) { ?>
+            $(document).ready(function() {
+                url = (window.location.hash.lenth >1) ? window.hash : window.location.pathname;
+                url = url.split('order')[0].split('pag')[0];
+                var activePageSubMenuId;
+                var activePageMainMenuElement;
+                $(".subnav").each(function (i) {
+                    if(!$(this).hasClass("hidden")) {
+                        activePageSubMenuId = $(this).attr("id");
+                    } else {
+                        contenedor = $(this).attr('id');
+                        $(this).find('a').each(function(i) {
+                            if(url==$(this).attr('href')) {
+                                $('#'+contenedor).removeClass('hidden');
+                                $(this).parent().addClass('active');
+                                $('[data-filter="'+contenedor+'"]').each(function () {
+                                    $(this).parent().addClass('main-nav-arrow active');
+                                    $(this).removeClass('hidden');
+                                    return false;
+                                });
+                                return false;
+                            }
+                        });
+                    }
+                });
+                $(".dropdown-menu").each(function(i) {
+                    $(this).find('a').each(function(i){
+                        if(url==$(this).attr('href')) {
+                            $(this).parent().addClass('active');
+                            return false;
+                        }
+                    });
+                });
+                $('.dropdown-menu a').on('click', function(){
+                    este = $(this);
+                    $(".dropdown-menu a").each(function(i){
+                        $(this).parents().removeClass('active');
+                    });
+                    este.parent().addClass('active');
+                });
+                //Activa el menú actual
+                $(".main-menu-link").each(function (i) {
+                    if($(this).parent().hasClass("active")){
+                        activePageMainMenuElement = $(this).attr("id");
+                    }
+                });
+                // Habilita el submenú
+                $(".main-menu-link").on('click', function(){
+                    var submenu = $("#" +$(this).attr("data-filter"));
+                    $(".subnav").each(function (i) {
+                        $(this).attr("class","subnav hidden");
+                    });
+                    submenu.attr("class", "subnav");
+                    $(".main-menu-link").each(function(i) {
+                       $(this).parent().removeClass("main-nav-arrow");
+                    });
+                    $(this).parent().addClass("main-nav-arrow");
+                });
+                //Activa el submenú actual
+                $('.subnav a').on('click', function(){
+                    este = $(this);
+                    $(".subnav li").removeClass('active');
+                    $(".main-menu-link").parent().removeClass('active');
+                    este.parent().addClass('active');
+                    $('.main-nav-arrow').addClass('active');
+                    //este.parents('div.subnav').removeClass('hidden');
+                    //$(this).parent().addClass("main-nav-arrow");
+                });
+                //Activa el menú manualmente
+                $('.main-menu-link').on('click', function(){
+                   if($(this).attr('href').length > 2) {
+                       $(".main-menu-link").parent().removeClass('active');
+                       $(this).parent().addClass('active');
+                   }
+                });
+
+            });
+            <?php } ?>
+            /** Tooltip **/
+            $(function() { $("[rel=tooltip]").tooltip(); });
+        </script>
+
+        <?php echo DwJs::alert('Se ha producido un error en la validación del formulario.', 'subtext: Verifica los datos e intenta nuevamente.', 'title: Formulario incorrecto', 'name: errorForm'); ?>
+        <?php if(PRODUCTION) { ?>
+        <?php echo DwJs::alert('Se ha generado la siguiente excepción: <br /><span id="error-ajax"></span>.', 'title: Oops! hemos realizado algo mal.', 'name: errorAjax'); ?>
+        <?php } else { ?>
+        <?php echo DwJs::alert('Se ha generado la siguiente excepción: <br /><span id="error-ajax"></span>.<br /><span id="info-error-ajax"></span>', 'title: Oops! hemos realizado algo mal.', 'name: errorAjax'); ?>
+        <?php } ?>
+        <?php echo DwJs::alert('Usted no posee los permisos necesarios para realizar esta acción.', 'title: Acceso denegado', 'name: accessControl'); ?>
+    </body>
+</html>
