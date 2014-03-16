@@ -14,11 +14,13 @@ class LoginController extends BackendController {
     
     /**
      * Limite de parámetros por acción
+     * @var boolean
      */
     public $limit_params = FALSE;
     
     /**
      * Nombre de la página
+     * @var string
      */
     public $page_title = 'Entrar';
     
@@ -54,12 +56,14 @@ class LoginController extends BackendController {
     
     /**
      * Método para cerrar sesión
+     * @param string $js Indica si está deshabilitado el js en el navegador o no
+     * @return type
      */
     public function salir($js='') {        
         if(Usuario::setSession('close')) {
             Flash::valid("La sesión ha sido cerrada correctamente.");
         }
-        if($js == 'no-script') {
+        if(!empty($js)) {
             Flash::info('Activa el uso de JavaScript en su navegador para poder continuar.');
         }        
         return Redirect::toAction('entrar/');
