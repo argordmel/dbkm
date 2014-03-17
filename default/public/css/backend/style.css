@@ -17,6 +17,10 @@ License
 #shell-content div.container { width: 98%; padding-left: 1%; padding-right: 1%;}
 #shell-content div.page-header { margin: 0px 0px 5px;  padding-bottom: 2px;}
 .shell-view { padding-bottom: 50px; min-height: 200px}
+.shell-view .btn-toolbar-top .row { width: 100%; margin: 0 auto;}
+.shell-view .btn-toolbar-top .row .btn-actions { margin-left: 1%;}
+.shell-view .btn-toolbar-top .row .pull-right { margin-right: 1%;}
+
 
 /*----- Formato del div de los mensajes -----*/
 
@@ -51,6 +55,7 @@ tbody td .btn { padding: 2px 5px !important; min-width: 21px;}
 
 hr.divider { margin: 5px 0px !important;}
 .btn-toolbar .btn { font-size: 12px; /*min-width: 15px;*/ margin-left: 5px !important;}
+.btn-toolbar .btn:first-child { margin-left: 0px !important;}
 .btn-toolbar i { font-size: 15px; }
 .btn-toolbar form { margin-bottom: 0px !important;}
 .btn-toolbar form input {  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset; }
@@ -85,6 +90,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     .table-responsive, .table-responsive thead, .table-responsive tbody, .table-responsive th, .table-responsive tr { display: block; }
     .table-responsive thead tr { position: absolute; top: -9999px; left: -9999px; }
     .table-responsive td { display: block;}
+    .table-responsive td.col-hidden { display: block !important;}
     .table-responsive tr { border-bottom: 1px solid #DDDDDD;}
     .table-responsive td { border: none;position: relative; /*padding-left: 50%;*/ }
     .table-responsive td:before { /*position: absolute;*/ /*top: 6px;*/position: relative;left: 2px;width: 45%; padding-right: 10px; white-space: nowrap;font-weight: bold;}
