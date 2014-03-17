@@ -20,6 +20,10 @@
 
                     $.extend(opt, options); //Extiende las opciones recibidas con las default
                     
+                    if(opt.form_to !== '') {                        
+                        opt.form_show = true;
+                    }
+                    
                     return this.each(function(k) {
                         var table = $(this); //Se toma la tabla en objeto de jquery
                         var thead = table.find("thead"); //Se busca el header de la tabla
