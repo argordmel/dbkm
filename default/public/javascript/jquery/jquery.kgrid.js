@@ -5,10 +5,17 @@
         init : function( options ) {
                     //Defino unas opciones por defecto
                     var opt = {                        
-                        live_validate : true,
-                        focus_on_invalid : true,
-                        error_labels: true, // labels with a for="inputId" will recieve an `error` class
-                        timeout : 1000,                                             
+                        form_show       : false, //Indica si muestra o no el formulario
+                        form_to         : '', //Url para el envío del form
+                        form_data       : false, //campo y valor predeterminado [campo, valor]
+                        form_attr       : 'class="js-remote form-search"', //Attributos para el form
+                        form_container  : 'shell-content', //Contenedor del formulario
+                        
+                        order_to        : '', //Url para el ordenamiento
+                        order_attr      : 'class="js-link js-data-order js-spinner"', //Atributos para los link de ordenamiento
+                        order_container : 'shell-content', //Contendeor a cargar
+                        
+                        col_hidden      : 'col-hidden', //Clase para indicar las columnas que se pueden ocultar                         
                     }
 
                     $.extend(opt, options); //Extiende las opciones recibidas con las default
@@ -20,13 +27,15 @@
                         var hdrCols = thead.find('th'); //Se busca los títulos de las columnas
                         var bdyRows = tbody.find('tr'); //Se busca las filas de las columnas
                         var container; //Contenedor de todo el resultado del script
+                        container = table.parents('.'+opt.container+':first');
+                        
                         //Verifico si la tabla está dentro del container overflow
                         if(table.parent().hasClass('container-overflow')) { 
-                            container = table.parent().prev().hasClass('btn-toolbar') ? table.parent().prev() : $('<div class="container-fluid btn-toolbar btn-toolbar-top"></div>');
+                            container = table.parent().prev().hasClass('btn-toolbar') ? table.parent().prev() : $('<div class="btn-toolbar btn-toolbar-top"></div>');
                         } else {
-                            container = table.prev().hasClass('btn-toolbar') ? table.prev() : $('<div class="container-fluid btn-toolbar btn-toolbar-top"></div>');
+                            container = table.prev().hasClass('btn-toolbar') ? table.prev() : $('<div class="btn-toolbar btn-toolbar-top"></div>');
                         }
-                        
+                                                                        
                         var hiddenCol = $('<div class="pull-right"><div class="btn-group"><button class="btn btn-default btn-only dropdown-toggle" data-toggle="dropdown"><span class="hidden-xs"> COLUMNAS <i class="caret"></i></span><span class="visible-xs"><i class="fa fa-th"></i></span></button><ul class="dropdown-menu pull-right" /></div></div>');
                         
                         //Variable para almacenar las columnas responsivas
@@ -105,6 +114,7 @@
                         }
                         
                         var containerForm;
+                        var visible = (opt.form_data) ? '' : 'hidden';
                         
                         if(opt.form_show) {
                             if(opt.form_to==undefined || opt.form_to=='') {
@@ -120,7 +130,7 @@
                                     text = field.replace('_', ' ').replace('_', ' ').toLowerCase();
                                     text = text.split('.');
                                     text = (text.length > 1) ? text[1] : text[0];
-                                    text = ucFirst(text);
+                                    text = text.substr(0,1).toUpperCase()+text.substr(1,text.length).toLowerCase();
                                     selected = (opt.form_data[0] != undefined && opt.form_data[0] == field) ? 'selected="selected"' : '';
                                     select = (select!='') ? select+'<option value="'+field+'" '+selected+'>'+text+'</option>' : '<option value="'+field+'">'+text+'</option>';
                                 }
@@ -128,10 +138,9 @@
 
                             if(select=='') {
                                 select = '<option value="">CUALQUIER CAMPO</option>';
-                            }
-                            visible = (opt.form_data) ? '' : 'hidden';
+                            }                            
                             value = (opt.form_data[1] != undefined) ? opt.form_data[1] : '';
-                            containerForm = '<div class="row form-search-container container '+visible+'"><form action="'+opt.form_to+'" method="post" '+opt.form_attr+' data-to="'+opt.form_container+'" class="form-inline" role="form"><div class="row" style="margin-left: -3px;"><div class="col-xs-12 col-sm-3"><label class="sr-only" for="form_search_field">Campo</label><select id="form_search_field" class="form-control" required="required" name="field">'+select+'</select></div><div class="col-xs-12 col-sm-3"><label class="sr-only" for="form_search_value">Palabra o texto</label><input id="form_search_value" name="value" type="text" value="'+value+'" class="form-control" placeholder="Palabra o texto" required="required"/></div><div class="col-xs-12 col-sm-1"><button type="submit" class="btn btn-info"><i class="fa fa-share"></i></button></div></div></form></div>';                            
+                            containerForm = '<div class="row"><div class="form-search-container '+visible+'"><form action="'+opt.form_to+'" method="post" '+opt.form_attr+' data-to="'+opt.form_container+'" class="form-inline" role="form"><div class="row"><div class="col-xs-12 col-sm-3"><label class="sr-only" for="form_search_field">Campo</label><select id="form_search_field" class="form-control" required="required" name="field">'+select+'</select></div><div class="col-xs-12 col-sm-3"><label class="sr-only" for="form_search_value">Palabra o texto</label><input id="form_search_value" name="value" type="text" value="'+value+'" class="form-control" placeholder="Palabra o texto" required="required"/></div><div class="col-xs-12 col-sm-1"><button type="submit" class="btn btn-info"><i class="fa fa-share"></i></button></div></div></form></div></div>';                            
 
                         }
                         
@@ -139,21 +148,25 @@
                             
                             (table.parent().hasClass('container-overflow')) ? table.parent().before(container) : table.before(container);
                             
+                            if(container.find('.row:first').size() === 0) {
+                                container.prepend('<div class="row"></div>');                                
+                            }
+                            
                             //Si hay alguna columna que se oculte
                             if(opt.col_hidden && (thead.find('.'+opt.col_hidden).length > 0) ) {
-                                container.prepend(hiddenCol);
+                                container.children('.row').prepend(hiddenCol);
                             }
-
+                            
                             if(!container.find('.btn-actions').length) {
-                                container.append('<div class="btn-actions"></div>');
-                            }
-
+                                container.children('.row').append('<div class="btn-actions"></div>');
+                            }                            
+                            
                             container.append('<hr class="divider">');
 
-                            if(opt.form_show) {
+                            if(opt.form_show) {                                  
                                 container.find('.btn-actions').prepend('<button class="btn btn-info text-bold btn-form-search"><i class="btn-icon-only fa fa-search"></i> <span class="hidden-xs">BUSCAR</span></button>');
                                 container.append(containerForm);
-                                container.append('<hr class="divider hidden">');
+                                container.append('<hr class="divider '+visible+'">');
                             }
                             
                         }                        
@@ -176,13 +189,13 @@
 
 $(function() {
     $('body').on('click', '.btn-toolbar-top .btn-form-search', function() {
-        load_container = $(this).parents('.btn-toolbar:first').find('.form-search-container:first');
+        load_container = $(this).parents('.btn-toolbar:first').find('.form-search-container:first');        
         if(load_container.hasClass('hidden')) {
             load_container.removeClass('hidden').hide().fadeIn(250);
-            load_container.next('hr').removeClass('hidden').hide().fadeIn(250);
+            load_container.parent().next('hr').removeClass('hidden').hide().fadeIn(250);            
         } else {
             load_container.fadeOut(50).addClass('hidden');
-            load_container.next('hr').fadeOut(50).addClass('hidden');
+            load_container.parent().next('hr').fadeOut(50).addClass('hidden');
         }
     });
     
