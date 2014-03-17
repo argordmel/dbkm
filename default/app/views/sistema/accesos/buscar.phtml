@@ -1,0 +1,62 @@
+<?php View::flash(); ?>
+
+<script type="text/javascript">
+    $(function() {
+        $('table').kgrid({            
+            form_to         : $.KumbiaPHP.publicPath+'sistema/accesos/buscar/',
+            form_data       : ['<?php echo $field; ?>', '<?php echo $value; ?>'],            
+            order_to        : $.KumbiaPHP.publicPath+'sistema/accesos/buscar/<?php echo $field; ?>/<?php echo $value; ?>/',
+            order_attr      : '<?php echo (APP_AJAX) ? 'class="js-link js-spinner"' : ''; ?>'
+        });
+    });
+</script>
+
+<div class="container shell-view">
+    
+    <?php View::process($page_module, $page_title, $set_title); ?>
+    
+    <div class="btn-toolbar btn-toolbar-top">
+        <div class="row">
+            <div class="btn-actions">
+                <?php echo DwHtml::button("sistema/accesos/listar/", 'listar', array('class'=>'btn-warning'), 'fa-check', APP_AJAX); ?>
+            </div>
+        </div>        
+    </div>
+
+    <div class="container-overflow">
+
+        <table class="table table-bordered table-hover table-striped table-condensed table-responsive">
+            <thead>
+                <tr>
+                    <th>NUM</th>
+                    <th class="col-hidden" data-search="fecha" data-order="fecha">FECHA</th>
+                    <th class="col-hidden">HORA</th>
+                    <th data-search="nombre" data-order="nombre">NOMBRE</th>
+                    <th data-search="apellido" data-order="apellido">APELLIDO</th>
+                    <th data-search="ip" data-order="ip">IP</th>
+                    <th data-search="tipo_acceso" data-order="tipo_acceso">TIPO ACCESO</th>
+                </tr>
+            </thead>            
+            <tbody>
+                <?php if(!empty($accesos->items)) { ?>
+                <?php foreach($accesos->items as $acceso): ?>
+                    <tr>
+                        <td><?php echo $accesos->counter; ?></td>
+                        <td><?php echo ($field=='fecha') ? DwUtils::resaltar($value, date("Y-m-d", strtotime($acceso->acceso_at))) : date("Y-m-d", strtotime($acceso->acceso_at)); ?></td>
+                        <td><?php echo date("H:i:s", strtotime($acceso->acceso_at)); ?></td>
+                        <td><?php echo ($field=='nombre') ? DwUtils::resaltar($value, $acceso->nombre) : $acceso->nombre; ?></td>
+                        <td><?php echo ($field=='apellido') ? DwUtils::resaltar($value, $acceso->apellido) : $acceso->apellido; ?></td>
+                        <td><?php echo ($field=='ip') ? DwUtils::resaltar($value, $acceso->ip) : $acceso->ip; ?></td>
+                        <td><?php echo ($acceso->tipo_acceso == Acceso::ENTRADA) ? '<span class="label label-success">Entrada</span>' : '<span class="label label-danger">Salida</span>'; ; ?></td>
+                    </tr>
+                    <?php $accesos->counter++; ?>
+                <?php endforeach; ?>
+                <?php } ?>
+            </tbody>
+        </table>
+
+    </div>
+
+    <?php View::partial('paginators/default', false, array('page'=>$accesos, 'url'=>"sistema/acceso/buscar/$field/$value/$order/")); ?>
+
+</div>

@@ -1,0 +1,71 @@
+<?php
+
+if(!isset($url)) {
+    extract(Router::get());
+    $url = "$controller/$action";
+    if($module) {
+        $url = "$module/$url";
+    }
+    if($parameters) {
+        $params = join('/', $parameters);
+        $params = explode('page.', $params);
+        if($params[0]) {
+            $url = "$url/".trim($params[0], '/');
+        }
+    }
+} else {
+   $url = trim($url, '/');
+}
+
+?>
+<?php if($page) { ?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="pagination" style="height: auto !important; margin-top: 10px;">
+                <p>Total registros encontrados: <b><?php echo $page->size; ?></b></p>
+                <?php if(APP_AJAX) { ?>
+                    <?php if(APP_LOCAL) { ?>
+                    <p>Tiempo: <b><?php echo number_format(round((microtime(1)-START_TIME),4),4),' seg.'?></b></p>
+                    <?php } else { ?>
+                    <!--<p>Tiempo: <b><?php echo number_format(round((microtime(1)-START_TIME),4),4),' seg.'?></b></p> -->
+                    <?php } ?>
+                <?php } ?>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="pagination-centered text-center">
+                <ul class="pagination">
+                    <?php
+                    if(isset($page->items)) {
+
+                        if($page->prev) {
+                            echo "<li>".DwHtml::link($url."/page.$page->prev/", "« ", array('title'=>'Página anterior'))."</li>";
+                        }
+
+                        for($i = $page->current - 4; $i <= $page->current + 4; $i++) {
+                            if($i<1) {
+                                continue;
+                            }
+                            if($i > $page->total_page) {
+                                break;
+                            }
+                            if($i == $page->current) {
+                                echo '<li class="active">'.DwHtml::link("$url/page.$i/", $i, array('title'=>"Página $i de $page->total_page")).'</li>';
+                            } else {
+                                echo '<li>'.DwHtml::link("$url/page.$i/", $i, array('title'=>"Página $i de $page->total_page")).'</li>';
+                            }
+                        }
+
+                        if($page->next) {
+                            echo "<li>".DwHtml::link($url."/page.$page->next/", " »", array('title'=>'Página siguiente'))."</li>";
+                        }
+                    }
+                    ?>
+                </ul>
+            </div>            
+        </div>
+    </div>
+</div>
+
+<?php } ?>

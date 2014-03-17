@@ -29,3 +29,4 @@ dwsync.xml
 # Komodo
 *.komodoproject
 .komodotools
+/default/app/temp/

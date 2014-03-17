@@ -12,11 +12,13 @@ class Acceso extends ActiveRecord {
     
     /**
      * Constante para definir el acceso como entrada
+     * @var int
      */
     const ENTRADA = 1;
     
     /**
      * Constante para definir el acceso como salida
+     * @var int
      */
     const SALIDA = 2;
        
@@ -43,11 +45,17 @@ class Acceso extends ActiveRecord {
         $obj->create();
     }     
     
-     /**
+    /**     
+     * 
      * Método para listar los accesos de los usuario     
-     * @return ActiveRecord
+     *       
+     * @param int $usuario Identificador del usuario
+     * @param string $tipo Tipo de acceso
+     * @param string $order Método de ordenamiento
+     * @param int $page Número de página
+     * @return array ActiveRecord    
      */
-    public function getListadoAcceso($usuario=NULL, $estado='todos', $order='', $page=0) {
+    public function getListadoAcceso($usuario=NULL, $tipo='todos', $order='', $page=0) {
         $columns    = 'acceso.*, usuario.login, usuario.nombre, usuario.apellido';
         $join       = 'INNER JOIN usuario ON usuario.id = acceso.usuario_id ';                
         $conditions = (empty($usuario)) ? "usuario.id > '1'" : "usuario.id=$usuario";        
@@ -66,8 +74,8 @@ class Acceso extends ActiveRecord {
                                                                         'ASC'=>'acceso.tipo_acceso ASC, acceso.acceso_at DESC, usuario.nombre ASC, usuario.apellido ASC', 
                                                                         'DESC'=>'acceso.tipo_acceso DESC, acceso.acceso_at DESC, usuario.nombre DESC, usuario.apellido DESC')) );
         
-        if($estado != 'todos') {
-            $conditions.= ($estado!=self::ENTRADA) ? " AND acceso.tipo_acceso = ".self::ENTRADA : " AND acceso.tipo_acceso = ".self::SALIDA;
+        if($tipo != 'todos') {
+            $conditions.= ($tipo!=self::ENTRADA) ? " AND acceso.tipo_acceso = ".self::ENTRADA : " AND acceso.tipo_acceso = ".self::SALIDA;
         } 
         
         if($page) {
@@ -80,6 +88,12 @@ class Acceso extends ActiveRecord {
     
     /**
      * Método para buscar accesos
+     * 
+     * @param string $field Nombre del campo
+     * @param string $value Valor del campo
+     * @param string $order Orden
+     * @param int $page Número de página
+     * @return array ActiveRecord
      */
     public function getAjaxAcceso($field, $value, $order='', $page=0) {
         $value = Filter::get($value, 'string');
@@ -112,7 +126,7 @@ class Acceso extends ActiveRecord {
         }  
         
         if($field=='fecha') {
-            $conditions.= " AND DATE(acceso.acceso_at) LIKE '$value%'";
+            $conditions.= " AND DATE(acceso.acceso_at) LIKE '%$value%'";
         } else if($field=='tipo_acceso') {            
             $conditions.= " HAVING new_tipo LIKE '%$value%'";
         } else {
