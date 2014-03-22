@@ -1,0 +1,115 @@
+<?php View::flash(); ?>
+
+<script type="text/javascript">
+    $(function() {
+        $('table').kgrid({
+            form_to         : $.KumbiaPHP.publicPath+'sistema/backups/buscar/',            
+            form_open       : ['<?php echo $field; ?>', '<?php echo $value; ?>'],
+            order_to        : $.KumbiaPHP.publicPath+'sistema/backups/buscar/<?php echo $field; ?>/<?php echo $value; ?>/',
+            order_attr      : '<?php echo (APP_AJAX) ? 'class="js-link js-spinner"' : ''; ?>'
+        });
+    });
+</script>
+
+<div class="container shell-view">
+    
+    <?php View::process($page_module, $page_title, $set_title); ?>
+        
+    <div class="btn-toolbar btn-toolbar-top">
+        <div class="row">
+            <div class="btn-actions">
+                <?php echo DwHtml::button("sistema/backups/crear/", 'crear', array('class'=>'btn-success'), 'fa-check-square-o', APP_AJAX); ?>            
+                <?php echo DwHtml::button("sistema/backups/listar/", 'listar', array('class'=>'btn-warning'), 'fa-check', APP_AJAX); ?>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container-overflow">
+    
+        <table class="table table-bordered table-hover table-striped table-condensed table-responsive">
+            <thead>                
+                <tr>
+                    <th>NUM</th>
+                    <th class="col-hidden" data-search="fecha" data-order="fecha">FECHA</th>
+                    <th class="col-hidden">HORA</th>
+                    <th class="col-hidden" data-search="denominacion" data-order="denominacion">DENOMINACION</th>                    
+                    <th>CREADA POR</th>
+                    <th>TAMAÑO</th>
+                    <th>ARCHIVO</th>                    
+                    <th class="col-blocked text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>                
+                <?php foreach($backups->items as $backup): ?>
+                    <?php $key_res = Security::newKey($backup->id, 'restaurar_backup'); ?>
+                    <?php $key_dwn = Security::newKey($backup->id, 'descargar_backup'); ?>
+                    <tr data-backup-description="<?php echo $backup->denominacion; ?>" data-backup-file="<?php echo $backup->archivo; ?>" data-backup-datetime="<?php echo $backup->backup_at; ?>">
+                        <td><?php echo $backups->counter; ?></td>
+                        <td><?php echo ($field=='fecha') ? DwUtils::resaltar($value, date("Y-m-d", strtotime($backup->backup_at))) : date("Y-m-d", strtotime($backup->backup_at)); ?></td>
+                        <td><?php echo date("H:i:s", strtotime($backup->backup_at)); ?></td>
+                        <td><?php echo ($field=='denominacion') ? DwUtils::resaltar($value, $backup->denominacion) : $backup->denominacion; ?></td>
+                        <td><?php echo $backup->nombre.' '.$backup->apellido; ?></td>
+                        <td><?php echo $backup->tamano; ?></td>
+                        <td><?php echo $backup->archivo; ?></td>
+                        <td class="btn-actions">
+                            <?php echo DwHtml::buttonTable('Descargar backup', "sistema/backups/descargar/$key_dwn/", array('class'=>'no-ajax', 'target'=>'_blank'), 'info', 'fa-download'); ?>
+                            <?php echo DwHtml::buttonTable('Restarurar sistema', "#", array('class'=>'js-confirm', 'data-to'=>PUBLIC_PATH."sistema/backups/restaurar/$key_res/", 'msg-title'=>'Restaurar sistema', 'msg'=>'Está seguro de querer restaurar el sistema con esta copia de seguridad?', 'on-confirm'=>'backupRestore'), 'danger', 'fa-warning'); ?>
+                        </td>
+                    </tr>
+                    <?php $backups->counter++; ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+        
+    </div>
+    
+    <?php View::partial('paginators/default', false, array('page'=>$backups, 'url'=>"sistema/backups/buscar/$field/$value/$order/")); ?>
+
+</div>
+
+<div class="modal fade" tabindex="-1" id="form-add-bakcup" role="dialog" aria-labelledby="form-add-backup" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <?php echo DwForm::open("", '', array('id'=>'form-modal', 'data-to'=>'flash-message')); ?>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3>Restauración del sistema</h3>
+                    <div id="dw-backup-info" style="margin-top: 20px">
+
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-10">
+                            <?php echo DwForm::pass('password', array('class'=>'input-required'), '', 'Contraseña'); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <?php echo DwForm::submit("Restaurar", array('class'=>'btn btn-primary')); ?>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
+                </div>
+            <?php echo DwForm::close(); ?>
+        </div>        
+    </div>
+</div>
+
+<script type="text/javascript">
+    function backupRestore(refer) {
+        $("#form-modal").attr('action', refer.attr('data-to'));
+        $("#password").val('');
+        var backup_info = refer.parents('tr:first');
+        $("#dw-backup-info").empty();
+        $("#dw-backup-info").append('<h5 style="margin: 3px 0px">Fecha: '+backup_info.attr('data-backup-datetime')+'</h5>');
+        $("#dw-backup-info").append('<h5 style="margin: 3px 0px">Archivo: '+backup_info.attr('data-backup-file')+'</h5>');
+        $("#dw-backup-info").append('<h5 style="margin: 3px 0px">Denominación: '+backup_info.attr('data-backup-description')+'</h5>');
+        $('#form-add-bakcup').modal('show');
+        $("#password").focus();
+    }
+    $(function(){
+        $("#form-modal").on('submit', function() {            
+            flashInfo('Restaurando el sistema...<br />Esta operación puede demorar unos minutos.');
+            $('#form-add-bakcup').modal('hide');
+        })
+    })
+</script>

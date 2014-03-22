@@ -1,0 +1,73 @@
+<?php View::flash(); ?>
+
+<div class="container shell-view">
+
+    <?php View::process($page_module, $page_title, $set_title); ?>
+
+    <div class="container-overflow">
+
+        <table class="table table-bordered table-hover table-striped table-condensed">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="text-middle">NUM</th>
+                    <th rowspan="2" class="text-middle">TABLE</th>
+                    <th rowspan="2" class="text-middle">COMMENTS</th>
+                    <th rowspan="2" class="text-middle">ENGINE</th>
+                    <th rowspan="2" class="text-middle">A. INCREMENT</th>
+                    <th rowspan="2" class="text-middle">~ROWS</th>
+                    <th rowspan="2" class="text-middle">DATA LENGTH</th>
+                    <th rowspan="2" class="text-middle">DATA FREE</th>
+                    <th rowspan="2" class="text-middle">MSG TYPE</th>
+                    <th rowspan="2" class="text-middle">MSG TEXT</th>
+                    <th colspan="4" class="text-center" style="width: 150px;">ACCIONES</th>
+                </tr>
+                <tr>
+                    <th class="">Optimizar</th>
+                    <th class="">Desfragm.</th>
+                    <th class="">V. Caché</th>
+                    <th class="">Reparar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php $counter = 1; ?>
+                <?php foreach($tablas as $tabla): ?>
+                    <?php $key_optim = Security::newKey($tabla['Name'], 'optimizar'); ?>
+                    <?php $key_desfr = Security::newKey($tabla['Name'], 'desfragmentar'); ?>
+                    <?php $key_cache = Security::newKey($tabla['Name'], 'cache'); ?>
+                    <?php $key_repar = Security::newKey($tabla['Name'], 'reparar'); ?>
+                    <tr>
+                        <td><?php echo $counter; ?></td>
+                        <td><?php echo ucwords(str_replace('_', ' ', $tabla['Name'])); ?></td>
+                        <td>
+                            <?php $comment = explode(';', $tabla['Comment']); ?>
+                            <?php $comment = $comment[0]; ?>
+                            <?php echo (preg_match('/InnoDB/i', $comment) OR preg_match('/MYISAM/i', $comment)) ? '' : $comment; ?>
+                        </td>
+                        <td><?php echo $tabla['Engine']; ?></td>
+                        <td><?php echo $tabla['Auto_increment']; ?></td>
+                        <td><?php echo $tabla['Rows']; ?></td>
+                        <td><?php echo $tabla['Data_length']; ?></td>
+                        <td><?php echo $tabla['Data_free']; ?></td>
+                        <td><?php echo $tabla['Msg_type']; ?></td>
+                        <td><?php echo ($tabla['Msg_text'] == 'OK') ? '<span class="label label-success">'.$tabla['Msg_text'].'</span>' : '<span class="label label-important">'.$tabla['Msg_text'].'</span>'; ?></td>
+                        <td class="text-center">
+                            <?php echo DwHtml::buttonTable('Optimizar tabla', "sistema/mantenimiento/optimizar/$key_optim/", NULL, 'info', 'fa-magic', TRUE); ?>
+                        </td>
+                        <td class="text-center">
+                            <?php echo DwHtml::buttonTable('Desfragmentar tabla', "sistema/mantenimiento/desfragmentar/$key_desfr/", NULL, 'info', 'fa-magnet', TRUE); ?>
+                        </td>
+                        <td class="text-center">
+                            <?php echo DwHtml::buttonTable('Vaciar caché', "sistema/mantenimiento/cache/$key_cache/", NULL, 'warning', 'fa-filter', TRUE); ?>
+                        </td>
+                        <td class="text-center">
+                            <?php echo DwHtml::buttonTable('Reparar tabla', "sistema/mantenimiento/reparar/$key_repar/", NULL, 'danger', 'fa-warning', TRUE); ?>
+                        </td>
+                    </tr>
+                    <?php $counter++; ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>

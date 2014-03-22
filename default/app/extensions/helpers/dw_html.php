@@ -22,13 +22,16 @@ class DwHtml extends Html {
         if (is_array($attrs) OR empty($attrs)) {            
             if($loadAjax) {
                 if(empty($attrs['class'])) {                    
-                    $attrs['class'] = 'js-link js-spinner';
+                    $attrs['class'] = 'js-link js-spinner js-url';
                 } else {                    
                     if(!preg_match("/\bno-ajax\b/i", $attrs['class'])) {
                         $attrs['class'] = 'js-link '.$attrs['class'];
                     }                     
-                    if(!preg_match("/\bhide-spinner\b/i", $attrs['class'])) {
+                    if(!preg_match("/\bno-spinner\b/i", $attrs['class'])) {
                         $attrs['class'] = 'js-spinner '.$attrs['class'];
+                    }                 
+                    if(!preg_match("/\bno-url\b/i", $attrs['class'])) {
+                        $attrs['class'] = 'js-url '.$attrs['class'];
                     }                 
                 }                
             }                   
@@ -57,18 +60,24 @@ class DwHtml extends Html {
      * @param boolean $loadAjax
      * @return type
      */
-    public static function button($action, $text = NULL, $attrs = NULL, $icon='', $loadAjax = APP_AJAX) {
+    public static function button($action, $text = NULL, $attrs = array(), $icon='', $loadAjax = APP_AJAX) {
         if (is_array($attrs) OR empty($attrs)) {
+            if(empty($attrs)) {
+                $attrs['class'] = 'btn-info';
+            }
             if($loadAjax) {
                 if(empty($attrs['class'])) {
-                    $attrs['class'] = 'load-ajax show-spinner';
+                    $attrs['class'] = 'js-link js-spinner js-url';
                 } else { 
                     if(!preg_match("/\bbtn-disabled\b/i", $attrs['class']) && !preg_match("/\bload-content\b/i", $attrs['class'])) {
                         if(!preg_match("/\bno-ajax\b/i", $attrs['class'])) {
-                            $attrs['class'] = 'load-ajax '.$attrs['class'];
+                            $attrs['class'] = 'js-link '.$attrs['class'];
                         }
-                        if(!preg_match("/\bhide-spinner\b/i", $attrs['class'])) {
-                            $attrs['class'] = 'show-spinner '.$attrs['class'];
+                        if(!preg_match("/\bno-spinner\b/i", $attrs['class'])) {
+                            $attrs['class'] = 'js-spinner '.$attrs['class'];
+                        }
+                        if(!preg_match("/\bno-url\b/i", $attrs['class'])) {
+                            $attrs['class'] = 'js-url '.$attrs['class'];
                         }
                     }                    
                 }                                   

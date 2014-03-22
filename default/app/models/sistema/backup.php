@@ -145,7 +145,7 @@ class Backup extends ActiveRecord {
         }        
         $file       = $path.$obj->archivo;
         $system     = $obj->_getSystem(); 
-        $database   = (empty($databases)) ? Config::get('config.application.database') : $database;
+        $database   = (empty($database)) ? Config::get('config.application.database') : $database;
         $config     = $obj->_getConfig($database);        
         $exec       = "$system -h ".$config['host']." -u ".$config['username']." --password=".$config['password']." --opt --default-character-set=latin1 ".$config['name']." | gzip > $file";
         system($exec, $resultado);
@@ -158,7 +158,7 @@ class Backup extends ActiveRecord {
         $clase          = array(" Bytes", " KB", " MB", " GB", " TB"); 
         $obj->tamano    = round($tamano/pow(1024,($i = floor(log($tamano, 1024)))), 2 ).$clase[$i];
         $obj->update();
-        @chmod($file, 0744);        
+        @chmod($file, 0777);        
         ActiveRecord::commitTrans();
         if($obj) {
             DwAudit::debug("Se crea una copia de seguridad bajo la denominación: $obj->denominacion");
@@ -202,7 +202,7 @@ class Backup extends ActiveRecord {
             return FALSE;
         }
         //Almaceno las copias de seguridad anteriores
-        $old_backup = $obj->find('order: registrado_at ASC');
+        $old_backup = $obj->find('order: backup_at ASC');
         
         $system     = $obj->_getSystem(TRUE); //Verifico el sistema operativo para la restauración
         $database   = Config::get('config.application.database'); //tomo el entorno actual

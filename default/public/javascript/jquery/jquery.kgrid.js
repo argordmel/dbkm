@@ -158,11 +158,11 @@
                             
                             //Si hay alguna columna que se oculte
                             if(opt.col_hidden && (thead.find('.'+opt.col_hidden).length > 0) ) {
-                                container.children('.row').prepend(hiddenCol);
+                                container.children('.row:first').prepend(hiddenCol);
                             }
                             
                             if(!container.find('.btn-actions').length) {
-                                container.children('.row').append('<div class="btn-actions"></div>');
+                                container.children('.row:first').append('<div class="btn-actions"></div>');
                             }                            
                             
                             container.append('<hr class="divider">');

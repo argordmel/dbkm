@@ -149,8 +149,8 @@ class Sistema {
      * Método para leer los logs del sistema
      */
     public static function getLogger($fecha, $page) {
-        DwRead::set_path(APP_PATH . 'temp/logs/');
-        $log = DwRead::file('log'.$fecha);
+        DwFile::set_path(APP_PATH . 'temp/logs/');
+        $log = DwFile::read('log'.$fecha);
         //Armo un nuevo array para ordenarlos 
         $contador = 0;
         $new_log = array();
@@ -174,8 +174,8 @@ class Sistema {
      * Método para leer las autidorías del sistema
      */
     public static function getAudit($fecha, $page=0) { 
-        DwRead::set_path(APP_PATH . 'temp/logs/');
-        $audit = DwRead::file('audit'.$fecha);
+        DwFile::set_path(APP_PATH . 'temp/logs/');
+        $audit = DwFile::read('audit'.$fecha);
         //Armo un nuevo array para ordenarlos 
         $contador = 0;
         $new_log = array();

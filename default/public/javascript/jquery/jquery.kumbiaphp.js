@@ -43,10 +43,56 @@
          * @param Object event
          */
         cConfirm: function(event) {
-            var este=$(this);
-            if(!confirm(este.data('msg'))) {
-                event.preventDefault();
+            event.preventDefault();
+            var este        =$(this);
+            var este_tmp    = this;
+            var dialogo     = $("#modal_confirmar");
+            var data_body   = este.attr('msg');
+            var data_title  = este.attr('msg-title');
+            if(data_title==undefined) {
+                data_title = 'Mensaje de confirmación';
             }
+            if ($("#modal_confirmar").size() > 0 ){
+                dialogo.empty();
+            } else {                
+                dialogo = $('<div id="modal_confirmar" tabindex="-1" role="dialog" aria-labelledby="modal_confirmar" aria-hidden="true"></div>');
+            }
+            dialogo.addClass('modal fade');
+            var cajon       = $('<div class="modal-dialog"></div>');
+            var contenedor  = $('<div class="modal-content"></div>');
+            var header      = $('<div><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4 class="modal-title"><i class="icon-warning-sign" style="padding-right:5px; margin-top:5px;"></i>'+data_title+'</h4></div>').addClass('modal-header');
+            var cuerpo      = (data_body!=undefined) ? $('<div><p>'+data_body+'</p></div>').addClass('modal-body') : $('<div><p>Está seguro de continuar con esta operación?</p></div>').addClass('modal-body');
+            var footer      = $('<div></div>').addClass('modal-footer');
+
+            contenedor.append(header);
+            contenedor.append(cuerpo);
+            contenedor.append(footer);                                                                                    
+            cajon.append(contenedor);
+            dialogo.append(cajon);
+
+            if(este.hasClass('js-link')) {
+                footer.append('<a class="btn btn-success js-link js-spinner" href="'+este.attr("href")+'">Aceptar</a>');
+            } else {
+                footer.append('<button class="btn btn-success">Aceptar</a>');
+            }
+            
+            footer.append('<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>');
+            $('.btn-success', dialogo).on('click',function(){
+                dialogo.modal('hide')
+                if(este.attr('on-confirm')!=undefined) {
+                    fn = este.attr('on-confirm')+'(este)';
+                    eval(fn);
+                    return false;
+                }
+                if(!($(this).hasClass('js-link'))) {
+                    document.location.href = este.attr('href');
+                }
+            });
+            dialogo.modal();
+            $('body').on('shown.bs.modal', '#modal_confirmar', function () {
+                $('.btn-success', dialogo).focus();
+            });
+            
         },
 
         /**
@@ -69,9 +115,40 @@
          * @param Object event
          */
         cRemote: function(event) {
-            var este=$(this), rel = $('#'+este.data('to'));
+            
             event.preventDefault();
-            rel.load(this.href);
+            var este = $(this);
+            if(este.hasClass('no-ajax')) {
+                if(este.attr('href') != '#' && este.attr('href') != '#/' && este.attr('href') != '#!/') {
+                    location.href = ""+este.attr('href')+"";
+                }
+            }
+            if(este.hasClass('no-load') || este.hasClass('js-confirm')) {
+                return false;
+            }
+            var val = true;
+            var capa        = (este.attr('data-to')!=undefined) ? este.attr('data-to') : 'shell-content';
+            var spinner     = este.hasClass('js-spinner') ? true : false;
+            var change_url  = este.hasClass('js-url') ? true : false;            
+            var url         = este.attr('href');
+            var before_load = este.attr('before-load');//Callback antes de enviar
+            var after_load  = este.attr('after-load');//Callback después de enviar
+            if(before_load!=null) {
+                try { val = eval(before_load); } catch(e) { }
+            }
+            
+            if(val) {                
+                //@TODO Revisar la seguridad acá
+                if(url!=$.KumbiaPHP.publicPath+'#' && url!=$.KumbiaPHP.publicPath+'#/' && url!='#' && url!='#/') {
+                    options = { capa: capa, spinner: spinner, msg: true, url: url, change_url: change_url};
+                    if($.kload(options)) {
+                        if(after_load!=null) {
+                            try { eval(after_load); } catch(e) { }
+                        }
+                    }
+                }
+            }
+            
         },
 
         /**
@@ -130,10 +207,13 @@
          */
         bind : function() {
             // Enlace y boton con confirmacion
-            $("a.js-confirm, input.js-confirm").on('click', this.cConfirm);
+            $("body").on('click', 'a.js-confirm, input.js-confirm', this.cConfirm);
 
             // Enlace ajax
             $("a.js-remote").on('click', this.cRemote);
+            
+            // Enlace ajax
+            $("a.js-link").on('click', this.cRemote);
 
             // Enlace ajax con confirmacion
             $("a.js-remote-confirm").on('click', this.cRemoteConfirm);
@@ -154,11 +234,11 @@
             $("a.js-fade-out").on('click', this.cFx('fadeOut'));
 
             // Formulario ajax
-            $("form.js-remote").on('submit', this.cFRemote);
+            $("body").on('submit', "form.js-remote", this.cFRemote);
 
             // Lista desplegable que actualiza con ajax
-            $("select.js-remote").on('change', this.cUpdaterSelect);
-
+            $("body").on('change', 'select.js-remote', this.cUpdaterSelect);
+                        
             // Enlazar DatePicker
             $.KumbiaPHP.bindDatePicker();
 

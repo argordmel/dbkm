@@ -33,5 +33,13 @@ class View extends KumbiaView {
     public static function process($moduleName, $processName=null, $setTitle=true) {
         return self::partial('process', false, array('modulo'=>$moduleName, 'proceso'=>$processName, 'titulo'=>$setTitle));
     }
+    
+    /**
+     * Método para dar una respuesta como ajax
+     */
+    public static function ajax() {
+        View::select(NULL, NULL);
+        return self::partial('flash');
+    }
 
 }

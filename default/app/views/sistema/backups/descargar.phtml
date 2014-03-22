@@ -1,0 +1,8 @@
+<?php
+$file = APP_PATH . 'temp/backup/' .  $backup->archivo;
+
+$name = str_replace(' ', '_', APP_NAME).'-'.$backup->archivo;
+header( "Content-Disposition: attachment; filename=".$name."");
+header( "Content-type: application/x-compressed" );
+header( "Content-Length: ".filesize($file) ); //header que envia al navegador el tamaño del archivo.
+readfile($file);
