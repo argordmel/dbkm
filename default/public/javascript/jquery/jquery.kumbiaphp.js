@@ -170,18 +170,17 @@
          */
         cFRemote: function(event){
             event.preventDefault();
-            este = $(this);
+            var este = $(this);
             var button = $('[type=submit]', este);
             button.attr('disabled', 'disabled');
             var url = este.attr('action');
             var div = este.attr('data-to');
-            $.post(url, este.serialize(), function(data, status){
-                var capa = $('#'+div);
-                capa.html(data);
-                capa.hide();
-                capa.show('slow');
+            var spinner     = este.hasClass('no-spinner') ? false : true;
+            options = { capa: div, spinner: spinner, msg: true, url: url, change_url: false, method: 'POST', data: este.serialize() };
+            if($.kload(options)) {
                 button.attr('disabled', null);
-            });
+            }
+            
         },
 
         /**
