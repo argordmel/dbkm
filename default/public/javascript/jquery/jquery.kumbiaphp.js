@@ -44,8 +44,7 @@
          */
         cConfirm: function(event) {
             event.preventDefault();
-            var este        =$(this);
-            var este_tmp    = this;
+            var este        = $(this);            
             var dialogo     = $("#modal_confirmar");
             var data_body   = este.attr('msg');
             var data_title  = este.attr('msg-title');
@@ -123,8 +122,11 @@
                     location.href = ""+este.attr('href')+"";
                 }
             }
-            if(este.hasClass('no-load') || este.hasClass('js-confirm')) {
+            if(este.hasClass('no-load')) {
                 return false;
+            }
+            if(este.hasClass('js-confirm')) {
+                return this.cRemoteConfirm;
             }
             var val = true;
             var capa        = (este.attr('data-to')!=undefined) ? este.attr('data-to') : 'shell-content';
@@ -209,10 +211,10 @@
             $("body").on('click', 'a.js-confirm, input.js-confirm', this.cConfirm);
 
             // Enlace ajax
-            $("a.js-remote").on('click', this.cRemote);
+            $("body").on('click', 'a.js-remote', this.cRemote);
             
             // Enlace ajax
-            $("a.js-link").on('click', this.cRemote);
+            $("body").on('click', '.js-link', this.cRemote);
 
             // Enlace ajax con confirmacion
             $("a.js-remote-confirm").on('click', this.cRemoteConfirm);
