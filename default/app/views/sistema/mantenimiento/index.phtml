@@ -31,10 +31,10 @@
             <tbody>
                 <?php $counter = 1; ?>
                 <?php foreach($tablas as $tabla): ?>
-                    <?php $key_optim = Security::newKey($tabla['Name'], 'optimizar'); ?>
-                    <?php $key_desfr = Security::newKey($tabla['Name'], 'desfragmentar'); ?>
-                    <?php $key_cache = Security::newKey($tabla['Name'], 'cache'); ?>
-                    <?php $key_repar = Security::newKey($tabla['Name'], 'reparar'); ?>
+                    <?php $key_optim = Security::setKey($tabla['Name'], 'optimizar'); ?>
+                    <?php $key_desfr = Security::setKey($tabla['Name'], 'desfragmentar'); ?>
+                    <?php $key_cache = Security::setKey($tabla['Name'], 'cache'); ?>
+                    <?php $key_repar = Security::setKey($tabla['Name'], 'reparar'); ?>
                     <tr>
                         <td><?php echo $counter; ?></td>
                         <td><?php echo ucwords(str_replace('_', ' ', $tabla['Name'])); ?></td>

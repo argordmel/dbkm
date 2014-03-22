@@ -36,10 +36,10 @@
             </thead>
             <tbody>
                 <?php foreach($perfiles->items as $perfil): ?>
-                    <?php $key_show = Security::newKey($perfil->id, 'show_perfil'); ?>
-                    <?php $key_upd = Security::newKey($perfil->id, 'upd_perfil'); ?>
-                    <?php $key_inac = Security::newKey($perfil->id, 'inactivar_perfil'); ?>
-                    <?php $key_reac = Security::newKey($perfil->id, 'reactivar_perfil'); ?>
+                    <?php $key_show = Security::setKey($perfil->id, 'show_perfil'); ?>
+                    <?php $key_upd = Security::setKey($perfil->id, 'upd_perfil'); ?>
+                    <?php $key_inac = Security::setKey($perfil->id, 'inactivar_perfil'); ?>
+                    <?php $key_reac = Security::setKey($perfil->id, 'reactivar_perfil'); ?>
                     <tr>
                         <td><?php echo $perfiles->counter; ?></td>
                         <td><?php echo $perfil->perfil; ?></td>

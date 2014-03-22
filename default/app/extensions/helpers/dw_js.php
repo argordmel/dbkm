@@ -49,9 +49,10 @@ class DwJs {
         $name       = isset($params['name']) ? trim($params['name'],'()') : "dwModal".rand(10, 5000);
         $autoOpen   = (isset($params['autoOpen'])) ? true : false;
         $button     = isset($params['show_button']) && Filter::get($params['show_button'], 'lower') == 'false' ? false : true;
-
+        $style      = isset($params['style']) ? $params['style'] : ''; 
+        
         $modal = '<div class="modal fade" tabindex="-1" id="'.$name.'" role="dialog" aria-labelledby="'.$name.'" aria-hidden="true">';
-            $modal.= '<div class="modal-dialog">';
+            $modal.= '<div class="modal-dialog" style="'.$style.'">';
                 $modal.= '<div class="modal-content">';
                     $modal.= '<div class="modal-header">';
                     $modal.= '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>';

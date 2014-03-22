@@ -1,0 +1,90 @@
+<?php View::flash(); ?>
+
+<script type="text/javascript">
+    $(function() {
+        $('table').kgrid({
+            order_to:   $.KumbiaPHP.publicPath+"sistema/recursos/listar/",
+            order_attr: '<?php echo (APP_AJAX) ? 'class="js-link js-spinner"' : ''; ?>'
+        });
+    });
+</script>
+
+<div class="container shell-view">
+
+    <?php View::process($page_module, $page_title, $set_title); ?>
+
+    <div class="btn-toolbar btn-toolbar-top">
+        <div class="row">
+            <div class="btn-actions">
+                <?php echo DwHtml::button("sistema/recursos/agregar/", 'agregar', NULL, 'fa-check-square-o', APP_AJAX); ?>
+            </div>
+        </div>
+    </div>
+         
+    <ul class="nav nav-tabs nav-justified">
+        <?php $counter = 1; ?>
+        <?php foreach($recursos as $recurso): ?>
+            <li class="<?php echo ($counter==1) ? 'active' : '';?>"><a href="<?php echo '#tab'.$counter; ?>" data-toggle="tab"><?php echo empty($recurso->modulo) ? 'Sin módulos' : Filter::get($recurso->modulo, 'ucfirst'); ?></a></li>
+            <?php $counter++; ?>
+        <?php endforeach; ?>                
+    </ul>
+   
+    <div class="tab-content">
+        <?php $counter = 1; ?>
+        <?php foreach($recursos as $modulo): ?>
+        <div class="tab-pane <?php echo ($counter==1) ? 'active' : '';?>" id="<?php echo 'tab'.$counter; ?>">
+            
+            <?php $recurso = $modulo->getRecursosPorModulo($modulo->modulo, $order); ?>
+            
+            <table class="table table-bordered table-hover table-striped table-condensed table-responsive">
+                <thead>
+                    <tr>
+                        <th>NUM</th>                        
+                        <th data-order="controlador">CONTROLADOR</th>
+                        <th data-order="accion">ACCION</th>
+                        <th >DESCRIPCION</th>
+                        <th data-order="activo">ESTADO</th>
+                        <th class="btn-actions col-blocked text-center">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if($recurso) { ?>
+                        <?php $counter2 = 1; ?>
+                        <?php foreach($recurso as $row): ?>
+                            <?php $key_upd = Security::setKey($row->id, 'upd_recurso'); ?>
+                            <?php $key_ina = Security::setKey($row->id, 'inactivar_recurso'); ?>
+                            <?php $key_rea = Security::setKey($row->id, 'reactivar_recurso'); ?>
+                            <?php $key_del = Security::setKey($row->id, 'eliminar_recurso'); ?>
+                            <tr>
+                                <td><?php echo $counter2; ?></td>                                
+                                <td><?php echo empty($row->controlador) ? '' : $row->controlador; ?></td>
+                                <td><?php echo empty($row->accion) ? '' : $row->accion; ?></td>
+                                <td><?php echo $row->descripcion; ?></td>
+                                <td><?php echo ($row->activo == Recurso::ACTIVO) ? '<span class="label label-success">Activo</span>' : '<span class="label label-important">Bloqueado</span>'; ; ?></td>
+                                <td>
+                                    <?php if(empty($recurso->custom) && Session::get('perfil_id') != Perfil::SUPER_USUARIO) { ?>
+                                        <?php echo DwHtml::buttonTable('Editar recurso', "", array('class'=>'btn-disabled'), 'warning', 'fa-edit'); ?>
+                                        <?php echo DwHtml::buttonTable('Bloquear recurso', "", array('class'=>'btn-disabled'), 'success', 'fa-flag'); ?>
+                                        <?php echo DwHtml::buttonTable('Eliminar recurso', "", array('class'=>'btn-disabled'), 'danger', 'fa-ban'); ?>
+                                    <?php } else { ?>
+                                        <?php echo DwHtml::buttonTable('Modificar recurso', "sistema/recursos/editar/$key_upd/", null, 'warning', 'fa-edit'); ?>                                    
+                                        <?php if($row->activo == Recurso::ACTIVO) { ?>
+                                            <?php echo DwHtml::buttonTable('Bloquear recurso', "sistema/recursos/estado/inactivar/$key_ina/", null, 'success', 'fa-flag'); ?>
+                                        <?php } else { ?>
+                                            <?php echo DwHtml::buttonTable('Reactivar recurso', "sistema/recursos/estado/reactivar/$key_rea/", null, 'danger', 'fa-flag'); ?>
+                                        <?php } ?>
+                                        <?php echo DwHtml::buttonTable('Eliminar recurso', "sistema/recursos/eliminar/$key_del/", array('class'=>'js-confirm', 'msg-title'=>'Eliminar recurso', 'msg'=>'Está seguro de eliminar este recurso? <br />Recuerda que esta operación no se puede reversar.'), 'danger', 'fa-ban'); ?>
+                                    <?php } ?>
+                                </td>
+                            </tr>
+                            <?php $counter2++; ?>
+                        <?php endforeach; ?>
+                    <?php } ?>
+                </tbody>
+            </table>
+        </div>
+        <?php $counter++; ?>
+        <?php endforeach; ?>
+    </div>
+  
+</div>

@@ -54,7 +54,7 @@ class DwConfig {
             $org = APP_PATH."config/$file.ini";
             $des = APP_PATH."config/$file.org.ini";
             copy($org, $des);//Copio el actual y lo paso a original
-            @chmod("$des", 0777);//Permisos
+            @chmod($des, 0777);//Permisos
             unlink($org);//Elimino el original para crear el nuevo            
             touch($des);//Creo el nuevo .ini
         }
@@ -95,6 +95,10 @@ class DwConfig {
                     foreach($data as $variable => $valor) { //Verifico que variables se crean
                         if(!array_key_exists($variable, $filas)) {
                             $variable = DwUtils::getSlug($variable, '_');
+                            if($file == 'routes') {                                
+                                $variable = "/$variable";
+                                $valor ="/".ltrim($valor, '/');
+                            }
                             if ( in_array($valor , array('On', 'Off')) || is_numeric($valor) ) {                     
                                 $ini.= "$variable = $valor" . PHP_EOL;
                             } else {

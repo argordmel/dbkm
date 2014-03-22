@@ -28,7 +28,7 @@ class Security {
      * @param string $action Texto o acción para la llave
      * @return string
      */
-    public static function newKey($id, $action='') {        
+    public static function setKey($id, $action='') {        
         $key = (defined('TEXT_KEY')) ? TEXT_KEY : self::TEXT_KEY.date("Y-m-d");        
         $key = md5($id.$key.$action);
         $tam = strlen($key);
@@ -46,7 +46,7 @@ class Security {
     public static function getKey($valueKey, $action='', $filter='', $popup=FALSE) {
         $key        = explode('.', $valueKey); 
         $id         = empty($key[0]) ? NULL : $key[0];
-        $validKey   = self::newKey($id, $action);               
+        $validKey   = self::setKey($id, $action);               
         $valid      = ($validKey === $valueKey) ? TRUE : FALSE; 
         if(!$valid) {
             Flash::error('Acceso denegado. La llave de seguridad es incorrecta.');

@@ -150,7 +150,7 @@ class Recurso extends ActiveRecord {
      * Callback que se ejecuta antes de guardar/modificar
      */
     public function before_save() {
-        if(!empty($this->id) && empty($this->custom)) {
+        if(!empty($this->id) && empty($this->custom) && Session::get('perfil_id') != Perfil::SUPER_USUARIO ) {
             Flash::warning('Lo sentimos, pero este recurso no se puede editar.');
             return 'cancel';            
         }
@@ -168,7 +168,7 @@ class Recurso extends ActiveRecord {
      * Callback que se ejecuta antes de eliminar
      */
     public function before_delete() {
-        if(empty($this->custom)) {
+        if(empty($recurso->custom) && Session::get('perfil_id') != Perfil::SUPER_USUARIO) {
             return 'cancel';
         }        
     }

@@ -1,0 +1,79 @@
+<?php View::flash(); ?>
+
+<div class="container shell-view">
+
+    <?php View::process($page_module, $page_title, $set_title); ?>
+
+    <?php echo DwForm::open(); ?>
+    
+    <ul class="nav nav-tabs nav-justified">
+        <?php $counter = 1; ?>
+        <?php foreach($recursos as $recurso): ?>
+            <li class="<?php echo ($counter==1) ? 'active' : '';?>"><a href="<?php echo '#tab'.$counter; ?>" data-toggle="tab"><?php echo empty($recurso->modulo) ? 'Sin módulos' : Filter::get($recurso->modulo, 'ucfirst'); ?></a></li>
+            <?php $counter++; ?>
+        <?php endforeach; ?>                
+    </ul>
+   
+    <div class="tab-content">
+        
+        
+        <?php $counter = 1; ?>
+        <?php foreach($recursos as $modulo): ?>
+        <div class="tab-pane <?php echo ($counter==1) ? 'active' : '';?>" id="<?php echo 'tab'.$counter; ?>">
+            
+            <?php $recurso = $modulo->getRecursosPorModulo($modulo->modulo, $order); ?>
+            
+            <table class="table table-bordered table-hover table-striped table-condensed table-responsive">
+                <thead>
+                    <tr>
+                        <th rowspan="2" class="text-middle">RECURSO</th>
+                        <th rowspan="2" class="text-middle">DESCRIPCION</th>
+                        <th colspan="<?php echo count($perfiles); ?>" class="text-center">PERFILES</th>
+                    </tr>
+                    <tr>
+                        <?php foreach($perfiles as $perfil) { ?>
+                        <th class="text-center"><?php echo $perfil->perfil; ?></th>
+                        <?php } ?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if($recurso) { ?>
+                        <?php foreach($recurso as $row) : ?>
+                        <tr>
+                            <td><?php echo $row->recurso; ?></td>
+                            <td><?php echo $row->descripcion; ?></td>
+                            <td class="text-center">
+                            <?php foreach ($perfiles as $perfil) { ?>
+                                <?php if (in_array("$row->id-$perfil->id", $privilegios)) { ?>
+                                    <?php $old_privilegios[] = $row->id.'-'.$perfil->id ?>
+                                    <?php echo DwForm::check('privilegios[]', $row->id.'-'.$perfil->id, NULL, TRUE); ?>
+                                <?php } else { ?>
+                                    <?php echo DwForm::check('privilegios[]', $row->id.'-'.$perfil->id); ?>
+                                <?php } ?>
+                            <?php } ?>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php } ?>
+                </tbody>
+                
+            </table>
+            
+        </div>
+        <?php $counter++; ?>
+        <?php endforeach; ?>        
+        
+    </div>
+    
+    <?php echo DwForm::hidden('old_privilegios', null, join(',', $old_privilegios)); ?>
+    
+    <div class="row">
+        <div class="form-actions">
+            <?php echo DwForm::save('Guardar privilegios'); ?>
+            <?php echo DwForm::cancel(); ?>
+        </div>
+    </div>
+  
+    <?php echo DWForm::close(); ?>
+    
+</div>

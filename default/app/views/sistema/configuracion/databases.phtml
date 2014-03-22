@@ -1,0 +1,76 @@
+<?php View::flash(); ?>
+
+<div class="container shell-view">
+
+    <?php View::process($page_module, $page_title, $set_title); ?>
+
+    <div class="btn-toolbar btn-toolbar-top">
+        <div class="btn-actions">
+            <?php echo DwHtml::button("sistema/configuracion/", 'basic', NULL, 'fa-asterisk', APP_AJAX); ?>
+            <?php echo DwHtml::button("sistema/configuracion/config/", 'config all', NULL, 'fa-asterisk', APP_AJAX); ?>
+            <?php echo DwHtml::button("sistema/configuracion/routes/", 'routes', NULL, 'fa-random', APP_AJAX); ?>
+            <?php echo DwHtml::button("sistema/configuracion/databases/", 'databases', array('class'=>'btn-success active'), 'fa-hdd-o', APP_AJAX); ?>
+
+            <div class="pull-right">
+                <?php echo DwHtml::button("sistema/configuracion/reset/", 'reset', array('class'=>'btn-danger js-confirm', 'confirm-title'=>'Restarurar archivos de configuración', 'confirm-body'=>'Está seguro de querer restastaurar los archivos de configuración? <br />Recuerda que esta operación no se puede reversar.'), 'fa-warning', APP_AJAX); ?>
+            </div>
+        </div>
+    </div>
+
+    <?php echo DwForm::open('', 'post', array('id'=>'form')); ?>
+
+        <div class="row">
+
+            <div class="col-md-1">&nbsp;</div>
+
+            <div class="col-md-4">
+                <?php echo DwForm::fieldset('Configuración en desarrollo'); ?>
+                    <?php echo DwForm::text('development.host', array('class'=>'input-lower input-required'), $databases['development']['host'], 'Dirección del servidor:', 'Ej: localhost'); ?>
+                    <?php echo DwForm::text('development.username', array('class'=>'input-lower input-required'), $databases['development']['username'], 'Usuario:', 'Ej: usuario'); ?>
+                    <?php echo DwForm::text('development.password', array('class'=>'input-lower'), $databases['development']['password'], 'Contraseña:', 'Ej: clave'); ?>
+                    <?php echo DwForm::text('development.name', array('class'=>'input-lower input-required'), $databases['development']['name'], 'Base de datos:', 'Ej: dailyscript'); ?>
+                    <?php echo DwForm::text('development.type', array('class'=>'input-lower input-required'), $databases['development']['type'], 'Conector:'); ?>
+                    <?php echo DwForm::text('development.charset', array('class'=>'input-lower input-required'), $databases['development']['charset'], 'Juego de caracteres:', 'Ej: UTF-8'); ?>
+                <?php echo DwForm::fieldset(); ?>
+            </div>
+
+            <div class="col-md-1">&nbsp;</div>
+
+            <div class="col-md-4">
+                <?php echo DwForm::fieldset('Configuración en producción'); ?>
+                    <?php echo DwForm::text('production.host', array('class'=>'input-lower input-required'), $databases['production']['host'], 'Dirección del servidor:', 'Ej: dbhost87965 - 25.25.25.9'); ?>
+                    <?php echo DwForm::text('production.username', array('class'=>'input-lower input-required'), $databases['production']['username'], 'Usuario:', 'Ej: dbuser8495'); ?>
+                    <?php echo DwForm::text('production.password', array('class'=>'input-lower'), $databases['production']['password'], 'Contraseña:', 'Ej: m1.c7av3'); ?>
+                    <?php echo DwForm::text('production.name', array('class'=>'input-lower input-required'), $databases['production']['name'], 'Base de datos:', 'Ej: dailyscript'); ?>
+                    <?php echo DwForm::text('production.type', array('class'=>'input-lower input-required'), $databases['production']['type'], 'Conector:'); ?>
+                    <?php echo DwForm::text('production.charset', array('class'=>'input-lower input-required'), $databases['production']['charset'], 'Juego de caracteres:', 'Ej: UTF-8'); ?>
+                <?php echo DwForm::fieldset(); ?>
+            </div>
+
+        </div>
+
+        <div class="row">
+            <div class="form-actions">
+                <?php echo DwHtml::button('#', 'TEST', array('class'=>'no-ajax  btn-primary', 'id'=>'btn-test'), 'fa-check', FALSE); ?>                
+                <?php echo DwForm::send('Guardar configuración'); ?>
+                <?php echo DwForm::cancel(); ?>
+            </div>
+        </div>
+
+
+    <?php echo DwForm::close(); ?>
+
+
+</div>
+
+<script type="text/javascript">
+    $(function(){     
+        $("#btn-test").on('click', function () {
+            var form = $("#form");
+            $.post('<?php echo PUBLIC_PATH; ?>sistema/configuracion/test/', form.serialize(), function(data, status) {
+                $('.flash-message:first').html(data).hide().show('slow');
+            });
+            return false;
+        });
+    });
+</script>

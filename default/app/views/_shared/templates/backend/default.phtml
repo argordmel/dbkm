@@ -9,6 +9,8 @@
         <link rel="shortcut icon" href="<?php echo PUBLIC_PATH; ?>img/favicon.ico" type="image/x-icon" />
         <?php Tag::css('bootstrap/bootstrap.min'); ?>
         <?php Tag::css('bootstrap/bootstrap-theme.min'); ?>
+        <?php Tag::css('bootstrap/datetimepicker.min'); ?>
+        <?php Tag::css('bootstrap/typehead'); ?>
         <?php Tag::css('font-awesome.min'); ?>        
         <?php Tag::css('backend/base'); ?>
         <?php Tag::css('backend/style'); ?>
@@ -153,7 +155,7 @@
         <?php if(PRODUCTION) { ?>
         <?php echo DwJs::alert('Se ha generado la siguiente excepción: <br /><span id="error-ajax"></span>.', 'title: Oops! hemos realizado algo mal.', 'name: errorAjax'); ?>
         <?php } else { ?>
-        <?php echo DwJs::alert('Se ha generado la siguiente excepción: <br /><span id="error-ajax"></span>.<br /><span id="info-error-ajax"></span>', 'title: Oops! hemos realizado algo mal.', 'name: errorAjax'); ?>
+        <?php echo DwJs::alert('Se ha generado la siguiente excepción: <br /><span id="error-ajax"></span>.<br /><span id="info-error-ajax"></span>', 'title: Oops! hemos realizado algo mal.', 'name: errorAjax', 'style: width: 80%;'); ?>
         <?php } ?>
         <?php echo DwJs::alert('Usted no posee los permisos necesarios para realizar esta acción.', 'title: Acceso denegado', 'name: accessControl'); ?>
     </body>

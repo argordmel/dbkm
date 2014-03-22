@@ -217,15 +217,10 @@ class Sistema {
             return false;
         }     
         //Filtro el array
-        $data = Filter::data($data, null, 'trim');         
-        $rs = DwConfig::write('config', $data, $source);
-        if($rs && $source=='custom'){ //Para verificar si está habilitado el manejo de sucursales
-            $config = DwConfig::read('config', 'custom');
-            $menu = new Menu();
-            $menu->find_first(Menu::SUCURSAL);
-            $menu->activo = ($config['app_office'] == 'Off') ? Menu::INACTIVO : Menu::ACTIVO;
-            $menu->update();
-        }
+        foreach($data as $key => $val) {
+            $data[$key] = Filter::get($val, 'trim');
+        }        
+        $rs = DwConfig::write('config', $data, $source);        
         if($rs) {
             DwAudit::info('Se ha actualizado el archivo de configuración del sistema');
         }

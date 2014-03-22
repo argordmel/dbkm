@@ -33,10 +33,10 @@
         <?php $counter = 1; ?>
         <?php foreach($menus as $menu): ?>  
         
-            <?php $key_upd = Security::newKey($menu->id, 'upd_menu'); ?>
-            <?php $key_ina = Security::newKey($menu->id, 'inactivar_menu'); ?>
-            <?php $key_rea = Security::newKey($menu->id, 'reactivar_menu'); ?>
-            <?php $key_del = Security::newKey($menu->id, 'eliminar_menu'); ?>
+            <?php $key_upd = Security::setKey($menu->id, 'upd_menu'); ?>
+            <?php $key_ina = Security::setKey($menu->id, 'inactivar_menu'); ?>
+            <?php $key_rea = Security::setKey($menu->id, 'reactivar_menu'); ?>
+            <?php $key_del = Security::setKey($menu->id, 'eliminar_menu'); ?>
         
         <div class="tab-pane <?php echo ($counter==1) ? 'active' : '';?>" id="<?php echo 'tab'.$counter; ?>">
             
@@ -82,10 +82,10 @@
                         <?php $counter2 = 1; ?>
                         <?php foreach($items as $row): ?>
                             
-                            <?php $key_upd = Security::newKey($row->id, 'upd_menu'); ?>
-                            <?php $key_ina = Security::newKey($row->id, 'inactivar_menu'); ?>
-                            <?php $key_rea = Security::newKey($row->id, 'reactivar_menu'); ?>
-                            <?php $key_del = Security::newKey($row->id, 'eliminar_menu'); ?>
+                            <?php $key_upd = Security::setKey($row->id, 'upd_menu'); ?>
+                            <?php $key_ina = Security::setKey($row->id, 'inactivar_menu'); ?>
+                            <?php $key_rea = Security::setKey($row->id, 'reactivar_menu'); ?>
+                            <?php $key_del = Security::setKey($row->id, 'eliminar_menu'); ?>
 
                             <tr>
                                 <td><?php echo $counter2; ?></td>                                
@@ -112,10 +112,10 @@
                             <?php if($hijos) { ?>
                                 <?php $counter3 = 1; ?>
                                 <?php foreach($hijos as $hijo): ?>
-                                    <?php $key_upd = Security::newKey($hijo->id, 'upd_menu'); ?>
-                                    <?php $key_ina = Security::newKey($hijo->id, 'inactivar_menu'); ?>
-                                    <?php $key_rea = Security::newKey($hijo->id, 'reactivar_menu'); ?>
-                                    <?php $key_del = Security::newKey($hijo->id, 'eliminar_menu'); ?>
+                                    <?php $key_upd = Security::setKey($hijo->id, 'upd_menu'); ?>
+                                    <?php $key_ina = Security::setKey($hijo->id, 'inactivar_menu'); ?>
+                                    <?php $key_rea = Security::setKey($hijo->id, 'reactivar_menu'); ?>
+                                    <?php $key_del = Security::setKey($hijo->id, 'eliminar_menu'); ?>
                                     <tr>
                                         <td><?php echo $counter2.'-'.$counter3; ?></td>                                
                                         <td><?php echo $hijo->posicion; ?></td>
