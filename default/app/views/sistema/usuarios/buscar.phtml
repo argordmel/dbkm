@@ -1,0 +1,73 @@
+<?php View::flash(); ?>
+
+<script type="text/javascript">
+    $(function() {
+        $('table').kgrid({            
+            form_data       : ['<?php echo $field; ?>', '<?php echo $value; ?>'],
+            form_to         : $.KumbiaPHP.publicPath+'sistema/usuarios/buscar/',            
+            order_attr      : '<?php echo (APP_AJAX) ? 'class="js-link js-spinner"' : ''; ?>',
+            order_to        : $.KumbiaPHP.publicPath+'sistema/usuarios/buscar/<?php echo $field; ?>/<?php echo $value; ?>'
+        });
+    });
+</script>
+
+<div class="container shell-view">
+
+    <?php View::process($page_module, $page_title, $set_title); ?>
+
+    <div class="btn-toolbar btn-toolbar-top">
+        <div class="row">
+            <div class="btn-actions">
+                <?php echo DwHtml::button("sistema/usuarios/agregar/", 'agregar', NULL, 'fa-check-square-o', APP_AJAX); ?>
+                <?php echo DwHtml::button("sistema/usuarios/listar/", 'listar', NULL, 'fa-check', APP_AJAX); ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-overflow">
+
+        <table class="table table-bordered table-hover table-striped table-condensed table-responsive">
+            <thead>
+                <tr>
+                    <th>NUM</th>
+                    <th class="col-hidden" data-search="login" data-order="login">LOGIN</th>
+                    <th class="col-hidden" data-search="nombre" data-order="nombre">NOMBRE</th>
+                    <th class="col-hidden" data-search="apellido" data-order="apellido">APELLIDO</th>
+                    <th class="col-hidden" data-search="email" data-order="email">EMAIL</th>
+                    <th class="col-hidden" data-search="perfil" data-order="perfil">PERFIL</th>                    
+                    <th class="col-hidden" data-order="estado_usuario">ESTADO</th>
+                    <th class="col-blocked text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach($usuarios->items as $usuario): ?>                    
+                    <?php $key_shw = Security::setKey($usuario->id, 'shw_usuario'); ?>
+                    <?php $key_ina = Security::setKey($usuario->id, 'bloquear_usuario'); ?>
+                    <?php $key_rea = Security::setKey($usuario->id, 'reactivar_usuario'); ?>                
+                    <tr>
+                        <td><?php echo $usuarios->counter; ?></td>
+                        <td><?php echo ($field=='login') ? DwUtils::resaltar($value, $usuario->login) : $usuario->login; ?></td>
+                        <td><?php echo ($field=='nombre') ? DwUtils::resaltar($value, $usuario->nombre) : $usuario->nombre; ?></td>
+                        <td><?php echo ($field=='apellido') ? DwUtils::resaltar($value, $usuario->apellido) : $usuario->apellido; ?></td>
+                        <td><?php echo ($field=='email') ? DwUtils::resaltar($value, $usuario->email) : $usuario->email; ?></td>
+                        <td><?php echo ($field=='perfil') ? DwUtils::resaltar($value, $usuario->perfil) : $usuario->perfil; ?></td>
+                        <td><?php echo ($usuario->estado_usuario == EstadoUsuario::ACTIVO) ? '<span class="label label-success" title="'.$usuario->descripcion.'" rel="tooltip">Activo</span>' : '<span class="label label-danger" title="'.$usuario->descripcion.'" rel="tooltip">Bloqueado</span>'; ; ?></td>
+                        <td>
+                            <?php echo DwHtml::buttonTable('Ver usuario', "sistema/usuarios/ver/$key_shw/", NULL, 'info', 'fa-search'); ?>
+                            <?php if($usuario->estado_usuario == EstadoUsuario::ACTIVO) { ?>
+                                <?php echo DwHtml::buttonTable('Bloquear usuario', "sistema/usuarios/estado/bloquear/$key_ina/", NULL, 'success', 'fa-flag'); ?>
+                            <?php } else { ?>
+                                <?php echo DwHtml::buttonTable('Reactivar usuario', "sistema/usuarios/estado/reactivar/$key_rea/", NULL, 'danger', 'fa-flag'); ?>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <?php $usuarios->counter++; ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+    </div>
+
+    <?php View::partial('paginators/default', false, array('page'=>$usuarios, 'url'=>"sistema/usuarios/buscar/$field/$value/$order/")); ?>
+
+</div>

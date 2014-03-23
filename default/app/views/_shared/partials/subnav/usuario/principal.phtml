@@ -1,0 +1,35 @@
+<div class="btn-toolbar btn-toolbar-top">
+    <div class="row">
+        <div class="btn-actions">
+
+            <div class="btn-group fa-pd-expand">                
+                <?= DwHtml::button("sistema/usuarios/ver/".Security::setKey($id, 'shw_usuario'), 'Usuario', array('class'=>'btn-info'), 'fa-user'); ?>
+                <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">                
+                    <li>
+                        <?= DwHtml::link("sistema/usuarios/ver/".Security::setKey($id, 'shw_usuario'), 'Ver', array('class'=>''), 'fa-check'); ?>
+                    </li>
+                    <li>
+                        <?= DwHtml::link("sistema/usuarios/editar/".Security::setKey($id, 'upd_usuario'), 'Modificar', array('class'=>''), 'fa-edit'); ?>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="btn-group fa-pd-expand">
+                <?= DwHtml::button("", 'Seguimiento', array('class'=>'btn-info'), 'fa-flag'); ?>
+               <button class="btn btn-info dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <?= DwHtml::link("sistema/usuarios/estados/".Security::setKey($id, 'shw_estados'), 'Estados', array('class'=>''), 'fa-check-square-o'); ?>
+                    </li>
+                    <li>
+                        <?= DwHtml::link("sistema/usuarios/accesos/".Security::setKey($id, 'shw_accesos'), 'Accesos', array('class'=>''), 'fa-exchange'); ?>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>        
+</div>
+
+<hr class="divider">

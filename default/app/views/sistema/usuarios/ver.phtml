@@ -1,0 +1,96 @@
+<?php View::flash(); ?>
+
+<div class="container shell-view">
+
+    <?php View::process($page_module, $page_title, $set_title); ?>
+    
+    <?php View::partial('subnav/usuario/principal', FALSE, array('id'=>$usuario->id)); ?>
+
+    <?php echo DwForm::open(); ?>
+        
+        <ul class="nav nav-tabs hidden-xs">
+            <li class="active"><a href="#tab1" data-toggle="tab">Información personal</a></li>
+            <li><a href="#tab2" data-toggle="tab">Información de la cuenta</a></li>            
+        </ul>
+        <ul class="nav nav-pills nav-stacked visible-xs">    
+            <li class="active"><a href="#tab1" data-toggle="tab">Información personal</a></li>
+            <li><a href="#tab2" data-toggle="tab">Información de la cuenta</a></li>            
+        </ul>
+    
+        <div class="tab-content">
+
+            <div class="tab-pane active" id="tab1">
+
+                <div class="col-md-4 text-right visible-xs visible-sm">
+                    <div class="col-md-6 profile-picture text-center text-middle shadow-dark" style="margin-top: 5px">
+                        <?php echo DwHtml::img("upload/personas/$usuario->fotografia", $usuario->nombre.' '.$usuario->apellido, array('id'=>'img-persona')); ?>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <?php echo DwForm::text('usuario.nombre', array('class'=>' input-readonly'), $usuario->nombre, 'Nombre'); ?>                        
+                            </div>
+                            <div class="col-md-6">
+                                <?php echo DwForm::text('usuario.nombre', array('class'=>' input-readonly'), $usuario->apellido, 'Apellido'); ?>                        
+                            </div>
+                        </div>
+                        <div class="row">                                
+                            <div class="col-md-6">
+                                <?php echo DwForm::email('usuario.email', array('class'=>' input-readonly'), $usuario->email, 'Email'); ?>
+                            </div>
+                        </div>                        
+                    </div>
+                    
+                    <div class="col-md-4 text-right hidden-xs hidden-sm">
+                        <div class="col-md-6 profile-picture text-center text-middle shadow-dark" style="margin-top: 5px">
+                            <?php echo DwHtml::img("upload/personas/$usuario->fotografia", $usuario->nombre.' '.$usuario->apellido, array('id'=>'img-persona')); ?>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+
+            <div class="tab-pane" id="tab2">
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <?php echo DwForm::text('usuario.login', array('class'=>'input-lower input-readonly'), $usuario->login, 'Usuario'); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?php echo DwForm::oneSelect('usuario.perfil', $usuario->perfil, array('class'=>' input-readonly'), 'Perfil'); ?>
+                    </div>
+                </div>
+
+                <div class="row">                    
+                    <div class="col-md-6">
+                        <?php echo DwForm::text('usuario.datagrid', array('class'=>'input-lower input-readonly'), $usuario->datagrid, 'Cantidad de datos por página'); ?>
+                    </div>                   
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <?php echo DwForm::oneSelect('usuario.app_ajax', ($usuario->app_ajax==1) ? 'On' : 'Off', array('class'=>' input-readonly'), 'App con AJAX'); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?php echo DwForm::oneSelect('usuario.tema', $usuario->tema, array('class'=>' input-readonly'), 'Apariencia'); ?>
+                    </div>
+                </div>
+
+            </div>
+           
+        </div>
+
+        <div class="row">
+            
+            <div class="form-actions">                
+                <?php echo DwButton::back(); ?>
+            </div>
+
+        </div>
+
+    <?php echo DwForm::close(); ?>
+
+</div>

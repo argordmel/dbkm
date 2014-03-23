@@ -1,0 +1,85 @@
+<?php View::flash(); ?>
+
+<div class="container shell-view">
+
+    <?php View::process($page_module, $page_title, $set_title); ?>
+    
+    <?php View::partial('subnav/usuario/principal', FALSE, array('id'=>$usuario->id)); ?>
+
+    <?php echo DwForm::open(); ?>
+    
+        <div class="row">
+            <div class="col-md-4 text-right visible-xs visible-sm">
+                <div class="col-md-6 profile-picture text-center text-middle shadow-dark" style="margin-top: 5px">
+                    <?php echo DwHtml::img("upload/personas/$usuario->fotografia", $usuario->nombre.' '.$usuario->apellido, array('id'=>'img-persona')); ?>
+                </div>
+            </div>
+        </div>
+    
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-md-6">
+                        <?php echo DwForm::text('usuario.nombre', array('class'=>' input-readonly'), $usuario->nombre, 'Nombre'); ?>                        
+                    </div>
+                    <div class="col-md-6">
+                        <?php echo DwForm::text('usuario.nombre', array('class'=>' input-readonly'), $usuario->apellido, 'Apellido'); ?>                        
+                    </div>
+                </div>
+                <div class="row">                                
+                    <div class="col-md-6">
+                        <?php echo DwForm::email('usuario.email', array('class'=>' input-readonly'), $usuario->email, 'Email'); ?>
+                    </div>
+                </div>                        
+            </div>
+
+            <div class="col-md-4 text-right hidden-xs hidden-sm">
+                <div class="col-md-6 profile-picture text-center text-middle shadow-dark" style="margin-top: 5px">
+                    <?php echo DwHtml::img("upload/personas/$usuario->fotografia", $usuario->nombre.' '.$usuario->apellido, array('id'=>'img-persona')); ?>
+                </div>
+            </div>
+        </div>
+    
+    <?php echo DwForm::close(); ?>
+    
+    <hr />
+        
+    <div class="container-overflow">
+
+        <table class="table table-bordered table-hover table-striped table-condensed table-responsive">
+            <thead>
+                <tr>
+                    <th>NUM</th>
+                    <th>FECHA</th>
+                    <th>DESCRIPCION</th>
+                    <th>ESTADO</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if($estados->items) { ?>
+                <?php foreach($estados->items as $estado): ?>
+                <tr>
+                    <td><?php echo $estados->counter; ?></td>
+                    <td><?php echo $estado->estado_usuario_at; ?></td>
+                    <td><?php echo $estado->descripcion; ?></td>
+                    <td><?php echo ($estado->estado_usuario == EstadoUsuario::ACTIVO) ? '<span class="label label-success" title="'.$usuario->descripcion.'" rel="tooltip">Activo</span>' : '<span class="label label-danger" title="'.$usuario->descripcion.'" rel="tooltip">Bloqueado</span>'; ; ?></td>
+                </tr>
+                <?php $estados->counter++; ?>
+                <?php endforeach; ?>
+                <?php } ?>
+            </tbody>
+        </table>
+
+        <?php View::partial('paginators/default', FALSE, array('page'=>$estados, 'url'=>"sistema/usuarios/estados/$key/")); ?>
+        
+    </div>
+
+    <div class="row">
+
+        <div class="form-actions">                
+            <?php echo DwButton::back(); ?>
+        </div>
+
+    </div>
+
+</div>
