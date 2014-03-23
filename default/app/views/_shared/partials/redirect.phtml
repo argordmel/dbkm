@@ -1,0 +1,8 @@
+<?php View::flash(); ?>
+<?php if(empty($isLogin)) { ?>
+    <script type="text/javascript">window.location.href="<?php echo (empty($url)) ? PUBLIC_PATH : $url; ?>";</script> 
+    <?php echo DwJs::alert(empty($text) ? 'Un momento por favor, te estamos redireccionando...' : $text, 'title: Redireccionando', 'autoOpen: true'); ?>
+<?php } else { ?>
+    <script type="text/javascript">$(function() { setTimeout(function() { window.location.href = "<?php echo PUBLIC_PATH . ltrim($route, '/'); ?>"; } , 3000); });</script>
+    <?php echo DwDialog::alert('No has iniciado sesión o ha caducado.', 'subtext: Por favor, identifícate nuevamente: <strong>'. Html::link('sistema/login/entrar/', 'Iniciar sesión', null).' </strong>', 'title: La sessión ha caducado', 'name: usuarioEntrar', 'autoOpen: true'); ?>
+<?php } ?>

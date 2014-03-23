@@ -73,6 +73,8 @@
                 request = true;
                 // Enlazar DatePicker
                 $.KumbiaPHP.bindDatePicker();
+                // Enlazar Uploads
+                $.KumbiaPHP.bindFileUpload();
             } else {
                 request = data;
             }

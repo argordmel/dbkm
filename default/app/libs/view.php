@@ -41,5 +41,26 @@ class View extends KumbiaView {
         View::select(NULL, NULL);
         return self::partial('flash');
     }
+    
+    /**
+     * Método que muestra una vista para redireccionar si se trabaja con ajax la app
+     * 
+     * @param string $url Url a redireccionar
+     * @param boolean $isLogin Indica si redirecciona al login o no
+     * @param string $text Texto a mostrar en la redirección
+     * @return string
+     */
+    public static function redirect($url, $isLogin=FALSE, $text='') {
+        View::select(NULL, NULL);
+        return self::partial('redirect', FALSE, array('url'=>$url, 'isLogin'=>$isLogin, 'text'=>$text));
+    }
+    
+    /**
+     * Método para enviar un json
+     */
+    public function json() {
+        View::select(NULL, 'json');
+    }
+    
 
 }

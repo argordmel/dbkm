@@ -11,6 +11,8 @@
         <?php Tag::css('bootstrap/bootstrap-theme.min'); ?>
         <?php Tag::css('bootstrap/datetimepicker.min'); ?>
         <?php Tag::css('bootstrap/typehead'); ?>
+        <?php Tag::css('file-upload/jquery.fileupload'); ?>
+        <?php Tag::css('file-upload/jquery.fileupload-ui'); ?>
         <?php Tag::css('font-awesome.min'); ?>        
         <?php Tag::css('backend/base'); ?>
         <?php Tag::css('backend/style'); ?>
@@ -25,7 +27,16 @@
             textarea, select, input[type="text"], input[type="search"], .uneditable-input { text-transform: uppercase; font-size: 13px }
             <?php } ?>                          
         </style>
-        <?php echo Tag::js('jquery/jquery.min').PHP_EOL; ?>
+        <?php echo Tag::js('jquery/jquery.min').PHP_EOL; ?>        
+       
+        <?php echo Tag::js('jquery/ui/jquery.ui.widget'); ?>
+        <?php echo Tag::js('jquery/jquery-file-upload/jquery.iframe-transport'); ?>
+        <?php echo Tag::js('jquery/jquery-file-upload/jquery.fileupload'); ?>
+        <?php echo Tag::js('jquery/jquery-file-upload/jquery.fileupload-fp'); ?>        
+        <?php echo Tag::js('jquery/jquery-file-upload/jquery.fileupload-ui'); ?>
+       
+        <!--[if gte IE 8]><?php echo Tag::js('jquery/jquery-file-upload/cors/jquery.xdr-transport'); ?><![endif]-->
+                
         <script type="text/javascript">
             function changeTitle(title) { if($(document).attr('title') != title) { $(document).attr('title', title); } }
         </script>

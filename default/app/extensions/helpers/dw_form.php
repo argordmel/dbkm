@@ -109,6 +109,26 @@ class DwForm extends Form {
                     $attrs['onchange'] = !isset($attrs['onchange']) ? 'this.value=this.value.toUpperCase()' : rtrim($attrs['onchange'],';').'; this.value=this.value.toUpperCase()';
                 }
             }
+            if($type == 'upload') {
+                //Reviso si está el js-uploady
+                if(!preg_match("/\bjs-upload\b/i", $attrs['class'])) {
+                    $attrs['class'] = 'js-upload '.$attrs['class'];
+                }
+                //Reviso si está la url a donde envía               
+                if(!isset($attrs['data-to'])) {
+                    Flash::error('No se ha especificado la url para la carga de archivo(s).');
+                }                
+                //Reviso el tipo de archivo
+                if(!isset($attrs['data-files'])) {
+                    $attrs['data-files'] = '@';
+                } else if($attrs['data-files'] == 'images') {
+                    $attrs['data-files'] = '/(\.|\/)(gif|jpe?g|png)$/i';
+                }
+                //Reviso el tamaño del archivo
+                if(!isset($attrs['data-size'])) {
+                    $attrs['data-size'] = '@';
+                }
+            }
             //Reviso si es readonly
             if(preg_match("/\binput-readonly\b/i", $attrs['class'])) {
                 $attrs['readonly'] = 'readonly';
@@ -259,7 +279,7 @@ class DwForm extends Form {
         
         //Verifico si se valida (en caso de que no se mande el fomrmulario con ajax)        
         if( (preg_match("/\bjs-validate\b/i", $attrs['class'])) && !preg_match("/\bjs-remote\b/i", $attrs['class']) ) {
-            $form.= self::_getValidationForm();
+            //$form.= self::_getValidationForm();
         }
         
         if($method=='') {
@@ -616,6 +636,78 @@ class DwForm extends Form {
     }
     
     /**
+     * Método que genera un input type="number"
+     * @param type $field Nombre del input
+     * @param type $attrs Atributos del input
+     * @param type $value Valor por defecto
+     * @param type $label Detalle de la etiqueta label
+     * @param type $help Descripción del campo
+     * @return string
+     */
+    public static function number($field, $attrs=null, $value=null, $label='', $help='') {
+        $type = 'number';
+        if(preg_match("/\binput-money\b/i", $attrs['class']) OR (!IS_DESKTOP)) {
+            $type = 'text';
+        }
+        return self::text($field, $attrs, $value, $label, $help, $type);
+    }
+
+    /**
+     * Método que genera un input type="tel"
+     * @param type $field Nombre del input
+     * @param type $attrs Atributos del input
+     * @param type $value Valor por defecto
+     * @param type $label Detalle de la etiqueta label
+     * @param type $help Descripción del campo
+     * @return string
+     */
+    public static function tel($field, $attrs=null, $value=null, $label='', $help='') {
+        return self::text($field, $attrs, $value, $label, $help, 'tel');
+    }
+
+    /**
+     * Método que genera un input type="email"
+     * @param type $field Nombre del input
+     * @param type $attrs Atributos del input
+     * @param type $value Valor por defecto
+     * @param type $label Detalle de la etiqueta label
+     * @param type $help Descripción del campo
+     * @return string
+     */
+    public static function email($field, $attrs=null, $value=null, $label='', $help='') {
+        return self::text($field, $attrs, $value, $label, $help, 'email');
+    }
+
+    /**
+     * Método que genera un input type="url"
+     * @param type $field Nombre del input
+     * @param type $attrs Atributos del input
+     * @param type $value Valor por defecto
+     * @param type $label Detalle de la etiqueta label
+     * @param type $help Descripción del campo
+     * @return string
+     */
+    public static function url($field, $attrs=null, $value=null, $label='', $help='') {
+        return self::text($field, $attrs, $value, $label, $help, 'url');
+    }
+    
+    /**
+     * Método para generar un select con un único registro
+     * @param string $field Nombre del campo
+     * @param string | array $value Valor del campo
+     * @param array $attrs Atributos para el select
+     * @param string $label Nombre del label
+     * @param string $help
+     * @return string
+     */
+    public static function oneSelect($field, $value, $attrs=NULL, $label='', $help='') {
+        $data = is_array($value) ? $value : array($value=>$value);
+        $value = is_array($value) ? @array_shift(array_keys($value)) : $value;
+        $input = self::select($field, $data, $attrs, $value, $label, $help);
+        return $input.PHP_EOL;
+    }
+    
+    /**
      * Método para abrir/cerrar un fieldset
      * @staticvar boolean $i
      * @param type $text Texto a mostrar del fieldset
@@ -648,6 +740,34 @@ class DwForm extends Form {
         return "<legend $attrs>$text</legend>";
     }
     
+    public static function upload($field, $attrs=null, $label='') {
+        //Tomo los nuevos atributos definidos en las clases
+        $attrs = self::_getAttrsClass($attrs, 'upload');
+        //Armo el input
+        $input = self::getControls();
+        if(self::$_style=='form-search' OR self::$_style=='form-inline') {
+            $attrs['placeholder'] = $label;
+        }
+        
+        if (is_array($attrs)) {
+            $attrs2 = Tag::getAttrs($attrs);
+        }
+        // Obtiene name y id, y los carga en el scope
+        list($id, $name, $value) = self::getFieldData($field, FALSE);
+        $input.="<input id=\"$id\" name=\"$name\" type=\"file\" $attrs2/>";
+        
+        //Cierro el controls
+        $input.= self::getControls();
+        
+        if(empty($label)) {
+            $label = 'Examinar';
+        }
+        
+        //Verifico si tiene un label
+        $label = "<span>$label</span>";
+        return '<div class="form-group btn btn-success fileinput-button"><i class="fa fa-plus fa-pd-expand"></i>'.$label.$input.'</div>'.PHP_EOL;
+        
+    }
     
     
     

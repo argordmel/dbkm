@@ -200,7 +200,7 @@
                     $u.append(a);
                 }
             }, 'json');
-        },
+        },                
 
         /**
          * Enlaza a las clases por defecto
@@ -236,12 +236,15 @@
 
             // Formulario ajax
             $("body").on('submit', "form.js-remote", this.cFRemote);
-
+                        
             // Lista desplegable que actualiza con ajax
-            $("body").on('change', 'select.js-remote', this.cUpdaterSelect);
+            $("body").on('click', 'select.js-remote', this.cUpdaterSelect);
                         
             // Enlazar DatePicker
             $.KumbiaPHP.bindDatePicker();
+            
+            // Enlazar Upload
+            $.KumbiaPHP.bindFileUpload();
 
         },
 
@@ -316,6 +319,71 @@
                 }(jQuery)); 
                 bindInputs();
             });            
+            
+        },
+        
+        /**
+         * Carga de archivos por ajax
+         */
+        bindFileUpload: function() {
+            // Selecciona los campos input
+            var files = $('.js-upload');
+            
+        files.each(function() {  
+                var este = $(this);
+                var id = este.attr('id');                    
+                var bar = 'progress_'+id;
+                if($('#'+bar).size() === 0) {
+                    este.parent().after('<div id="'+bar+'" class="progress fade progress-striped active" style="margin-top: 5px;"><div class="progress-bar progress-bar-success"></div></div>');
+                }
+                var prgss = $('#'+bar);
+                                
+                $('#'+id).fileupload({
+                    url: este.attr('data-to'),
+                    dataType: (este.attr('data-type') === undefined) ? 'json' : este.attr('data-type'),
+                    maxFileSize: (este.attr('data-size') === undefined) ? 5000000 : este.attr('data-size'), //5MB
+                    acceptFileTypes: (este.attr('data-files') === undefined) ? /(\.|\/)(gif|jpe?g|png)$/i : este.attr('data-files'),                    
+                    start: function() {
+                        flashClear(); 
+                        prgss.removeClass('fade');
+                        prgss.find('.progress-bar:first').removeClass('progress-bar-danger').addClass('progress-bar-success');
+                        $('[type=submit]').attr('disabled', 'disabled');
+                    },
+                    progress: function (e, data) {
+                        var progress = parseInt(data.loaded / data.total * 100, 10);
+                        prgss.find('.progress-bar:first').css('width', progress + '%');
+                    },
+                    add: function (e, data) {
+                        var jqXHR = data.submit()
+                        .done(function (result, textStatus, jqXHR) {
+                            if(textStatus!='success' || result.error==true) {
+                                prgss.find('.progress-bar:first').removeClass('progress-bar-success').addClass('progress-bar-danger');
+                                flashError('Oops! el archivo no se ha podido cargar. <br />Detalle del error: '+(result.message!=null) ? result.message : textStatus);
+                            } else {
+                                flashValid('El archivo se ha cargado correctamente!');
+                                if(este.attr('data-success') != undefined) {
+                                    fn = este.attr('data-success')+'(result, este)';
+                                    eval(fn);
+                                }                                
+                            }
+                        })
+                        .fail(function (jqXHR, textStatus, errorThrown) {
+                            if(textStatus!=null){
+                                flashError('Oops! el archivo no se ha podido cargar. <br />Detalle del error: '+textStatus);                    
+                            } else {
+                                flashError('Oops! al parecer el archivo no es de un formato valido. <br />Intenta con otro archivo.');
+                            }
+                            prgss.find('.progress-bar:first').removeClass('progress-bar-danger').addClass('progress-bar-success');
+                            prgss.addClass('fade');
+                        })
+                        .always(function () {
+                            prgss.addClass('fade'); prgss.find('.progress-bar:first').css('width','0%');
+                            $('[type=submit]').removeAttr('disabled');
+                        });
+                    }
+                });
+
+            }); 
             
         },
 
