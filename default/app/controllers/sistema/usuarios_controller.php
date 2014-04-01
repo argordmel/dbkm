@@ -212,7 +212,7 @@ class UsuariosController extends BackendController {
         $upload->setEncryptName(TRUE);
         $upload->setSize('3MB', 170, 200, TRUE);
         if(!$data = $upload->save()) { //retorna un array('path'=>'ruta', 'name'=>'nombre.ext');
-            $data = array('error'=>$upload->getError());
+            $data = array('error'=>TRUE, 'message'=>$upload->getError());
         }
         sleep(1);//Por la velocidad del script no permite que se actualize el archivo
         $this->data = $data;
