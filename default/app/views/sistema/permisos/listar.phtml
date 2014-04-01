@@ -42,16 +42,16 @@
                         <tr>
                             <td><?php echo $row->recurso; ?></td>
                             <td><?php echo $row->descripcion; ?></td>
-                            <td class="text-center">
                             <?php foreach ($perfiles as $perfil) { ?>
+                            <td class="text-center">
                                 <?php if (in_array("$row->id-$perfil->id", $privilegios)) { ?>
                                     <?php $old_privilegios[] = $row->id.'-'.$perfil->id ?>
                                     <?php echo DwForm::check('privilegios[]', $row->id.'-'.$perfil->id, NULL, TRUE); ?>
                                 <?php } else { ?>
                                     <?php echo DwForm::check('privilegios[]', $row->id.'-'.$perfil->id); ?>
                                 <?php } ?>
-                            <?php } ?>
                             </td>
+                            <?php } ?>
                         </tr>
                         <?php endforeach; ?>
                     <?php } ?>

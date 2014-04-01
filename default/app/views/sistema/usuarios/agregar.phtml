@@ -91,22 +91,22 @@
                 </div>
 
             </div>
-
+            
             <?php echo DwForm::hidden('usuario.fotografia', NULL, 'default.png'); ?>
+            
+            <div class="row">
+                <div class="form-actions">
+                    <?php echo DwForm::send('Crear usuario'); ?>
+                    <?php echo DwForm::reset(); ?>
+                    <?php echo DwForm::cancel(); ?>
+                </div>
+            </div>
             
         </div>        
         
     </div>
     
-    <div class="row">
-        <div class="form-actions">
-            <?php echo DwForm::send('Crear usuario'); ?>
-            <?php echo DwForm::reset(); ?>
-            <?php echo DwForm::cancel(); ?>
-        </div>
-    </div>
-
-   
+    
     <?php echo DwForm::close(); ?>
     
 </div>

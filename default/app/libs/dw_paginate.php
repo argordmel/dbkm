@@ -80,6 +80,10 @@ class DwPaginate {
             if (isset($params['distinct'])) {            
                 $find_args[] = "distinct: {$params['distinct']}";
             }
+            
+            //Count by paginated
+            $find_args[] = "paginated: ".true;
+            
             if (isset($conditions)) {            
                 $find_args[] = $conditions;
             }

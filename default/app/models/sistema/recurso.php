@@ -35,7 +35,7 @@ class Recurso extends ActiveRecord {
     /**
      * Constante para definir el recurso "Mi Cuenta"
      */
-    const MI_CUENTA = 2;
+    const MI_CUENTA = 3;
        
     
     /**
