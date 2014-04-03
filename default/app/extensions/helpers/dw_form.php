@@ -277,9 +277,9 @@ class DwForm extends Form {
         $form = '';
         $attrs = self::_getAttrsClass($attrs, 'form'); //Verifico los atributos
         
-        //Verifico si se valida (en caso de que no se mande el fomrmulario con ajax)        
-        if( (preg_match("/\bjs-validate\b/i", $attrs['class'])) && !preg_match("/\bjs-remote\b/i", $attrs['class']) ) {
-            //$form.= self::_getValidationForm();
+        //Verifico si se valida
+        if( (preg_match("/\bjs-validate\b/i", $attrs['class'])) ) {
+            $attrs['novalidate'] = 'novalidate';
         }
         
         if($method=='') {
@@ -293,8 +293,7 @@ class DwForm extends Form {
             if($parameters) {
                 $action.= join('/', $parameters).'/';
             }
-        }
-        
+        }        
         $form.= parent::open($action, $tmp_m, $attrs);//Obtengo la etiqueta para abrir el formulario
         return $form.PHP_EOL;
     }
@@ -352,7 +351,7 @@ class DwForm extends Form {
         $input.= '<span class="input-group-addon"><i class="fa fa-calendar"></i></span>';                        
         $input.= '</div>';
         //Verifico si el formato del formulario muestra el help
-        if(self::$_help_block && $help) {
+        if(self::$_help_block) {
             $input.= self::help($help);
         }
         //Cierro el controls
