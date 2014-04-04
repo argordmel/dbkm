@@ -41,6 +41,7 @@ var validators = ["input-required", "input-alphanum", "input-list", "input-numer
  * @returns mixed
  */
 function validateInput(input) {
+    removeInputError(input);
     if(input.attr('data-equalto') !== undefined) {
         if(!equalTo(input, input.attr('data-equalto'))) {
             return false;
@@ -52,10 +53,10 @@ function validateInput(input) {
         }
     }    
     if(input.hasClass('input-required')) {        
-        if(!inputRequired(input)) {
+        if(!inputRequired(input)) {            
             return false;
         }
-    }
+    }    
     var clases = input.attr('class').split(' ');    
     for(c = 0 ; c < clases.length ; c++) {        
         if($.inArray(clases[c], validators) >= 0 && clases[c] !== 'input-required') {
@@ -70,60 +71,96 @@ function validateInput(input) {
     }    
 }
 
-/**
- * Eventos para validar al hacer un blur al campo 
- */
-$('body').on('blur', 'form.js-validate input, textarea, select, checkbox, radio', function(e) {
-    var este = $(this);
-    if(este.parents('form:first').attr('live-validate') === false) {
-        return true;
-    } else {
-        validateInput(este);
-    }
-});
+/**************************************************
+ * 
+ * EVENTOS
+ *
+ **************************************************/
 
-/**
- * Eventos para validar al hacer un keypress al campo 
- */
-$('body').onFirst('keyup', 'form.js-validate input, textarea', function(e) {
-    var este = $(this);
-    if($(this).hasClass('input-required')) {
-        validateInput(este);
-    }
-});
+$(function() {
 
-/**
- * Eventos para validar al cambiar un select
- */
-$('body').onFirst('change', 'form.js-validate select', function(e) {    
-    var este = $(this);
-    if($(this).hasClass('input-required')) {
-        validateInput(este);
-    }
-});
+    /**
+     * Eventos para validar al hacer un blur al campo 
+     */
+    $('body').on('blur', 'form.js-validate input, textarea, select, checkbox, radio', function(e) {
+        var este = $(this);
+        if(este.parents('form:first').attr('js-validate-live') === false) {
+            return true;
+        } else {
+            validateInput(este);
+        }
+    });
 
-/**
- * Evento para validar un formulario al enviarlo.
- */
-$('body').onFirst('submit', 'form.js-validate', function(e) {
-    e.preventDefault();
-    var cont = 0;
-    $(this).find(":input").each(function(e) {        
-        if($(this).attr('data-invalid') !== undefined) {
-            cont++;
-        } else {            
-            validateInput($(this));
+    /**
+     * Eventos para validar al hacer un keypress al campo 
+     */
+    $('body').onFirst('keyup', 'form.js-validate input, textarea', function(e) {
+        var este = $(this);
+        if($(this).hasClass('input-required')) {
+            setTimeout(function() {
+                validateInput(este);
+            }, 1000);
+        }
+    });
+
+    /**
+     * Eventos para validar al cambiar un select
+     */
+    $('body').onFirst('change', 'form.js-validate select', function(e) {    
+        var este = $(this);
+        if($(this).hasClass('input-required')) {
+            setTimeout(function() {
+                validateInput(este);                
+            }, 1000);
+        }
+    });
+
+    /**
+     * Cuando cambia de fecha con el datepicker
+     */
+    $("body").on("dp.change", '.datepicker', function (e) {
+        var este = $(this);
+        input = este.find(':input');
+        setTimeout(function() {
+            inputDateRange(input, e);
+        }, 500);
+    });
+    
+    /**
+     * Cuando cambia de fecha manualmente
+     */
+    $("body").on("change", '.input-date', function (e) {            
+        input = $(this);
+        setTimeout(function() {
+            inputDateRange(input, e);
+        }, 100);
+    });
+    
+    /**
+     * Evento para validar un formulario al enviarlo.
+     */
+    $('body').onFirst('submit', 'form.js-validate', function(e) {
+        e.preventDefault();
+        var cont = 0;
+        $(this).find(":input").each(function(e) {        
             if($(this).attr('data-invalid') !== undefined) {
                 cont++;
-            }
-        } 
-    });        
-    if(cont > 0) {
-        e.stopImmediatePropagation();
-        return false;
-    }
-    return true;    
+            } else {            
+                validateInput($(this));
+                if($(this).attr('data-invalid') !== undefined) {
+                    cont++;
+                }
+            } 
+        });        
+        if(cont > 0) {
+            e.stopImmediatePropagation();
+            return false;
+        }
+        return true;    
+    });
+
 });
+
 
 /**
  * Método para obtener el mensaje predeterminado del input
@@ -189,7 +226,7 @@ function inputRequired(input) {
     var v_msg = getInputMessage(input, 'Por favor completa este campo');
     if (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val()) ) { 
         return showInputError(input, v_msg);
-    }
+    }    
     return removeInputError(input);
 }
 
@@ -318,9 +355,9 @@ function inputLimit(input) {
     
     var limiteMenor = (input.attr('minlength') !== undefined) ? input.attr('minlength') : 0;
     var limiteMayor = (input.attr('maxlength') !== undefined) ? input.attr('maxlength') : 0;
-    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) { 
-        if(limiteMenor > 0 && limiteMayor === 0) {
-            var v_msg = getInputMessage(input, 'El campo debe tener mínimo '+limiteMenor+' dígito(s)');
+    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) {         
+        if(limiteMenor > 0 && limiteMayor === 0) {            
+            var v_msg = getInputMessage(input, 'El campo debe tener mínimo '+limiteMenor+' dígito(s)');            
             if ( input.val().length < limiteMenor ) {
                 return showInputError(input, v_msg);            
             }
@@ -330,7 +367,7 @@ function inputLimit(input) {
                 return showInputError(input, v_msg);            
             }
         } else {
-            var v_msg = getInputMessage(input, 'El campo debe tener '+limiteMenor+' o '+limiteMayor+' dígitos');        
+            var v_msg = getInputMessage(input, 'El campo debe tener '+limiteMenor+' o '+limiteMayor+' dígitos');                    
             if ( (input.val().length < limiteMenor) || (input.val().length > limiteMayor)) {
                 return showInputError(input, v_msg);            
             }
@@ -366,5 +403,39 @@ function inputDate(input) {
         }                  
     }        
     return removeInputError(input);
+}
+
+
+function inputDateRange(input, e) {
+    
+    if(input.attr('data-invalid') === undefined) {
+                
+        var container = input.parents('.row:first');
+
+        if(input.hasClass('input-checkin')) {                   
+            var input_checkin   = input;
+            var input_checkout  = container.find('.input-checkout');                            
+            if(input_checkout.size() > 0) {                        
+                input_checkout.parent().data("DateTimePicker").setMinDate(e.date);                        
+                if(input_checkout.val().length > 0) {
+                    if(input_checkin.val() > input_checkout.val()) {                                
+                        return showInputError(input, 'La fecha inicial no puede ser mayor que la fecha final');
+                    }
+                }
+            }                    
+        } else if(input.hasClass('input-checkout')) {
+            var input_checkout = input;
+            var input_checkin  = container.find('.input-checkin');                            
+            if(input_checkin.size() > 0) {                        
+                input_checkin.parent().data("DateTimePicker").setMaxDate(e.date);                
+                if(input_checkin.val().length > 0) {
+                    if(input_checkout.val() < input_checkin.val()) {                                
+                        return showInputError(input, 'La fecha final no puede ser menor que la fecha inicial');
+                    }
+                }
+            }                   
+        }
+
+    }
 }
 
