@@ -328,19 +328,18 @@ class DwForm extends Form {
         if(self::$_style=='form-search' OR self::$_style=='form-inline') {
             $attrs['placeholder'] = $label;
         }                  
-        if(empty($attrs['data-format'])) {
-            $attrs['data-format'] = "yyyy-mm-dd";
-        }
+        
         //Verifico si está definida la máscara mask-date
         if(!preg_match("/\bmask-date\b/i", $attrs['class'])) {
             $attrs['class'] = 'mask-date '.$attrs['class'];
-        }
+        }        
         //Armo el input del form
         if(!IS_DESKTOP) {
             $input.= '<div class="input-group date">';
             $input.= parent::text($field, $attrs, $value, 'date');
         } else {
-            $input.= '<div class="input-group date datepicker">';
+            $tmp = self::_getFieldName($field);
+            $input.= '<div class="input-group date datepicker" id="dp_'.$tmp['id'].'">';
             //Verifico si está definida la clase input-date
             if(!preg_match("/\binput-date\b/i", $attrs['class'])) {
                 $attrs['class'] = 'input-date '.$attrs['class'];
