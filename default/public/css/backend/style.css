@@ -120,4 +120,6 @@ small.help-error { display: none;}
 
 .has-error small.help-error { display: block;background: none repeat scroll 0 0 #A94442; color: #FFFFFF; display: block; font-size: 11px; font-style: italic; padding: 2px 4px; width: 100%; border-radius: 0px 0px 4px 4px; }
 .has-error input, .has-error textarea, .has-error select { margin-bottom: 0px; border-radius: 4px 4px 0px 0px;}
+.has-error input + .input-group-addon { border-radius: 0px 4px 0px 0px;}
+.has-error .input-group-addon + input { border-radius: 4px 0px 0px 0px;}
 .has-error p.help-block { margin-top: 0px;}

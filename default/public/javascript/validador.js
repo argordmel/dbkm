@@ -133,7 +133,7 @@ $(function() {
         input = $(this);
         setTimeout(function() {
             inputDateRange(input, e);
-        }, 100);
+        }, 500);
     });
     
     /**

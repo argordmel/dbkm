@@ -287,36 +287,22 @@
             var bindInputs = function() {                               
                 inputs.each(function() {                        
                     var input = $(this);
-                    var opts = { language: 'es', pickTime: false };
-                    // Verifica si hay mínimo
-                    if(input.attr('min') != undefined) {
-                        opts.startDate = input.attr('min');
-                    }
-                    // Verifica si hay máximo
-                    if(input.attr('max') != undefined) {
-                        opts.endDate = input.attr('max');
-                    }
+                    var opts = { language: 'es', pickTime: false, format: 'YYYY-MM-DD' };                    
                     input.datetimepicker(opts);
+                    if(input.find(':input').attr('min') !== undefined) {
+                        input.data("DateTimePicker").setMinDate(input.find(':input').attr('min'));
+                    }
+                    if(input.find(':input').attr('max') !== undefined) {
+                        input.data("DateTimePicker").setMaxDate(input.find(':input').attr('max'));
+                    }
                 });                                
             }            
             // Si ya esta cargado el datetimepicker de bootstrap
-            if(typeof($.datetimepicker) != "undefined") {
+            if(typeof($.datetimepicker) !== "undefined") {
                 return bindInputs();
             }            
             // Carga el datetimepicker, para poder usar cache
-            $.ajax({ dataType: "script",cache: true, url: $.KumbiaPHP.publicPath + 'javascript/bootstrap/bootstrap-datetimepicker.min.js'}).done(function() {
-                //Spanish translation for bootstrap-datetimepicker
-                //Bruno Bonamin <bruno.bonamin@gmail.com>                
-                (function($){
-                    $.fn.datetimepicker.dates['es'] = {
-                        days: ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"],
-                        daysShort: ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],
-                        daysMin: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa", "Do"],
-                        months: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
-                        monthsShort: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
-                        today: "Hoy"
-                    };
-                }(jQuery)); 
+            $.ajax({ dataType: "script",cache: true, url: $.KumbiaPHP.publicPath + 'javascript/bootstrap/bootstrap-datetimepicker.min.js'}).done(function() {                
                 bindInputs();
             });            
             

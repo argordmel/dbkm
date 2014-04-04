@@ -8,8 +8,8 @@
         <meta name="robots" content="noindex,nofollow" /> 
         <link rel="shortcut icon" href="<?php echo PUBLIC_PATH; ?>img/favicon.ico" type="image/x-icon" />
         <?php Tag::css('bootstrap/bootstrap.min'); ?>
-        <?php Tag::css('bootstrap/bootstrap-theme.min'); ?>
-        <?php Tag::css('bootstrap/datetimepicker.min'); ?>
+        <?php Tag::css('bootstrap/bootstrap-theme.min'); ?>        
+        <?php Tag::css('bootstrap/bootstrap-datetimepicker.min'); ?>
         <?php Tag::css('bootstrap/typehead'); ?>
         <?php Tag::css('file-upload/jquery.fileupload'); ?>
         <?php Tag::css('file-upload/jquery.fileupload-ui'); ?>
@@ -65,8 +65,10 @@
         <div id="loading-content" class="alpha60"></div>
         <div id="spinner" class="preview corner-all shadow-dark"></div>
                 
+        <?php echo Tag::js('moment/moment.min').PHP_EOL; ?>        
+        <?php echo Tag::js('moment/lang/es').PHP_EOL; ?>        
         <?php echo Tag::js('bootstrap/bootstrap.min').PHP_EOL; ?>
-        <?php echo Tag::js('bootstrap/bootstrap-datetimepicker.min').PHP_EOL; ?>        
+        <?php echo Tag::js('bootstrap/bootstrap-datetimepicker.min').PHP_EOL; ?>                
         <?php echo Tag::js('bootstrap/bootstrap.typehead.min').PHP_EOL; ?>
         <?php echo Tag::js('jquery/jquery.kumbiaphp').PHP_EOL; ?>
         <?php echo Tag::js('jquery/jquery.keyfilter').PHP_EOL; ?>
