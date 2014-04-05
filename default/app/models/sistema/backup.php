@@ -193,7 +193,7 @@ class Backup extends ActiveRecord {
         }
         $obj        = new Backup();
         if(!$obj->find_first($id)) {
-            Flash::get('id_no_found');
+            Flash::error('Lo sentimos, pero no se ha podido establecer la información de la copia de seguridad.');
             return FALSE;
         }        
         $file       = $path.$obj->archivo;

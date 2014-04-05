@@ -104,10 +104,10 @@
         $('#form-add-bakcup').modal('show');
         $("#password").focus();
     }
-    $(function(){
-        $("#form-modal").on('submit', function() {            
-            flashInfo('Restaurando el sistema...<br />Esta operación puede demorar unos minutos.');
-            $('#form-add-bakcup').modal('hide');
-        })
-    })
+    $(function(){        
+        $("#form-modal").on('submit', function() {
+            flashInfo('Restaurando el sistema...<br />Esta operación puede demorar unos minutos.');            
+            $('#form-add-bakcup').modal('hide');                        
+        });
+    });    
 </script>

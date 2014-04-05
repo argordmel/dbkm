@@ -57,7 +57,7 @@ class RecursosController extends BackendController {
         
         $recurso = new Recurso();
         if(!$recurso->find_first($id)) {
-            Flash::get('id_no_found');
+            Flash::error('Lo sentimos, no se ha podido establecer la información del recurso');    
             return Redirect::toAction('listar');
         }
         
@@ -88,7 +88,7 @@ class RecursosController extends BackendController {
         
         $recurso = new Recurso();
         if(!$recurso->find_first($id)) {
-            Flash::get('id_no_found');            
+            Flash::error('Lo sentimos, no se ha podido establecer la información del recurso');    
         } else {
             if(empty($recurso->custom) && Session::get('perfil_id') != Perfil::SUPER_USUARIO) {
                 Flash::warning('Lo sentimos, pero este recurso no se puede editar.');
@@ -119,7 +119,7 @@ class RecursosController extends BackendController {
         
         $recurso = new Recurso();
         if(!$recurso->find_first($id)) {
-            Flash::get('id_no_found');
+            Flash::error('Lo sentimos, no se ha podido establecer la información del recurso');    
             return Redirect::toAction('listar');
         }              
         try {

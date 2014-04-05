@@ -82,7 +82,7 @@ class UsuariosController extends BackendController {
         
         $usuario = new Usuario();
         if(!$usuario->getInformacionUsuario($id)) {
-            Flash::get('id_no_found');    
+            Flash::error('Lo sentimos, no se ha podido establecer la información del usuario');    
             return Redirect::toAction('listar');
         }                
         
@@ -112,7 +112,7 @@ class UsuariosController extends BackendController {
         
         $usuario = new Usuario();
         if(!$usuario->getInformacionUsuario($id)) {
-            Flash::get('id_no_found');    
+            Flash::error('Lo sentimos, no se ha podido establecer la información del usuario');    
             return Redirect::toAction('listar');
         }
         if($tipo == 'reactivar' && $usuario->estado_usuario == EstadoUsuario::ACTIVO) {
@@ -144,7 +144,7 @@ class UsuariosController extends BackendController {
         
         $usuario = new Usuario();
         if(!$usuario->getInformacionUsuario($id)) {
-            Flash::get('id_no_found');    
+            Flash::error('Lo sentimos, no se ha podido establecer la información del usuario');    
             return Redirect::toAction('listar');
         }                
                 
@@ -163,7 +163,7 @@ class UsuariosController extends BackendController {
         
         $usuario = new Usuario();
         if(!$usuario->getInformacionUsuario($id)) {
-            Flash::get('id_no_found');    
+            Flash::error('Lo sentimos, no se ha podido establecer la información del usuario');    
             return Redirect::toAction('listar');
         }                
         
@@ -188,7 +188,7 @@ class UsuariosController extends BackendController {
         
         $usuario = new Usuario();
         if(!$usuario->getInformacionUsuario($id)) {
-            Flash::get('id_no_found');    
+            Flash::error('Lo sentimos, no se ha podido establecer la información del usuario');    
             return Redirect::toAction('listar');
         }                
         
