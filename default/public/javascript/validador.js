@@ -74,6 +74,29 @@ function validateInput(input) {
     return true;
 }
 
+/**
+ * Método para validar el formulario
+ * @param JQueryObject form
+ * @returns boolean
+ */
+function validateForm(form) {        
+    var cont = 0;
+    form.find(":input").each(function(e) {        
+        if($(this).attr('data-invalid') !== undefined) {
+            cont++;
+        } else {                            
+            if(!validateInput($(this))) {
+                cont++;
+            }
+        }             
+    });                        
+    if(cont > 0) {    
+        return false;
+    }
+    return true; 
+}
+
+
 /**************************************************
  * 
  * EVENTOS
@@ -137,29 +160,7 @@ $(function() {
         setTimeout(function() {
             inputDateRange(input, e);
         }, 500);
-    });
-    
-    /**
-     * Evento para validar un formulario al enviarlo.
-     */
-    $('body').onFirst('submit', 'form.js-validate', function(e) {
-        e.preventDefault();
-        var cont = 0;
-        $(this).find(":input").each(function(e) {        
-            if($(this).attr('data-invalid') !== undefined) {
-                cont++;
-            } else {                            
-                if(!validateInput($(this))) {
-                    cont++;
-                }
-            }             
-        });                        
-        if(cont > 0) {
-            e.stopImmediatePropagation();
-            return false;
-        }
-        return true;    
-    });
+    });               
 
 });
 
@@ -476,3 +477,16 @@ function inputRadio(input) {
     return removeInputError(input);
 }
 
+
+function bindValidate() {    
+    $('form.js-validate').onFirst('submit', function(e) {
+        e.preventDefault();
+        if(!validateForm($(this))) {
+            e.stopImmediatePropagation();
+            return false;
+        }
+        return true;    
+    });    
+}
+
+bindValidate();
