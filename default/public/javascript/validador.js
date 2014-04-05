@@ -86,8 +86,8 @@ $(function() {
      * Eventos para validar al hacer un blur al campo 
      */
     $('body').on('blur', 'form.js-validate input, textarea, select, checkbox, radio', function(e) {
-        var este = $(this);
-        if(este.parents('form:first').attr('js-validate-live') === false) {
+        var este = $(this);        
+        if(este.parents('form:first').attr('js-validate-live') !== undefined) {
             return true;
         } else {
             validateInput(este);
