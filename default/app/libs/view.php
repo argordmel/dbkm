@@ -39,7 +39,7 @@ class View extends KumbiaView {
      */
     public static function ajax() {
         View::select(NULL, NULL);
-        return self::partial('flash');
+        return self::partial('ajax');
     }
     
     /**
