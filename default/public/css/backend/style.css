@@ -123,3 +123,5 @@ small.help-error { display: none;}
 .has-error input + .input-group-addon { border-radius: 0px 4px 0px 0px;}
 .has-error .input-group-addon + input { border-radius: 4px 0px 0px 0px;}
 .has-error p.help-block { margin-top: 0px;}
+
+.radio input[type="radio"], .radio-inline input[type="radio"], .checkbox input[type="checkbox"], .checkbox-inline input[type="checkbox"] { margin-top: 2px; }
