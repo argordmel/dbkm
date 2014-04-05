@@ -40,23 +40,23 @@ var validators = ["input-required", "input-alphanum", "input-list", "input-numer
  * @param JQueryObject input
  * @returns mixed
  */
-function validateInput(input) {
-    removeInputError(input);
-    if(input.attr('data-equalto') !== undefined) {
-        if(!equalTo(input, input.attr('data-equalto'))) {
-            return false;
-        }
-    }    
-    if(input.attr('minlength') !== undefined || input.attr('maxlength') !== undefined) {     
-        if(!inputLimit(input)) {
-            return false;
-        }
-    }    
+function validateInput(input) {    
+    removeInputError(input);    
     if(input.hasClass('input-required')) {        
         if(!inputRequired(input)) {            
             return false;
         }
-    }    
+    } 
+    if(input.attr('data-equalto') !== undefined) {
+        if(!equalTo(input, input.attr('data-equalto'))) {
+            return false;
+        }
+    } 
+    if(input.attr('minlength') !== undefined || input.attr('maxlength') !== undefined) {     
+        if(!inputLimit(input)) {
+            return false;
+        }
+    } 
     var clases = input.attr('class').split(' ');    
     for(c = 0 ; c < clases.length ; c++) {        
         if($.inArray(clases[c], validators) >= 0 && clases[c] !== 'input-required') {
@@ -66,9 +66,12 @@ function validateInput(input) {
             }            
             name = tmp[1].substr(0,1).toUpperCase()+tmp[1].substr(1,tmp[1].length).toLowerCase();                
             fn = 'input'+name+'(input)';                
-            eval(fn);
+            if(!eval(fn)) {
+                return false;
+            }
         }
-    }    
+    } 
+    return true;
 }
 
 /**************************************************
@@ -104,14 +107,14 @@ $(function() {
     });
 
     /**
-     * Eventos para validar al cambiar un select
+     * Eventos para validar al cambiar un select, un radio o checkbox
      */
-    $('body').onFirst('change', 'form.js-validate select', function(e) {    
+    $('body').onFirst('change', 'form.js-validate select, form.js-validate radio, form.js-validate checkbox', function(e) {    
         var este = $(this);
         if($(this).hasClass('input-required')) {
             setTimeout(function() {
                 validateInput(este);                
-            }, 1000);
+            }, 500);
         }
     });
 
@@ -145,13 +148,12 @@ $(function() {
         $(this).find(":input").each(function(e) {        
             if($(this).attr('data-invalid') !== undefined) {
                 cont++;
-            } else {            
-                validateInput($(this));
-                if($(this).attr('data-invalid') !== undefined) {
+            } else {                            
+                if(!validateInput($(this))) {
                     cont++;
                 }
-            } 
-        });        
+            }             
+        });                        
         if(cont > 0) {
             e.stopImmediatePropagation();
             return false;
@@ -184,7 +186,7 @@ function showInputError(input, msg) {
     }
     input.attr('data-invalid', '');
     var input_container = input.parent();    
-    if(input_container.hasClass('input-group')) {
+    if(input_container.hasClass('input-group') || input_container.is('label')) {
         input_container = input_container.parent();
     }
     input_container.addClass('has-error');
@@ -200,7 +202,7 @@ function showInputError(input, msg) {
 function removeInputError(input) {
     input.removeAttr('data-invalid');
     var input_container = input.parent();  
-    if(input_container.hasClass('input-group')) {
+    if(input_container.hasClass('input-group') || input_container.is('label')) {
         input_container = input_container.parent();
     }    
     input_container.removeClass('has-error');
@@ -219,9 +221,15 @@ function removeInputError(input) {
  * @param JQueryObject input
  * @returns boolean
  */
-function inputRequired(input) { 
+function inputRequired(input) {     
     if(input.is('select')) {
         return inputList(input);
+    }
+    if(input.is(':radio')) {        
+        return inputRadio(input);
+    }
+    if(input.is(':checkbox')) {
+        return inputCheckbox(input);
     }
     var v_msg = getInputMessage(input, 'Por favor completa este campo');
     if (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val()) ) { 
@@ -267,13 +275,13 @@ function inputList(input) {
  * @returns Boolean
  */
 function equalTo(input, target) {
+    var v_msg = getInputMessage(input, 'El campo no coincide');
     target = $("#"+target);
     if(target.size() === 0) {
         return showInputError(input, 'No se ha podido establecer el campo a comparar');
-    }
-    removeInputError(input);
+    }    
     if(target.val() !== input.val()) {
-        return showInputError(input, 'El campo no coincide');
+        return showInputError(input, v_msg);
     } 
     return removeInputError(input);
 }
@@ -396,8 +404,7 @@ function inputDate(input) {
             }        
             if (! (/^(0[1-9]|1[0-9]|2[0-8]|29((?=-([0][13-9]|1[0-2])|(?=-(0[1-9]|1[0-2])-([0-9]{2}(0[48]|[13579][26]|[2468][048])|([02468][048]|[13579][26])00))))|30(?=-(0[13-9]|1[0-2]))|31(?=-(0[13578]|1[02])))-(0[1-9]|1[0-2])-[0-9]{4}$/.test(dia+'-'+mes+'-'+anno))) {            
                 return showInputError(input, v_msg);
-            }
-            return true;
+            }            
         } else {
             return showInputError(input, v_msg);
         }                  
@@ -415,8 +422,10 @@ function inputDateRange(input, e) {
         if(input.hasClass('input-checkin')) {                   
             var input_checkin   = input;
             var input_checkout  = container.find('.input-checkout');                            
-            if(input_checkout.size() > 0) {                        
-                input_checkout.parent().data("DateTimePicker").setMinDate(e.date);                        
+            if(input_checkout.size() > 0) {      
+                if(e.date !== undefined) {
+                    input_checkout.parent().data("DateTimePicker").setMinDate(e.date);                                            
+                }
                 if(input_checkout.val().length > 0) {
                     if(input_checkin.val() > input_checkout.val()) {                                
                         return showInputError(input, 'La fecha inicial no puede ser mayor que la fecha final');
@@ -426,8 +435,10 @@ function inputDateRange(input, e) {
         } else if(input.hasClass('input-checkout')) {
             var input_checkout = input;
             var input_checkin  = container.find('.input-checkin');                            
-            if(input_checkin.size() > 0) {                        
-                input_checkin.parent().data("DateTimePicker").setMaxDate(e.date);                
+            if(input_checkin.size() > 0) {            
+                if(e.date !== undefined) {
+                    input_checkin.parent().data("DateTimePicker").setMaxDate(e.date);                
+                }
                 if(input_checkin.val().length > 0) {
                     if(input_checkout.val() < input_checkin.val()) {                                
                         return showInputError(input, 'La fecha final no puede ser menor que la fecha inicial');
@@ -437,5 +448,31 @@ function inputDateRange(input, e) {
         }
 
     }
+}
+
+/**
+ * Función para validar un checkbox
+ * @param JQueryObject input
+ * @returns boolean
+ */
+function inputCheckbox(input) {      
+    var v_msg = getInputMessage(input, 'Selecciona algún elemento.');
+    if(!(input.is(':checked'))) {        
+        return showInputError(input, v_msg);
+    }      
+    return removeInputError(input);
+}
+
+/**
+ * Función para validar un radio
+ * @param JQueryObject input
+ * @returns boolean
+ */
+function inputRadio(input) {
+    var v_msg = getInputMessage(input, 'Selecciona una opción disponible.');
+    if(!(input.is(':checked'))) {
+        return showInputError(input, v_msg);
+    }      
+    return removeInputError(input);
 }
 
