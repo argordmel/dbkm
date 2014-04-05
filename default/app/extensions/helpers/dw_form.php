@@ -96,7 +96,7 @@ class DwForm extends Form {
         } else {
             if(isset($attrs['class'])) {
                 //Verifico si está la clase form-control
-                if(!preg_match("/\bform-control\b/i", $attrs['class'])) {
+                if(!preg_match("/\bform-control\b/i", $attrs['class']) && ($type!='checkbox' && $type!='radio') ) {
                     $attrs['class'] = 'form-control '.$attrs['class'];
                 }
             } else {
@@ -210,17 +210,10 @@ class DwForm extends Form {
         //Extraigo el id y name
         if(!empty($field)) {
             extract(self::_getFieldName($field));
+        }        
+        if(!is_array($attrs)) {
+            $attrs = array();
         }
-        //Verifico si tiene atributos
-        if(is_array($attrs)) {
-            //Reviso si esta deshabilitado
-            if(!preg_match("/\bcontrol-label\b/i", $attrs['class'])) {
-                $attrs['class'] = $attrs['class'].' control-label';
-            }
-        } else {
-            $attrs = array('class'=>'control-label');
-        }
-        
         if(self::$_style == 'form-horizontal') {
             $attrs['class'] =  'col-md-2 '.$attrs['class'];
         }
@@ -230,7 +223,7 @@ class DwForm extends Form {
             $id = (empty($id)) ? NULL : $id; //Por si el field=NULL
             //Si es checkbox o radio
             if( ($type == 'checkbox') or ($type == 'radio') ) {
-                $type = (self::$_style != 'form-horizontal' OR preg_match("/\binline\b/i", $req) ) ? $type.' inline' : $type;
+                $type = (self::$_style != 'form-horizontal' OR preg_match("/\binline\b/i", $req) ) ? $type.'-inline' : $type;
                 $id = str_replace(array('[', ']'), '_', $id);
                 $label.= "<label for=\"$id".self::$_counter."\" class=\"$type\">$text";
                 self::$_counter++;
@@ -738,6 +731,13 @@ class DwForm extends Form {
         return "<legend $attrs>$text</legend>";
     }
     
+    /**
+     * Método que genera un input type="file"
+     * @param type $field Nombre del input
+     * @param type $attrs Atributos del input     
+     * @param type $label Detalle de la etiqueta label     
+     * @return string
+     */
     public static function upload($field, $attrs=null, $label='') {
         //Tomo los nuevos atributos definidos en las clases
         $attrs = self::_getAttrsClass($attrs, 'upload');
@@ -767,41 +767,82 @@ class DwForm extends Form {
         
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    /**
+     * Método par generar un input="checkbox"
+     * @param type $field Nombre del campo
+     * @param type $checkValue Valor del campo
+     * @param type $attrs Atributos
+     * @param string $checked Indica si está seleccionado o no
+     * @param type $label Texto del label
+     * @return string
+     */
+    public static function check($field, $checkValue, $attrs = NULL, $checked = NULL, $label='') {
+        //Tomo los nuevos atributos definidos en las clases
+        $attrs = self::_getAttrsClass($attrs, 'checkbox');                
+        $input = self::label($label, $field, null, $attrs['class'], 'checkbox');        
+        $input = str_replace('</label>', '', $input); //Quito el cierre de la etiqueta label        
+        //        
+        //Armo el input del form        
+        if (is_array($attrs)) {
+            $attrs = Tag::getAttrs($attrs);
+        }        
         
+        // Obtiene name y id para el campo y los carga en el scope
+        list($id, $name, $checked) = self::getFieldDataCheck($field, $checkValue, $checked);
+        
+        if(strpos($name, '[]') !== false)  {                        
+            $id = str_replace(array('[', ']'), '_', $id);            
+        } 
+
+        if ($checked) {
+            $checked = 'checked="checked"';
+        }
+        if($label) {
+            self::$_counter--;//Para que tome el contador del label
+        }
+        $input.= "<input id=\"$id".self::$_counter."\" name=\"$name\" type=\"checkbox\" value=\"$checkValue\" $attrs $checked/>"; 
+        self::$_counter++;//Para que siga                
+        $input.= '</label>';//Cierro el label
+        return $input.PHP_EOL;
+    }
+    
+    /**
+     * Método par generar un input="radio"
+     * @param type $field Nombre del campo
+     * @param type $radioValue Valor del campo
+     * @param type $attrs Atributos
+     * @param string $checked Indica si está seleccionado o no
+     * @param type $label Texto del label
+     * @return string
+     */
+    public static function radio($field, $radioValue, $attrs = NULL, $checked = NULL, $label='') {
+        //Tomo los nuevos atributos definidos en las clases
+        $attrs = self::_getAttrsClass($attrs, 'radio');                
+        $input = self::label($label, $field, null, $attrs['class'], 'radio');        
+        $input = str_replace('</label>', '', $input); //Quito el cierre de la etiqueta label        
+        
+        //Armo el input del form        
+        if (is_array($attrs)) {
+            $attrs = Tag::getAttrs($attrs);
+        }        
+        
+        // Obtiene name y id para el campo y los carga en el scope
+        list($id, $name, $checked) = self::getFieldDataCheck($field, $radioValue, $checked);
+                
+        $id = str_replace(array('[', ']'), '_', $id);            
+        
+        if ($checked) {
+            $checked = 'checked="checked"';
+        }
+        if($label) {
+            self::$_counter--;//Para que tome el contador del label
+        }
+        $input.= "<input id=\"$id".self::$_counter."\" name=\"$name\" type=\"radio\" value=\"$radioValue\" $attrs $checked/>"; 
+        self::$_counter++;//Para que siga                
+        $input.= '</label>';//Cierro el label
+        return $input.PHP_EOL;
+    }      
+            
     /**
      * Método para mostrar el botón para enviar un formulario
      * 
