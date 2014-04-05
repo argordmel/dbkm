@@ -74,7 +74,9 @@
                 // Enlazar DatePicker
                 $.KumbiaPHP.bindDatePicker();
                 // Enlazar Uploads
-                $.KumbiaPHP.bindFileUpload();
+                $.KumbiaPHP.bindFileUpload();                
+                //Validate
+                bindValidate();
             } else {
                 request = data;
             }
