@@ -80,15 +80,73 @@
         },
         
         initialize: function() {
-            $(function() {
-               $('form.js-validate').onFirst('submit', function(e) {
+            $(function() {                
+                /**
+                 * Cuando se envía un formulario 
+                 */
+                $('form.js-validate').onFirst('submit', function(e) {
                     e.preventDefault();
                     if($.validateForm.run($(this)) !== true) {
                         e.stopImmediatePropagation();
                         return false;
                     }                    
                     return true;
+                }).on('blur', 'input, textarea, select, checkbox, radio', function(e) {                   
+                    if($(this).parents('form:first').attr('js-validate-nolive') === undefined) {                        
+                        $.validateForm.checkInput($(this));
+                    }
+                })
+                
+                /**
+                 * Eventos para validar al cambiar un select, un radio o checkbox
+                 */
+                $('body').onFirst('change', 'form.js-validate select, form.js-validate radio, form.js-validate checkbox', function(e) { 
+                    if($(this).hasClass('input-required')) {
+                        setTimeout(function() {
+                            $.validateForm.checkInput($(this));
+                        }, 500);
+                    }
+                });;
+                
+                /**
+                 * Eventos para validar al hacer un keypress al campo 
+                 */
+                $('body').onFirst('keyup', 'form.js-validate input, form.js-validate textarea', function(e) {                    
+                    if($(this).parents('form:first').attr('js-validate-nolive') === undefined) {
+                        var input = $(this);
+                        if(input.hasClass('input-required')) {
+                            setTimeout(function() {
+                                $.validateForm.checkInput(input);
+                            }, 1000);
+                        }
+                    }
+                });
+                
+                /**
+                 * Cuando cambia de fecha con el datepicker
+                 */                
+                $("body").on("dp.change", '.datepicker', function (e) {
+                    var este = $(this);
+                    input = este.find(':input');                                        
+                    setTimeout(function() {
+                        if($.validateForm.checkInput(input)) {
+                            $.validateForm.dateRange(input, e);                            
+                        }
+                    }, 500);                                            
                 }); 
+                
+                /**
+                 * Cuando cambia de fecha manualmente
+                 */
+                $("body").on("change", 'form.js-validate .input-date', function (e) {            
+                    input = $(this);
+                    setTimeout(function() {
+                        if($.validateForm.checkInput(input)) {
+                            $.validateForm.dateRange(input, e);                           
+                        }
+                    }, 500);
+                });               
+                               
             });
         },
         
@@ -310,6 +368,44 @@
             } else {
                 return $.validateForm.showError(input, v_msg);
             }
+        },
+        
+        dateRange: function(input, event) {
+            
+            if(input.attr('data-invalid') === undefined) {              
+                
+                var container = input.parents('.row:first');                
+                
+                if(input.hasClass('input-checkin')) {                                       
+                    var input_checkin   = input;
+                    var input_checkout  = container.find('.input-checkout');
+                    if(input_checkout.size() > 0) {      
+                        if(event.date !== undefined) {
+                            input_checkout.parent().data("DateTimePicker").setMinDate(event.date);
+                        }
+                        if(input_checkout.val().length > 0) {
+                            if(input_checkin.val() > input_checkout.val()) {
+                                return $.validateForm.showError(input, 'La fecha inicial no puede ser mayor que la fecha final');
+                            }
+                        }
+                    }                    
+                } else if(input.hasClass('input-checkout')) {
+                    var input_checkout = input;
+                    var input_checkin  = container.find('.input-checkin');                            
+                    if(input_checkin.size() > 0) {                                    
+                        if(event.date !== undefined) {
+                            input_checkin.parent().data("DateTimePicker").setMaxDate(event.date);                
+                        }
+                        if(input_checkin.val().length > 0) {
+                            if(input_checkout.val() < input_checkin.val()) {       
+                                return $.validateForm.showError(input, 'La fecha final no puede ser menor que la fecha inicial');
+                            }
+                        }
+                    }                   
+                }
+
+            }
+            
         },
         
         pattern: function(input, pattern, msg, custom_val) {
