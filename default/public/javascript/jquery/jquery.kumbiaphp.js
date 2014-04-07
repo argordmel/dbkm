@@ -315,7 +315,7 @@
             // Selecciona los campos input
             var files = $('.js-upload');
             
-        files.each(function() {  
+            files.each(function() {  
                 var este = $(this);
                 var id = este.attr('id');                    
                 var bar = 'progress_'+id;

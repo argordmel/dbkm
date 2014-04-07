@@ -76,7 +76,7 @@
                 // Enlazar Uploads
                 $.KumbiaPHP.bindFileUpload();                
                 //Validate
-                bindValidate();
+                $.validateForm.initialize();
             } else {
                 request = data;
             }
