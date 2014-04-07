@@ -65,7 +65,9 @@
         
     </div>
     
-    <?php echo DwForm::hidden('old_privilegios', null, join(',', $old_privilegios)); ?>
+    <?php if(!empty($old_privilegios)) { ?>
+        <?php echo DwForm::hidden('old_privilegios', null, join(',', $old_privilegios)); ?>
+    <?php } ?>
     
     <div class="row">
         <div class="form-actions">
