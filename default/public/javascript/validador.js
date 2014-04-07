@@ -28,465 +28,302 @@
  *                               
  */
 
-
-/**
- * Variable que contiene los tipos de validadores
- * @type Array
- */
-var validators = ["input-required", "input-alphanum", "input-list", "input-numeric", "input-int", "input-email", "input-phone", "input-date"];
-
-/**
- * Método para aplicar las validaciones de
- * @param JQueryObject input
- * @returns mixed
- */
-function validateInput(input) {    
-    removeInputError(input);    
-    if(input.hasClass('input-required')) {        
-        if(!inputRequired(input)) {            
-            return false;
-        }
-    } 
-    if(input.attr('data-equalto') !== undefined) {
-        if(!equalTo(input, input.attr('data-equalto'))) {
-            return false;
-        }
-    } 
-    if(input.attr('minlength') !== undefined || input.attr('maxlength') !== undefined) {     
-        if(!inputLimit(input)) {
-            return false;
-        }
-    } 
-    var clases = input.attr('class').split(' ');    
-    for(c = 0 ; c < clases.length ; c++) {        
-        if($.inArray(clases[c], validators) >= 0 && clases[c] !== 'input-required') {
-            tmp = clases[c].split('-');
-            if(tmp[1] === undefined || tmp[1] === null || tmp[1] === '') {
-                continue;
-            }            
-            name = tmp[1].substr(0,1).toUpperCase()+tmp[1].substr(1,tmp[1].length).toLowerCase();                
-            fn = 'input'+name+'(input)';                
-            if(!eval(fn)) {
+(function($) {
+    
+    /**
+     * Objeto del validador
+     */
+    $.validateForm = {                
+        
+        /**
+         * Clases para validar los input
+         *
+         * @var Array
+         */
+        validators: [
+            "input-required",             
+            "input-alpha",
+            "input-alphanum",
+            "input-date", 
+            "input-numeric", 
+            "input-integer",
+            "input-email",
+            "input-url",
+            "input-domain",
+            "input-time",
+            "input-color"            
+        ],
+        
+        patterns : {
+            //abc
+            alpha:          /^[a-zA-Z]+$/i,
+            //abc123
+            alphanum:       /^[a-zA-Z0-9]+$/i,
+            //123
+            integer:        /^[-+]?\d+$/,            
+            //1234.99
+            numeric:        /^[-+]?\d+(\.\d+)?$/,  
+            //2,456.99
+            money:          /^[-+]?\d{1,3}(,\d{3})*(\.\d\d)?$/,
+            //user@example.com
+            email :         /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            //http://example.com
+            url:            /(https?|ftp|file|ssh):\/\/(((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?/i,
+            //example.com
+            domain:         /^([a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6}$/i,
+            // DD-MM-YYYY
+            date:           /^(0[1-9]|1[0-9]|2[0-8]|29((?=-([0][13-9]|1[0-2])|(?=-(0[1-9]|1[0-2])-([0-9]{2}(0[48]|[13579][26]|[2468][048])|([02468][048]|[13579][26])00))))|30(?=-(0[13-9]|1[0-2]))|31(?=-(0[13578]|1[02])))-(0[1-9]|1[0-2])-[0-9]{4}$/,
+            // HH:MM:SS
+            time :          /(0[0-9]|1[0-9]|2[0-3])(:[0-5][0-9]){2}/,
+            // #FFF o #FFFFFF
+            color:          /^#?([a-fA-F0-9]{6}|[a-fA-F0-9]{3})$/i
+        },
+        
+        initialize: function() {
+            $(function() {
+               $('form.js-validate').onFirst('submit', function(e) {
+                    e.preventDefault();
+                    if($.validateForm.run($(this)) !== true) {
+                        e.stopImmediatePropagation();
+                        return false;
+                    }                    
+                    return true;
+                }); 
+            });
+        },
+        
+        run: function(form) {
+            if(!form.is('form')) {
+                console.log('No se ha podido establecer el formulario.');
                 return false;
             }
-        }
-    } 
-    return true;
-}
-
-/**
- * Método para validar el formulario
- * @param JQueryObject form
- * @returns boolean
- */
-function validateForm(form) {        
-    var cont = 0;
-    form.find(":input").each(function(e) {        
-        if($(this).attr('data-invalid') !== undefined) {
-            cont++;
-        } else {                            
-            if(!validateInput($(this))) {
-                cont++;
+            var cont = 0;
+            form.find(":input").each(function(e) {                        
+                if($.validateForm.checkInput($(this)) !== true) {
+                    console.log('Error: '+$(this).attr('name'));
+                    cont++;
+                }                
+            });                        
+            if(cont > 0) {    
+                form.find('[data-invalid=""]:first').focus();
+                return false;
             }
-        }             
-    });                        
-    if(cont > 0) {    
-        return false;
-    }
-    return true; 
-}
-
-
-/**************************************************
- * 
- * EVENTOS
- *
- **************************************************/
-
-$(function() {
-
-    /**
-     * Eventos para validar al hacer un blur al campo 
-     */
-    $('body').on('blur', 'form.js-validate input, textarea, select, checkbox, radio', function(e) {
-        var este = $(this);        
-        if(este.parents('form:first').attr('js-validate-live') !== undefined) {
             return true;
-        } else {
-            validateInput(este);
-        }
-    });
-
-    /**
-     * Eventos para validar al hacer un keypress al campo 
-     */
-    $('body').onFirst('keyup', 'form.js-validate input, textarea', function(e) {
-        var este = $(this);
-        if($(this).hasClass('input-required')) {
-            setTimeout(function() {
-                validateInput(este);
-            }, 1000);
-        }
-    });
-
-    /**
-     * Eventos para validar al cambiar un select, un radio o checkbox
-     */
-    $('body').onFirst('change', 'form.js-validate select, form.js-validate radio, form.js-validate checkbox', function(e) {    
-        var este = $(this);
-        if($(this).hasClass('input-required')) {
-            setTimeout(function() {
-                validateInput(este);                
-            }, 500);
-        }
-    });
-
-    /**
-     * Cuando cambia de fecha con el datepicker
-     */
-    $("body").on("dp.change", '.datepicker', function (e) {
-        var este = $(this);
-        input = este.find(':input');
-        setTimeout(function() {
-            inputDateRange(input, e);
-        }, 500);
-    });
-    
-    /**
-     * Cuando cambia de fecha manualmente
-     */
-    $("body").on("change", '.input-date', function (e) {            
-        input = $(this);
-        setTimeout(function() {
-            inputDateRange(input, e);
-        }, 500);
-    });               
-
-});
-
-
-/**
- * Método para obtener el mensaje predeterminado del input
- * @param JQueryObject input
- * @param string msg
- * @returns string
- */
-function getInputMessage(input, msg) {
-    return (input.attr('validate-msg') !== undefined) ? input.attr('validate-msg') : msg;
-}
-
-/**
- * Método para mostrar un input con error
- * @param JQueryObject input
- * @param string msg
- * @returns boolean
- */
-function showInputError(input, msg) {
-    if(input.attr('data-invalid') !== undefined) {
-        return false;
-    }
-    input.attr('data-invalid', '');
-    var input_container = input.parent();    
-    if(input_container.hasClass('input-group') || input_container.is('label')) {
-        input_container = input_container.parent();
-    }
-    input_container.addClass('has-error');
-    input_container.find('.help-error').text(msg);
-    return false;
-}
-
-/**
- * Método para quitar el error de n input
- * @param JQueryObject input
- * @returns {Boolean}
- */
-function removeInputError(input) {
-    input.removeAttr('data-invalid');
-    var input_container = input.parent();  
-    if(input_container.hasClass('input-group') || input_container.is('label')) {
-        input_container = input_container.parent();
-    }    
-    input_container.removeClass('has-error');
-    return true;
-}
-
-
-/****************************************************
- * 
- * CUSTOMIZED VALIDATORS
- * 
- ****************************************************/
-
-/**
- * Función para validar campos requeridos
- * @param JQueryObject input
- * @returns boolean
- */
-function inputRequired(input) {     
-    if(input.is('select')) {
-        return inputList(input);
-    }
-    if(input.is(':radio')) {        
-        return inputRadio(input);
-    }
-    if(input.is(':checkbox')) {
-        return inputCheckbox(input);
-    }
-    var v_msg = getInputMessage(input, 'Por favor completa este campo');
-    if (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val()) ) { 
-        return showInputError(input, v_msg);
-    }    
-    return removeInputError(input);
-}
-
-
-/**
- * Función para validar campos alfanuméricos
- * @param JQueryObject input
- * @returns boolean
- */
-function inputAlphanum(input) {
-    var v_msg = getInputMessage(input, 'Ingresa solo valores alfanuméricos');
-    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) { 
-        if (!(/^[a-zA-Z0-9-ZüñÑáéíóúÁÉÍÓÚÜ._\s]+$/.test(input.val()))) {            
-            return showInputError(input, v_msg);            
-        }
-    }        
-    return removeInputError(input);
-}
-
-/**
- * Función para validar un elemento de una lista
- * 
- * @param JQueryObject input
- * @returns Boolean
- */
-function inputList(input) {
-    var v_msg = getInputMessage(input, 'Selecciona un elemento de la lista');
-    if ( (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) { 
-        return showInputError(input, v_msg);
-    }
-    return removeInputError(input);
-}
-
-/**
- * Función para indicar que el valor de un campo sea igual a otro
- * @param JQueryObject input
- * @param string target
- * @returns Boolean
- */
-function equalTo(input, target) {
-    var v_msg = getInputMessage(input, 'El campo no coincide');
-    target = $("#"+target);
-    if(target.size() === 0) {
-        return showInputError(input, 'No se ha podido establecer el campo a comparar');
-    }    
-    if(target.val() !== input.val()) {
-        return showInputError(input, v_msg);
-    } 
-    return removeInputError(input);
-}
-
-/**
- * Función para validar campos numéricos
- * @param JQueryObject input
- * @returns boolean
- */
-function inputNumeric(input) {    
-    var v_msg = getInputMessage(input, 'Ingresa solo valores numéricos');
-    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) { 
-        if (!(/^[-]?\d+(\.\d+)?$/.test(input.val()))) {                        
-            return showInputError(input, v_msg);            
-        }
-    }        
-    return removeInputError(input);
-}
-
-/**
- * Función para validar campos enteros
- * @param JQueryObject input
- * @returns boolean
- */
-function inputInt(input) {
-    var v_msg = getInputMessage(input, 'Ingresa solo números enteros');
-    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) { 
-        if (!(/^\d+$/.test(input.val()))) {            
-            return showInputError(input, v_msg);            
-        }
-    }        
-    return removeInputError(input);
-}
-
-/**
- * Función para validar email
- * @param JQueryObject input
- * @returns boolean
- */
-function inputEmail(input) {
-    var v_msg = getInputMessage(input, 'Ingresa un email válido');
-    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) { 
-        if (!(/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(input.val()))) { 
-            return showInputError(input, v_msg);            
-        }
-    }        
-    return removeInputError(input);
-}
-
-/**
- * Función para validar el número de teléfono
- * @param JQueryObject input
- * @returns boolean
- */
-function inputPhone(input) {
-    var limiteMenor = 7;
-    var limiteMayor = 10;
-    var v_msg = getInputMessage(input, 'El número debe tener '+limiteMenor+' o '+limiteMayor+' dígitos');
-    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) { 
-        if(!inputNumeric(input)) {
-            return false;
-        }
-        input.attr('data-msg', v_msg);
-        input.attr('minlength', limiteMenor);
-        input.attr('maxlength', limiteMayor);
-        if(!inputLimit(input)) {
-            return false;
-        }               
-    }        
-    return removeInputError(input);
-}
-
-/**
- * Función para validar el número de dígitos
- * @param JQueryObject input
- * @returns boolean
- */
-function inputLimit(input) {
-    
-    var limiteMenor = (input.attr('minlength') !== undefined) ? input.attr('minlength') : 0;
-    var limiteMayor = (input.attr('maxlength') !== undefined) ? input.attr('maxlength') : 0;
-    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) {         
-        if(limiteMenor > 0 && limiteMayor === 0) {            
-            var v_msg = getInputMessage(input, 'El campo debe tener mínimo '+limiteMenor+' dígito(s)');            
-            if ( input.val().length < limiteMenor ) {
-                return showInputError(input, v_msg);            
+        },
+        
+        checkInput: function(input) {
+            $.validateForm.removeError(input);
+            if(input.hasClass('input-required')) {        
+                if($.validateForm.required(input) !== true) {            
+                    return false;
+                }
             }
-        } else if(limiteMenor === 0 && limiteMayor > 0) {
-            var v_msg = getInputMessage(input, 'El campo debe tener máximo '+limiteMayor+' dígito(s)');
-            if ( input.val().length > limiteMayor ) {
-                return showInputError(input, v_msg);            
+            if(input.attr('data-equalto') !== undefined) {
+                if($.validateForm.equalTo(input, input.attr('data-equalto')) !== true) {
+                    return false;
+                }
             }
-        } else {
-            var v_msg = getInputMessage(input, 'El campo debe tener '+limiteMenor+' o '+limiteMayor+' dígitos');                    
-            if ( (input.val().length < limiteMenor) || (input.val().length > limiteMayor)) {
-                return showInputError(input, v_msg);            
-            }
-        }    
-    }
-    return removeInputError(input);        
-    
-}
-
-/**
- * Función para validar la fecha 
- * @param JQueryObject input
- * @returns boolean
- */
-function inputDate(input) {
-    var v_msg = getInputMessage(input, 'Fecha incorrecta');
-    var f_parts;
-    if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) { 
-        f_parts = input.val().split('-');
-        if(f_parts.length == 3) {
-            anno    = f_parts[0];
-            mes     = f_parts[1];
-            dia     = f_parts[2];
-            if(anno.length !== 4 || mes.length !== 2 || dia.length !== 2) {
-                return showInputError(input, v_msg);                
-            }        
-            if (! (/^(0[1-9]|1[0-9]|2[0-8]|29((?=-([0][13-9]|1[0-2])|(?=-(0[1-9]|1[0-2])-([0-9]{2}(0[48]|[13579][26]|[2468][048])|([02468][048]|[13579][26])00))))|30(?=-(0[13-9]|1[0-2]))|31(?=-(0[13578]|1[02])))-(0[1-9]|1[0-2])-[0-9]{4}$/.test(dia+'-'+mes+'-'+anno))) {            
-                return showInputError(input, v_msg);
+            if(input.attr('minlength') !== undefined || input.attr('maxlength') !== undefined) {     
+                if($.validateForm.limit(input) !== true) {
+                    return false;
+                }
             }            
-        } else {
-            return showInputError(input, v_msg);
-        }                  
-    }        
-    return removeInputError(input);
-}
-
-
-function inputDateRange(input, e) {
-    
-    if(input.attr('data-invalid') === undefined) {
+            var clases = input.attr('class').split(' ');    
+            for(c = 0 ; c < clases.length ; c++) {                    
+                if($.inArray(clases[c], $.validateForm.validators) >= 0 && clases[c] !== 'input-required') {
+                    tmp = clases[c].split('-');
+                    if(tmp[1] === undefined || tmp[1] === null || tmp[1] === '') {
+                        continue;
+                    }            
+                    name = tmp[1].toLowerCase();                                    
+                    fn = '$.validateForm.'+name+'(input)';                    
+                    if(eval(fn) !== true) {
+                        return false;
+                    }
+                }
+            } 
+            return true;
+            
+        },                
                 
-        var container = input.parents('.row:first');
-
-        if(input.hasClass('input-checkin')) {                   
-            var input_checkin   = input;
-            var input_checkout  = container.find('.input-checkout');                            
-            if(input_checkout.size() > 0) {      
-                if(e.date !== undefined) {
-                    input_checkout.parent().data("DateTimePicker").setMinDate(e.date);                                            
-                }
-                if(input_checkout.val().length > 0) {
-                    if(input_checkin.val() > input_checkout.val()) {                                
-                        return showInputError(input, 'La fecha inicial no puede ser mayor que la fecha final');
-                    }
-                }
-            }                    
-        } else if(input.hasClass('input-checkout')) {
-            var input_checkout = input;
-            var input_checkin  = container.find('.input-checkin');                            
-            if(input_checkin.size() > 0) {            
-                if(e.date !== undefined) {
-                    input_checkin.parent().data("DateTimePicker").setMaxDate(e.date);                
-                }
-                if(input_checkin.val().length > 0) {
-                    if(input_checkout.val() < input_checkin.val()) {                                
-                        return showInputError(input, 'La fecha final no puede ser menor que la fecha inicial');
-                    }
-                }
-            }                   
-        }
-
-    }
-}
-
-/**
- * Función para validar un checkbox
- * @param JQueryObject input
- * @returns boolean
- */
-function inputCheckbox(input) {      
-    var v_msg = getInputMessage(input, 'Selecciona algún elemento.');
-    if(!(input.is(':checked'))) {        
-        return showInputError(input, v_msg);
-    }      
-    return removeInputError(input);
-}
-
-/**
- * Función para validar un radio
- * @param JQueryObject input
- * @returns boolean
- */
-function inputRadio(input) {
-    var v_msg = getInputMessage(input, 'Selecciona una opción disponible.');
-    if(!(input.is(':checked'))) {
-        return showInputError(input, v_msg);
-    }      
-    return removeInputError(input);
-}
-
-
-function bindValidate() {    
-    $('form.js-validate').onFirst('submit', function(e) {
-        e.preventDefault();
-        if(!validateForm($(this))) {
-            e.stopImmediatePropagation();
+        message: function(input, msg) {
+            return (input.attr('validate-msg') !== undefined) ? input.attr('validate-msg') : msg;
+        },
+        
+        showError: function(input, msg) {
+            if(input.attr('data-invalid') !== undefined) {
+                return false;
+            }
+            input.attr('data-invalid', '');
+            var input_container = input.parent();    
+            if(input_container.hasClass('input-group') || input_container.is('label')) {
+                input_container = input_container.parent();
+            }
+            input_container.addClass('has-error');
+            input_container.find('.help-error').text(msg);
             return false;
+        },
+               
+        removeError: function(input) {        
+            input.removeAttr('data-invalid');
+            var input_container = input.parent();  
+            if(input_container.hasClass('input-group') || input_container.is('label')) {
+                input_container = input_container.parent();
+            }    
+            input_container.removeClass('has-error');
+            return true;
+        },
+        
+        
+        /************
+         * 
+         * VALIDATORS         
+         * 
+         ************/
+        
+        required: function(input) {            
+            if(input.is('select')) {
+                var v_msg = $.validateForm.message(input, 'Selecciona un elemento de la lista');
+                if (input.val().length === 0) { 
+                   return $.validateForm.showError(input, v_msg);
+                }
+            } else if(input.is(':checkbox')) {         
+                var v_msg = $.validateForm.message(input, 'Selecciona algún elemento.');
+                if(!(input.is(':checked'))) {        
+                    return $.validateForm.showError(input, v_msg);
+                }
+            } else if(input.is(':radio')) {
+                var v_msg = $.validateForm.message(input, 'Selecciona alguna opción.');
+                var field = input.attr('name');
+                if(!($('input[name="'+field+'"]').is(':checked'))) {
+                    return $.validateForm.showError(input, v_msg);
+                }
+            } else {
+                var v_msg = $.validateForm.message(input, 'Por favor completa este campo');                
+                if (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val()) ) { 
+                    return $.validateForm.showError(input, v_msg);
+                }
+            }                                                    
+            return $.validateForm.removeError(input);
+        },
+        
+        equalTo: function(input, target) {
+            var v_msg = $.validateForm.message(input, 'El campo no coincide');
+            target = $("#"+target);
+            if(target.size() === 0) {
+                return $.validateForm.showError(input, 'No se ha podido establecer el campo a comparar');
+            }    
+            if(target.val() !== input.val()) {
+                return $.validateForm.showError(input, v_msg);
+            } 
+            return $.validateForm.removeError(input);
+        },
+        
+        limit: function(input) {
+            var min = (input.attr('minlength') !== undefined) ? input.attr('minlength') : 0;
+            var max = (input.attr('maxlength') !== undefined) ? input.attr('maxlength') : 0;
+            var v_msg;
+            if (! (input.val() === null || input.val().length === 0 || /^\s+$/.test(input.val())) ) {
+                if(min > 0 && max === 0) {            
+                    if ( input.val().length < min ) {
+                        v_msg = $.validateForm.message(input, 'El campo debe tener mínimo '+min+' dígito(s)');
+                        return $.validateForm.showError(input, v_msg);            
+                    }
+                } else if(min === 0 && max > 0) {
+                    if ( input.val().length > max ) {
+                        v_msg = $.validateForm.message(input, 'El campo debe tener máximo '+max+' dígito(s)');
+                        return $.validateForm.showError(input, v_msg);            
+                    }
+                } else {
+                    if ( (input.val().length < min) || (input.val().length > max)) {
+                        v_msg = $.validateForm.message(input, 'El campo debe tener '+min+' o '+max+' dígitos');                    
+                        return $.validateForm.showError(input, v_msg);            
+                    }
+                }            
+            }
+            return $.validateForm.removeError(input);            
+        },
+        
+        alpha: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa solo valores alfabéticos');
+            return $.validateForm.pattern(input, this.patterns.alpha, v_msg);            
+        },
+        
+        alphanum: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa solo valores alfanuméricos');
+            return $.validateForm.pattern(input, this.patterns.alphanum, v_msg);            
+        },
+        
+        numeric: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa solo valores numéricos');
+            return $.validateForm.pattern(input, this.patterns.numeric, v_msg);            
+        },
+        
+        integer: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa solo números enteros');
+            return $.validateForm.pattern(input, this.patterns.integer, v_msg);            
+        },
+        
+        money: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa un valor correcto');
+            return $.validateForm.pattern(input, this.patterns.money, v_msg);            
+        },
+        
+        email: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa un email correcto');
+            return $.validateForm.pattern(input, this.patterns.email, v_msg);            
+        },
+        
+        url: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa una url válida');
+            return $.validateForm.pattern(input, this.patterns.url, v_msg);            
+        },
+        
+        domain: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa una dirección válida');
+            return $.validateForm.pattern(input, this.patterns.domain, v_msg);            
+        },
+        
+        time: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa una hora válida');
+            return $.validateForm.pattern(input, this.patterns.time, v_msg);            
+        },
+        
+        color: function(input) {             
+            var v_msg = $.validateForm.message(input, 'Ingresa un color válido');
+            return $.validateForm.pattern(input, this.patterns.color, v_msg);            
+        },
+        
+        date: function(input) {            
+            var v_msg   = $.validateForm.message(input, 'Fecha incorrecta');
+            var f_parts = input.val().split('-');            
+            if(f_parts.length !== 3) {               
+                return $.validateForm.showError(input, v_msg);
+            }
+            d1 = f_parts[0];
+            d2 = f_parts[1];
+            d3 = f_parts[2];            
+            if(d1.length === 4 && d2.length === 2 && d3.length === 2) { //YYYY-MM-DD                
+                return $.validateForm.pattern(input, this.patterns.date, v_msg, d3+'-'+d2+'-'+d1);
+            } else if(d3.length === 4 && d2.length === 2 && d1.length === 2) { //DD-MM-YYYY
+                return $.validateForm.pattern(input, this.patterns.date, v_msg);
+            } else {
+                return $.validateForm.showError(input, v_msg);
+            }
+        },
+        
+        pattern: function(input, pattern, msg, custom_val) {
+            var val = (custom_val !== undefined) ? custom_val : input.val();
+            if(val.length > 0) {
+                if (!(pattern.test(val))) {
+                    return $.validateForm.showError(input, msg);                       
+                }                
+            }
+            return $.validateForm.removeError(input);
         }
-        return true;    
-    });    
-}
-
-bindValidate();
+        
+    }
+    
+    $.validateForm.initialize();
+    
+})(jQuery);
