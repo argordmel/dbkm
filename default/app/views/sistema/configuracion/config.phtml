@@ -30,29 +30,29 @@
 
                 <?php echo DwForm::fieldset("Configuración de la aplicación"); ?>
 
-                    <?php echo DwForm::text('application.name', array('class'=>'input-required show-error'), $config['application']['name'], 'Nombre del proyecto:'); ?>
+                    <?php echo DwForm::text('application.name', array('class'=>'input-required'), $config['application']['name'], 'Nombre del proyecto:'); ?>
 
-                    <?php echo DwForm::text('application.timezone', array('class'=>'input-required show-error'), $config['application']['timezone'], 'Timezone:'); ?>
+                    <?php echo DwForm::text('application.timezone', array('class'=>'input-required'), $config['application']['timezone'], 'Timezone:'); ?>
 
-                    <?php echo DwForm::select('application.production', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required show-error'), $config['application']['production'], 'Proyecto en producción:'); ?>
+                    <?php echo DwForm::select('application.production', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required'), $config['application']['production'], 'Proyecto en producción:'); ?>
 
-                    <?php echo DwForm::select('application.database', array('development'=>'Development', 'production'=>'Production'), array('class'=>'input-required show-error'), $config['application']['database'], 'Entorno de conexión:'); ?>
+                    <?php echo DwForm::select('application.database', array('development'=>'Development', 'production'=>'Production'), array('class'=>'input-required'), $config['application']['database'], 'Entorno de conexión:'); ?>
 
-                    <?php echo DwForm::text('application.dbdate', array('class'=>'input-required show-error'), $config['application']['dbdate'], 'Formato de fechas:'); ?>
+                    <?php echo DwForm::text('application.dbdate', array('class'=>'input-required'), $config['application']['dbdate'], 'Formato de fechas:'); ?>
 
-                    <?php echo DwForm::select('application.debug', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required show-error'), $config['application']['debug'], 'Debug:'); ?>
+                    <?php echo DwForm::select('application.debug', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required'), $config['application']['debug'], 'Debug:'); ?>
 
-                    <?php echo DwForm::select('application.log_exceptions', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required show-error'), $config['application']['log_exceptions'], 'Mostrar excepciones:'); ?>
+                    <?php echo DwForm::select('application.log_exceptions', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required'), $config['application']['log_exceptions'], 'Mostrar excepciones:'); ?>
 
-                    <?php echo DwForm::text('application.charset', array('class'=>'input-required show-error'), $config['application']['charset'], 'Juego de caracteres:'); ?>
+                    <?php echo DwForm::text('application.charset', array('class'=>'input-required'), $config['application']['charset'], 'Juego de caracteres:'); ?>
 
-                    <?php echo DwForm::text('application.cache_driver', array('class'=>'input-required show-error'), $config['application']['cache_driver'], 'Driver de caché:'); ?>
+                    <?php echo DwForm::text('application.cache_driver', array('class'=>'input-required'), $config['application']['cache_driver'], 'Driver de caché:'); ?>
 
                     <?php echo DwForm::hidden('application.metadata_lifetime', null, $config['application']['metadata_lifetime']); ?>
 
                     <?php echo DwForm::hidden('application.namespace_auth', null, $config['application']['namespace_auth']); ?>
 
-                    <?php echo DwForm::select('application.routes', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required show-error'), $config['application']['routes'], 'Habilitar el routes:'); ?>
+                    <?php echo DwForm::select('application.routes', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required'), $config['application']['routes'], 'Habilitar el routes:'); ?>
 
                 <?php echo DwForm::fieldset(); ?>
 
@@ -89,9 +89,9 @@
                         }
                         ?>
                         <?php if ( in_array($valor , array('On', 'Off')) ) {  ?>
-                            <?php echo DwForm::select("custom.$campo", array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required show-error'), $valor, ucfirst($text)); ?>
+                            <?php echo DwForm::select("custom.$campo", array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required'), $valor, ucfirst($text)); ?>
                         <?php } else { ?>
-                            <?php echo DwForm::text("custom.$campo", array('class'=>'input-lower input-required show-error'), $valor, ucfirst($text)); ?>
+                            <?php echo DwForm::text("custom.$campo", array('class'=>'input-lower input-required'), $valor, ucfirst($text)); ?>
                         <?php } ?>
                     <?php endforeach; ?>
                 <?php } ?>
@@ -121,7 +121,7 @@
 <div class="modal fade" tabindex="-1" id="form-add-config" role="dialog" aria-labelledby="form-add-config" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <?php echo DwForm::open('', '', array('id'=>'form-modal', 'class'=>'form-validate')); ?>    
+            <?php echo DwForm::open('', '', array('id'=>'form-modal', 'class'=>'')); ?>    
             <div class="modal-header">                
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3>Agregar variable de configuración</h3>
@@ -129,10 +129,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-5">
-                        <?php echo DwForm::text('variable', array('class'=>'input-lower input-required show-error'), null, 'Nombre de la variable'); ?>
+                        <?php echo DwForm::text('variable', array('class'=>'input-lower input-required'), null, 'Nombre de la variable'); ?>
                     </div>
                     <div class="col-md-5">
-                        <?php echo DwForm::text('valor', array('class'=>'input-lower input-required show-error'), null, 'Valor'); ?>
+                        <?php echo DwForm::text('valor', array('class'=>'input-lower input-required'), null, 'Valor'); ?>
                     </div>
                 </div>
             </div>
@@ -153,7 +153,7 @@
                 valor = $("#valor");
                 $('<div class="form-group">'+
                 '<label for="custom_'+variable.val()+'" class="control-label">'+variable.val()+':<span class="req">*</span></label>'+                
-                '<input id="custom_'+variable.val()+'" name="custom['+variable.val()+']" type="text" value="'+valor.val()+'" class="form-control text input-lower input-required show-errors" required="required">'+
+                '<input id="custom_'+variable.val()+'" name="custom['+variable.val()+']" type="text" value="'+valor.val()+'" class="form-control input-lower input-required" required="required">'+
                 '<p class="help-block"> <span class="help-error" id="err_custom_'+variable.val()+'">&nbsp; </span></p>'+
                 '</div>').appendTo('#append-config');
                 variable.attr('value', '');

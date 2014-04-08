@@ -27,13 +27,13 @@
 
                 <?php echo DwForm::fieldset("Configuración básica"); ?>
 
-                    <?php echo DwForm::text('application.name', array('class'=>'input-lower input-required show-error'), $config['application']['name'], 'Nombre del proyecto:'); ?>
+                    <?php echo DwForm::text('application.name', array('class'=>'input-lower input-required'), $config['application']['name'], 'Nombre del proyecto:'); ?>
 
-                    <?php echo DwForm::text('application.timezone', array('class'=>'input-lower input-required show-error'), $config['application']['timezone'], 'Timezone:'); ?>
+                    <?php echo DwForm::text('application.timezone', array('class'=>'input-lower input-required'), $config['application']['timezone'], 'Timezone:'); ?>
 
-                    <?php echo DwForm::select('application.production', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required show-error'), $config['application']['production'], 'Proyecto en producción:'); ?>
+                    <?php echo DwForm::select('application.production', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required'), $config['application']['production'], 'Proyecto en producción:'); ?>
 
-                    <?php echo DwForm::select('application.database', array('development'=>'Development', 'production'=>'Production'), array('class'=>'input-required show-error'), $config['application']['database'], 'Entorno de conexión:'); ?>
+                    <?php echo DwForm::select('application.database', array('development'=>'Development', 'production'=>'Production'), array('class'=>'input-required'), $config['application']['database'], 'Entorno de conexión:'); ?>
 
                 <?php echo DwForm::fieldset(); ?>
 
@@ -75,9 +75,9 @@
                         }
                         ?>
                         <?php if ( in_array($valor , array('On', 'Off')) ) {  ?>
-                            <?php echo DwForm::select("custom.$campo", array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required show-error'), $valor, ucfirst($text)); ?>
+                            <?php echo DwForm::select("custom.$campo", array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required'), $valor, ucfirst($text)); ?>
                         <?php } else { ?>
-                            <?php echo DwForm::text("custom.$campo", array('class'=>'input-lower input-required show-error'), $valor, ucfirst($text)); ?>
+                            <?php echo DwForm::text("custom.$campo", array('class'=>'input-lower input-required'), $valor, ucfirst($text)); ?>
                         <?php } ?>
                     <?php endforeach; ?>
                 <?php } ?>

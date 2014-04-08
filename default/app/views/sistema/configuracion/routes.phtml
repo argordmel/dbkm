@@ -30,13 +30,13 @@
                 <?php if(isset($routes['routes'])) { ?>
                     <?php foreach($routes['routes'] as $campo => $valor): ?>
                         <?php if($campo=='/') { ?>
-                            <?php echo DwForm::text("routes.$campo", array('class'=>'input-lower input-required show-error'), 'principal', $campo, 'Controlador principal'); ?>
+                            <?php echo DwForm::text("routes.$campo", array('class'=>'input-lower input-required'), 'principal', $campo, 'Controlador principal'); ?>
                         <?php } else if($campo=='/status/') { ?>
                             <?php echo DwForm::hidden("routes.$campo", null, $valor); ?>
                         <?php } else if($campo=='/sistema/instalacion/*' or $campo=='/*') { ?>
                             <?php echo DwForm::hidden("routes.$campo", null, 'delete-var'); ?>
                         <?php } else { ?>
-                            <?php echo DwForm::text("routes.$campo", array('class'=>'input-lower input-required show-error'), $valor, $campo); ?>
+                            <?php echo DwForm::text("routes.$campo", array('class'=>'input-lower input-required'), $valor, $campo); ?>
                         <?php } ?>
                     <?php endforeach; ?>
                 <?php } ?>
@@ -63,7 +63,7 @@
 <div class="modal fade" tabindex="-1" id="form-add-config" role="dialog" aria-labelledby="form-add-config" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <?php echo DwForm::open('', '', array('id'=>'form-modal', 'class'=>'form-validate')); ?>    
+            <?php echo DwForm::open('', '', array('id'=>'form-modal', 'class'=>'')); ?>    
             <div class="modal-header">                
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3>Sistema de enrutamiento</h3>
@@ -71,10 +71,10 @@
             <div class="modal-body">
                 <div class="row">
                     <div class="col-md-5">
-                        <?php echo DwForm::text('variable', array('class'=>'input-lower input-required show-error'), null, 'Ruta'); ?>
+                        <?php echo DwForm::text('variable', array('class'=>'input-lower input-required'), null, 'Ruta'); ?>
                     </div>
                     <div class="col-md-5">
-                        <?php echo DwForm::text('valor', array('class'=>'input-lower input-required show-error'), null, 'Redirección'); ?>
+                        <?php echo DwForm::text('valor', array('class'=>'input-lower input-required'), null, 'Redirección'); ?>
                     </div>
                 </div>
             </div>
@@ -95,7 +95,7 @@
                 valor = $("#valor");
                 $('<div class="form-group">'+
                 '<label for="routes_'+variable.val()+'" class="control-label">'+variable.val()+'<span class="req">*</span></label>'+                
-                '<input id="routes_'+variable.val()+'" name="routes['+variable.val()+']" type="text" value="'+valor.val()+'" class="form-control text input-lower input-required show-errors" required="required">'+
+                '<input id="routes_'+variable.val()+'" name="routes['+variable.val()+']" type="text" value="'+valor.val()+'" class="form-control input-lower input-required" required="required">'+
                 '<p class="help-block"> <span class="help-error" id="err_routes_'+variable.val()+'">&nbsp; </span></p>'+
                 '</div>').appendTo('#append-config');
                 variable.attr('value', '');

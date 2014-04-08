@@ -24,10 +24,10 @@
             
             <div class="row">
                 <div class="col-md-6">                    
-                    <?php echo DwForm::text('usuario.nombre', array('class'=>'input-required mask-alphanum'), $usuario->nombre, 'Nombre'); ?>
+                    <?php echo DwForm::text('usuario.nombre', array('class'=>'input-required'), $usuario->nombre, 'Nombre'); ?>
                 </div>
                 <div class="col-md-6">
-                    <?php echo DwForm::text('usuario.apellido', array('class'=>'input-required mask-alphanum'), $usuario->apellido, 'Apellido'); ?>
+                    <?php echo DwForm::text('usuario.apellido', array('class'=>'input-required'), $usuario->apellido, 'Apellido'); ?>
                 </div>
             </div>
             
@@ -52,22 +52,22 @@
             
             <div class="row">
                 <div class="col-md-6">
-                    <?php echo DwForm::select('usuario.app_ajax', array('1'=>'On', '0'=>'Off'), array('class'=>'input-list input-required'), $usuario->app_ajax, 'App con AJAX', 'Deshabilitar para conexiones lentas'); ?>
+                    <?php echo DwForm::select('usuario.app_ajax', array('1'=>'On', '0'=>'Off'), array('class'=>'input-required'), $usuario->app_ajax, 'App con AJAX', 'Deshabilitar para conexiones lentas'); ?>
                 </div>
                 <div class="col-md-6">
-                    <?php echo DwForm::select('usuario.tema', $temas, array('class'=>'input-list input-required'), $usuario->tema, 'Apariencia'); ?>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-md-6">
-                    <?php echo DwForm::number('usuario.datagrid', array('class'=>'input-numeric input-required mask-pint'), $usuario->datagrid, 'Cantidad de datos por página', 'Esta información se utiliza en los listados de informaciones y reportes'); ?>
+                    <?php echo DwForm::select('usuario.tema', $temas, array('class'=>'input-required'), $usuario->tema, 'Apariencia'); ?>
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-6">
-                    <?php echo DwForm::pass('oldpassword', array('class'=>'show-error'), '', 'Contraseña anterior'); ?>
+                    <?php echo DwForm::number('usuario.datagrid', array('class'=>'input-integer input-required mask-pint'), $usuario->datagrid, 'Cantidad de datos por página', 'Esta información se utiliza en los listados de informaciones y reportes'); ?>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <?php echo DwForm::pass('oldpassword', array('class'=>''), '', 'Contraseña anterior'); ?>
                 </div>
             </div>
             
@@ -76,7 +76,7 @@
                     <?php echo DwForm::pass('usuario.password', array('class'=>'input-pass'), '', 'Contraseña'); ?>
                 </div>
                 <div class="col-md-6">
-                    <?php echo DwForm::pass('repassword', array('class'=>'input-repass'), '', 'Confirmación'); ?>
+                    <?php echo DwForm::pass('repassword', array('class'=>'input-repass', 'data-equalto'=>'usuario_password'), '', 'Confirmación'); ?>
                 </div>
             </div>
             
