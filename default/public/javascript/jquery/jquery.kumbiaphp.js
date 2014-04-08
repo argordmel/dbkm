@@ -68,14 +68,15 @@
             contenedor.append(footer);                                                                                    
             cajon.append(contenedor);
             dialogo.append(cajon);
-
+            
+            footer.append('<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>');
+            
             if(este.hasClass('js-link')) {
                 footer.append('<a class="btn btn-success js-link js-spinner" href="'+este.attr("href")+'">Aceptar</a>');
             } else {
                 footer.append('<button class="btn btn-success">Aceptar</a>');
             }
-            
-            footer.append('<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>');
+                        
             $('.btn-success', dialogo).on('click',function(){
                 dialogo.modal('hide')
                 if(este.attr('on-confirm')!=undefined) {
@@ -201,6 +202,34 @@
                 }
             }, 'json');
         },                
+        
+        /**
+         * Pasa al siguiente tab
+         * 
+         * @param Object event
+         */
+        cNextTab: function(event) {
+            var tabs = $(this).parents('div.tab-pane:first');
+            var next = tabs.next();
+            if(next.hasClass('tab-pane')) {                
+                $('[href="#'+next.attr('id')+'"]').click();
+                next.find(':input:first').focus();
+            }
+        },  
+        
+        /**
+         * Pasa al anterior tab
+         * 
+         * @param Object event
+         */
+        cPrevTab: function(event) {
+            var tabs = $(this).parents('div.tab-pane:first');
+            var next = tabs.prev();
+            if(next.hasClass('tab-pane')) {                
+                $('[href="#'+next.attr('id')+'"]').click();
+                next.find(':input:first').focus();
+            }
+        },
 
         /**
          * Enlaza a las clases por defecto
@@ -239,6 +268,12 @@
                         
             // Lista desplegable que actualiza con ajax
             $("body").on('click', 'select.js-remote', this.cUpdaterSelect);
+            
+            // Next tab
+            $("body").on('click', ".js-next-tab", this.cNextTab);
+            
+            // Back tab
+            $("body").on('click', ".js-prev-tab", this.cPrevTab);
                         
             // Enlazar DatePicker
             $.KumbiaPHP.bindDatePicker();

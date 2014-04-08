@@ -107,8 +107,8 @@
 
         <div class="row">
             <div class="form-actions">
-                <?php echo DwForm::send('Guardar configuración'); ?>
                 <?php echo DwForm::cancel(); ?>
+                <?php echo DwForm::send('Guardar configuración'); ?>
             </div>
         </div>
 
@@ -137,8 +137,8 @@
                 </div>
             </div>
             <div class="modal-footer">
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>
                 <?php echo DwForm::submit("Crear", array('class'=>'btn btn-primary')); ?>
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Cancelar</button>
             </div>
             <?php echo DwForm::close(); ?>
         </div>

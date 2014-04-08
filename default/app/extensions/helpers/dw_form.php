@@ -876,7 +876,21 @@ class DwForm extends Form {
      */
     public static function reset($icon='fa-undo') {
         return DwButton::reset(self::$_name['id'], FALSE, $icon);
-    }    
+    }   
+    
+    /**
+     * Método para avanzar en un tab
+     */
+    public static function nextTab() {
+        return DwButton::nextTab();
+    }
+    
+    /**
+     * Método para retroceder en un tab
+     */
+    public static function prevTab() {
+        return DwButton::prevTab();
+    }
     
     /**
      * Método para generar un token en los formularios

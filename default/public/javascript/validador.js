@@ -56,9 +56,9 @@
         
         patterns : {
             //abc
-            alpha:          /^[a-zA-Z]+$/i,
+            alpha:          /[a-záéíóúüñ_]/i,
             //abc123
-            alphanum:       /^[a-zA-Z0-9]+$/i,
+            alphanum:       /[a-záéíóúüñ0-9_]/i,
             //123
             integer:        /^[-+]?\d+$/,            
             //1234.99

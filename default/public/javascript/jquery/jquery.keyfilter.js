@@ -183,7 +183,8 @@
 //Colocando el idioma español 
 (function($) {
     $.extend($.fn.keyfilter.defaults.masks, {
-        alpha:    /[a-záéíóúüñ_\-\ ]/i,
-        alphanum: /[a-záéíóúüñ0-9_\-\ ]/i
+        alpha:    /[a-záéíóúüñ_]/i,
+        alphanum: /[a-záéíóúüñ0-9_]/i,
+        date:     /[0-9\-\\/]/i
     });
 })(jQuery);

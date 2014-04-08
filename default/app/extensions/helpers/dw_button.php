@@ -84,6 +84,30 @@ class DwButton {
             return DwHtml::button($redir, 'REGRESAR', $attrs, $icon);
         }
     }
+    
+    /**
+     * Método para crear un botón para avanzar dentro de unos tabs
+     * @return type
+     */
+    public static function nextTab($title='', $icon='fa-forward') {
+        $attrs = array();
+        $attrs['class'] = 'btn-info';
+        $attrs['title'] = empty($title) ? 'Siguiente' : $title;        
+        $attrs['class'].= ' js-next-tab';
+        return self::showButton($icon, $attrs, 'siguiente', 'button', 'right');        
+    }
+    
+    /**
+     * Método para crear un botón para avanzar dentro de unos tabs
+     * @return type
+     */
+    public static function prevTab($title='', $icon='fa-backward') {
+        $attrs = array();
+        $attrs['class'] = 'btn-info';
+        $attrs['title'] = empty($title) ? 'Anterior' : $title;        
+        $attrs['class'].= ' js-prev-tab';
+        return self::showButton($icon, $attrs, 'anterior', 'button');        
+    }
 
     /**
      * Método para crear un botón para imprimir reportes
@@ -169,7 +193,7 @@ class DwButton {
      * @param type $type
      * @return type
      */
-    public static function showButton($icon='', $attrs = array(), $text='', $type='button') {
+    public static function showButton($icon='', $attrs = array(), $text='', $type='button', $iconAlign='left') {
         $text = Filter::get($text, 'upper');
         $attrs['class'] = 'btn '.$attrs['class'];
         if(!preg_match("/\btext-bold\b/i", $attrs['class'])) {
@@ -178,7 +202,11 @@ class DwButton {
         $attrs = Tag::getAttrs($attrs);
         $text = (!empty($text) && $icon) ? '<span class="hidden-xs">'.$text.'</span>' : $text;
         if($icon) {
-            $text = '<i class="btn-icon-only fa '.$icon.'"></i> '.$text;
+            if($iconAlign!=='left') {
+                $text = $text.' <i class="btn-icon-only fa '.$icon.'"></i>';                
+            } else {
+                $text = '<i class="btn-icon-only fa '.$icon.'"></i> '.$text;                
+            }
         }
         return "<button type=\"$type\" $attrs>$text</button>";
     }

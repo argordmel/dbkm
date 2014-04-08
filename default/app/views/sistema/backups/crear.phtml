@@ -8,15 +8,14 @@
 
         <div class="row">
             <div class="col-md-6">
-                <?php echo DwForm::text('backup.denominacion', array('class'=>'input-required input-alphanum mask-alphanum'), NULL, 'Denominación'); ?>
+                <?php echo DwForm::text('backup.denominacion', array('class'=>'input-required'), NULL, 'Denominación'); ?>
             </div>
         </div>
 
         <div class="row">
             <div class="form-actions">
-                <?php echo DwForm::send('Crear copia de seguridad'); ?>
-                <?php echo DwForm::reset(); ?>
                 <?php echo DwForm::cancel(); ?>
+                <?php echo DwForm::send('Crear copia de seguridad'); ?>                
             </div>
         </div>
 

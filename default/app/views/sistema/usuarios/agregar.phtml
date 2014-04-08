@@ -24,16 +24,22 @@
             
             <div class="row">
                 <div class="col-md-6">                    
-                    <?php echo DwForm::text('usuario.nombre', array('class'=>'input-required mask-alphanum show-error'), NULL, 'Nombre'); ?>
+                    <?php echo DwForm::text('usuario.nombre', array('class'=>'input-required'), NULL, 'Nombre'); ?>
                 </div>
                 <div class="col-md-6">
-                    <?php echo DwForm::text('usuario.apellido', array('class'=>'input-required mask-alphanum show-error'), NULL, 'Apellido'); ?>
+                    <?php echo DwForm::text('usuario.apellido', array('class'=>'input-required'), NULL, 'Apellido'); ?>
                 </div>
             </div>
             
             <div class="row">
                 <div class="col-md-6">
-                    <?php echo DwForm::email('usuario.email', array('class'=>'input-email input-required mask-email show-error'), NULL, 'Email'); ?>
+                    <?php echo DwForm::email('usuario.email', array('class'=>'input-required input-email mask-email'), NULL, 'Email'); ?>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="form-actions">
+                    <?php echo DwForm::nextTab(); ?>
                 </div>
             </div>
                 
@@ -43,26 +49,37 @@
             
             <div class="row">
                 <div class="col-md-6">                    
-                    <?php echo DwForm::text('usuario.login', array('class'=>'input-lower input-required mask-alphanum show-error input-user'), NULL, 'Usuario'); ?>
+                    <?php echo DwForm::text('usuario.login', array('class'=>'input-lower input-required'), NULL, 'Usuario'); ?>
                 </div>
                 <div class="col-md-6">
-                    <?php echo DwForm::dbSelect('usuario.perfil_id', 'perfil', array('sistema/perfil', 'getListadoPerfil', Perfil::ACTIVO), NULL, array('class'=>'input-xxlarge input-required input-list show-errors'), NULL, 'Perfil'); ?>
+                    <?php echo DwForm::dbSelect('usuario.perfil_id', 'perfil', array('sistema/perfil', 'getListadoPerfil', Perfil::ACTIVO), NULL, array('class'=>'input-required'), NULL, 'Perfil'); ?>
                 </div>
             </div>
             
             <div class="row">                
                 <div class="col-md-6">
-                    <?php echo DwForm::number('usuario.datagrid', array('class'=>'input-numeric show-error input-required mask-pint'), 30, 'Cantidad de datos por página', 'Esta información se utiliza en los listados de informaciones y reportes'); ?>
+                    <?php echo DwForm::number('usuario.datagrid', array('class'=>'input-integer input-required mask-pint'), 30, 'Cantidad de datos por página', 'Esta información se utiliza en los listados de informaciones y reportes'); ?>
                 </div>
             </div>
             
                         
             <div class="row">
                 <div class="col-md-6">
-                    <?php echo DwForm::pass('usuario.password', array('class'=>'input-pass show-error'), '', 'Contraseña'); ?>
+                    <?php echo DwForm::pass('usuario.password', array('class'=>'input-pass'), '', 'Contraseña'); ?>
                 </div>
                 <div class="col-md-6">
-                    <?php echo DwForm::pass('repassword', array('class'=>'input-repass show-error'), '', 'Confirmación'); ?>
+                    <?php echo DwForm::pass('repassword', array('class'=>'input-repass', 'data-equalto'=>'usuario_password'), '', 'Confirmación'); ?>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="form-actions">
+                    <div class="pull-left">
+                        <?php echo DwForm::prevTab(); ?>                        
+                    </div>
+                    <div class="pull-right">
+                        <?php echo DwForm::nextTab(); ?>
+                    </div>
                 </div>
             </div>
             
@@ -96,9 +113,11 @@
             
             <div class="row">
                 <div class="form-actions">
-                    <?php echo DwForm::send('Crear usuario'); ?>
-                    <?php echo DwForm::reset(); ?>
+                    <div class="pull-left">
+                        <?php echo DwForm::prevTab(); ?>                        
+                    </div>                    
                     <?php echo DwForm::cancel(); ?>
+                    <?php echo DwForm::send('Crear usuario'); ?>
                 </div>
             </div>
             
