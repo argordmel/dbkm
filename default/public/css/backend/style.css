@@ -103,8 +103,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     .table-responsive td.btn-actions { display: table-cell !important; }
 }
 @media (min-width: 768px) {
-    .table-responsive td div.btn-group { display: none !important; }
-    .btn { min-width: 90px;}
+    .table-responsive td div.btn-group { display: none !important; }    
 }
 @media (max-width: 1020px) {
     #loading-content { z-index: -1 !important;}

@@ -56,7 +56,7 @@ class DwButton {
      */
     public static function cancel($redir=NULL, $title='', $icon='fa-ban') {
         $attrs = array();
-        $attrs['class'] = 'btn-danger';
+        $attrs['class'] = 'btn-default';
         $attrs['title'] = empty($title) ? 'Cancelar operación' : $title;
         if(empty($redir)) {
             $attrs['class'].= ' btn-back';

@@ -91,7 +91,7 @@ class UsuariosController extends BackendController {
             if(Usuario::setUsuario('update', Input::post('usuario'), array('repassword'=>Input::post('repassword'), 'id'=>$id, 'login'=>$usuario->login))) {
                 ActiveRecord::commitTrans();
                 Flash::valid('El usuario se ha actualizado correctamente.');
-                return Redirect::toAction('listar');
+                return Redirect::toAction("editar/$key/");
             } else {
                 ActiveRecord::rollbackTrans();
             } 
