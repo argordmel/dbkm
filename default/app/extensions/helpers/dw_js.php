@@ -1,13 +1,10 @@
 <?php
 /**
- * Dailyscript - Web | App | media
  *
  * Extension para el manejo de javascript
  *
  * @category    Helpers
- * @author      Iván D. Meléndez
  * @package     Helpers
- * @copyright   Copyright (c) 2013 Dailyscript Team (http://www.dailyscript.com.co) 
  */
 
 class DwJs {

@@ -1,13 +1,10 @@
 <?php
 /**
- * Dailyscript - Web | App | media
  *
  * Extension para renderizar los menús
  *
  * @category    Helpers
- * @author      Iván D. Meléndez
  * @package     Helpers
- * @copyright   Copyright (c) 2013 Dailyscript Team (http://www.dailyscript.com.co) 
  */
 
 Load::models('sistema/menu');
@@ -39,7 +36,7 @@ class DwMenu {
      * Método para cargar en variables los menús
      * @param type $perfil
      */
-    public static function load($entorno, $perfil) {        
+    public static function load($entorno, $perfil=NULL) {        
         self::$_entorno = $entorno; 
         self::$_perfil = $perfil;
         $menu = new Menu();
@@ -47,7 +44,7 @@ class DwMenu {
             self::$_main = $menu->getListadoMenuPadres($entorno, $perfil);
         }        
         if(self::$_items==NULL && self::$_main) {
-            foreach(self::$_main as $menu) {                
+            foreach(self::$_main as $menu) {                            
                 self::$_items[$menu->menu] = $menu->getListadoSubmenu($entorno, $menu->id, $perfil);
             }
         }
@@ -147,6 +144,38 @@ class DwMenu {
             $html.= '</div>'.PHP_EOL;
         }
         return $html;  
+    }
+    
+    
+    /**
+     * Método para renderizar el menú para el frontend
+     */
+    public static function frontend() {
+        $route = trim(Router::get('route'), '/');
+        $html = '';
+        if(self::$_main) {
+            $html.= '<ul class="nav navbar-nav">'.PHP_EOL;
+            foreach(self::$_main as $main) {         
+                $active = ($main->url==$route) ? 'active' : null;                
+                if(empty(self::$_items[$main->menu])) {
+                    $html.= '<li class="'.$active.'">'.DwHtml::link($main->url, $main->menu, NULL, $main->icono, FALSE).'</li>'.PHP_EOL;                   
+                } else {
+                    $text = $main->menu.'<b class="caret"></b>';
+                    $html.= '<li class="dropdown">'; 
+                    $html.= DwHtml::link('#', $text, array('class'=>'dropdown-toggle', 'data-toggle'=>'dropdown'), NULL, FALSE);                        
+                    $html.= '<ul class="dropdown-menu">';
+                    foreach(self::$_items[$main->menu] as $item) {
+                        $active = ($item->url==$route) ? 'active' : null;
+                        $html.= '<li class="'.$active.'">'.DwHtml::link($item->url, $item->menu, NULL, $item->icon, FALSE).'</li>';                        
+                    }
+                    $html.= '</ul>';
+                    $html.= '</li>';
+                }
+                
+            }
+            $html.= '</ul>'.PHP_EOL;
+        }        
+        return $html;
     }
     
 }

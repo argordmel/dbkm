@@ -1,14 +1,10 @@
 <?php
 /**
- * Dailyscript - app | web | media
- *
- *
+ * 
+ * Filtra el texto a mayúsculas
  *
  * @category    Extensions
- * @author      Iván D. Meléndez
  * @package     Filters
- * @copyright   Copyright (c) 2011 Dailyscript Team (http://www.dailyscript.com.co)
- * @version     1.0
  */
 
 class UpperFilter implements FilterInterface {

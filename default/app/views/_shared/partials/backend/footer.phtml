@@ -4,9 +4,9 @@
             <p>Versión: <?php echo APP_VERSION; ?> - Ip: <?php echo Session::has('ip') ? Session::get('ip') : DwUtils::getIp(); ?> - Tiempo: <?php echo number_format(round((microtime(1)-START_TIME),4),4),' seg.'?></p>            
         </div>
         <div>
-            <p class="visible-xs">&copy; Copyright <?php echo date("Y"); ?> - <?php echo DwHtml::outLink('http://www.dailyscript.com.co/', 'Dailyscript', array('target'=>'_blank')); ?>.</p>
-            <p class="visible-xs">Todos los derechos reservados. <?php echo DwHtml::outLink('http://www.dailyscript.com.co/contacto/', 'Contacto', array('target'=>'_blank')); ?></p>
-            <p class="hidden-xs">&copy; Copyright <?php echo date("Y"); ?> - <?php echo DwHtml::outLink('http://www.dailyscript.com.co/', 'Dailyscript', array('target'=>'_blank')); ?>. Todos los derechos reservados. <?php echo DwHtml::outLink('http://www.dailyscript.com.co/contacto/', 'Contacto', array('target'=>'_blank')); ?></p>
+            <p class="visible-xs">&copy; Copyright <?php echo date("Y"); ?>.</p>
+            <p class="visible-xs">Todos los derechos reservados.</p>
+            <p class="hidden-xs">&copy; Copyright <?php echo date("Y"); ?>. Todos los derechos reservados.</p>
         </div>                
     </div>        
 </footer>

@@ -45,7 +45,14 @@ class Menu extends ActiveRecord {
      * Método para obtener los menús padres, por entorno o perfil
      */
     public function getListadoMenuPadres($entorno='', $perfil='') {
-        if($entorno == Menu::BACKEND) {
+        if($entorno == Menu::FRONTEND) {
+            $columns = 'menu.*';
+            $conditions = "menu.menu_id IS NULL AND menu.visibilidad = $entorno AND menu.activo = ".self::ACTIVO;
+            $group = 'menu.id';
+            $order = 'menu.posicion ASC';
+            return $this->find("columns: $columns", "conditions: $conditions", "group: $group", "order: $order"); 
+        } else {
+            
             $columns = 'padre.*';
             $join = 'INNER JOIN menu AS padre ON padre.id = menu.menu_id ';        
             $conditions = "padre.menu_id IS NULL";
@@ -65,12 +72,6 @@ class Menu extends ActiveRecord {
             $group = 'padre.id';
             $order = 'padre.posicion ASC';
             return $this->find("columns: $columns", "join: $join", "conditions: $conditions", "group: $group", "order: $order");        
-        } else {
-            $columns = 'menu.*';
-            $conditions = "menu.menu_id IS NULL AND menu.visibilidad = $entorno AND menu.activo = ".self::ACTIVO;
-            $group = 'menu.id';
-            $order = 'menu.posicion ASC';
-            return $this->find("columns: $columns", "conditions: $conditions", "group: $group", "order: $order");        
         }        
     }
     

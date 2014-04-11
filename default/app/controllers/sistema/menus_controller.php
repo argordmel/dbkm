@@ -1,13 +1,9 @@
 <?php
 /**
- * Dailyscript - Web | App | Media
- *
  * Descripcion: Controlador que se encarga de la gestión de los menús del sistema
  *
  * @category    
  * @package     Controllers 
- * @author      Iván D. Meléndez (ivan.melendez@dailycript.com.co)
- * @copyright   Copyright (c) 2013 Dailyscript Team (http://www.dailyscript.com.co)
  */
 
 class MenusController extends BackendController {
@@ -33,7 +29,8 @@ class MenusController extends BackendController {
     public function listar($order='order.posicion.asc', $page='page.1') { 
         $page = (Filter::get($page, 'page') > 0) ? Filter::get($page, 'page') : 1;
         $menu = new Menu();
-        $this->menus = $menu->getListadoMenuPadres();            
+        $this->menus = $menu->getListadoMenuPadres(); 
+        $this->front = $menu->getListadoMenuPadres(Menu::FRONTEND);        
         $this->order = $order;        
         $this->page_title = 'Listado de menús del sistema';
     }

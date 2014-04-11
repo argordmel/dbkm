@@ -109,7 +109,7 @@ class DwHtml extends Html {
     /**
      * Crea un enlace externo
      * 
-     * @example echo DwHtml::outLink('http://dailyscript.com.co', 'Enlace') Crea un enlace a esa url
+     * @example echo DwHtml::outLink('http://kumbiaphp.com', 'Enlace') Crea un enlace a esa url
      *
      * @param string $action Ruta o dirección de la página web
      * @param string $text Texto a mostrar

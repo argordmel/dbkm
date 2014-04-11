@@ -1,13 +1,10 @@
 <?php
 /**
- * Dailyscript - Web | App | media
  *
  * Método para paginar resultados de la base de datos
  *
  * @category    Paginación
  * @package     Libs
- * @author      Iván D. Meléndez ivan.melendez@dailyscript.com.co)
- * @copyright   Copyright (c) 2013 Dailyscript Team (http://www.dailyscript.com.co) 
  */
 
 class DwPaginate {

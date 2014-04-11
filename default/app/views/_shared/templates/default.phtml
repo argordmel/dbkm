@@ -1,29 +1,42 @@
 <!DOCTYPE html>
-<html lang="es">
- <head>
-  <meta http-equiv='Content-type' content='text/html; charset=<?php echo APP_CHARSET ?>' />
-  <title>KumbiaPHP web &amp; App Framework</title>
-  <?php Tag::css('bienvenida') ?>
-  <?php Tag::css('style') ?>
-  <?php echo Html::includeCss() ?>
-</head>
-<body>
-    <div id='content'>
-        <div id='head'>
-            <div class='alignright'>
-                <p id='config'>
-                    <span class='app'><?php echo basename(dirname(APP_PATH)) ?></span>
-                    <?php echo Html::link('pages/show/kumbia/status/', 'Config', 'title="Ver configuración de la aplicación"') ?>
-                </p>
-             </div>
-             
-            <h1 id='logo'>KumbiaPHP</h1>
-            <h2 id='info-app'>web &amp; app Framework versión <?php echo kumbia_version() ?></h2>
+<html lang="es">    
+    <head>
+        <title><?php echo $page_title; ?></title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="<?php echo APP_CHARSET; ?>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex,nofollow" /> 
+        <link rel="shortcut icon" href="<?php echo PUBLIC_PATH; ?>img/favicon.ico" type="image/x-icon" />
+        <?php Tag::css('bootstrap/bootstrap.min'); ?>
+        <?php Tag::css('bootstrap/bootstrap-theme.min'); ?>        
+        <?php Tag::css('bootstrap/bootstrap-datetimepicker.min'); ?>
+        <?php Tag::css('bootstrap/typehead'); ?>
+        <?php Tag::css('font-awesome.min'); ?>               
+        <?php echo Html::includeCss(); ?>
+        <?php if(!APP_LOCAL) { ?>
+            <link href="http://fonts.googleapis.com/css?family=Play:400,700" rel="stylesheet" type="text/css">
+        <?php } ?>
+            
+        <?php echo Tag::js('jquery/jquery.min').PHP_EOL; ?>        
+        
+    </head>
+    
+    <body style="font-family: Play,Lucila,Verdana,sans-serif;">
+
+        <?php DwMenu::load(Menu::FRONTEND); ?>
+
+        <?php View::partial('frontend/header'); ?>
+
+        <div id="shell-load">
+            <div id="console" class="container"></div>
+            <div id="shell-content" class="container-fluid">
+                <noscript><h5 style="text-align: center;">¡Tu navegador no soporta Javascript!.. Activa el uso de Javascript en tu navegador.</h5><meta http-equiv="refresh" content="1; URL=<?php echo PUBLIC_PATH; ?>sistema/login/salir/no-script/" /></noscript>
+                <?php View::content(); ?>
+            </div>
         </div>
-
-        <?php View::content(); ?>
-
-        <?php View::partial('kumbia/footer') ?>
-    </div>
-</body>
+        
+        <?php echo Tag::js('html5shiv').PHP_EOL; ?>        
+        <?php echo Tag::js('bootstrap/bootstrap.min').PHP_EOL; ?>
+    </body>
+    
 </html>

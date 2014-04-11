@@ -1,14 +1,10 @@
 <?php
-
 /**
- * Dailyscript - Web | App | Media
  *
- * Filtro para usar tildes en los reportes
+ * Filtro para usar tildes en los reportes de pdf
  *
  * @category    Extensions
- * @author      Iván D. Meléndez
  * @package     Filters
- * @copyright   Copyright (c) 2011 Dailyscript Team (http://www.dailyscript.co)
  * @version     1.0
  */
 class Utf8Filter implements FilterInterface {

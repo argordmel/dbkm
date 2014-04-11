@@ -1,13 +1,9 @@
 <?php
 /**
- * Dailyscript - app | web | media
+ * Filtro para limpieza de textos
  *
- *
-  *
  * @category    Extensions
- * @author      Iván D. Meléndez
  * @package     Filters
- * @copyright   Copyright (c) 2013 Dailyscript Team (http://www.dailyscript.com.co) 
  */
 
 class StringFilter implements FilterInterface {
