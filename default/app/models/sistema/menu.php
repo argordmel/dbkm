@@ -11,7 +11,7 @@
 class Menu extends ActiveRecord {
     
     //Se desabilita el logger para no llenar el archivo de "basura"
-    public $logger = FALSE;
+    public $logger = TRUE;
     
     /**
      * Constante para definir un menú como activo
@@ -44,26 +44,34 @@ class Menu extends ActiveRecord {
     /**
      * Método para obtener los menús padres, por entorno o perfil
      */
-    public function getListadoMenuPadres($entorno='', $perfil='') {                        
-        $columns = 'padre.*';
-        $join = 'INNER JOIN menu AS padre ON padre.id = menu.menu_id ';        
-        $conditions = "padre.menu_id IS NULL";
-        if($entorno) {
-            $join.= 'LEFT JOIN recurso ON recurso.id = menu.recurso_id ';
-            $join.= 'LEFT JOIN recurso_perfil ON recurso.id = recurso_perfil.recurso_id ';
-            $conditions.= " AND padre.visibilidad = $entorno AND padre.activo = ".self::ACTIVO;
-        }
-        if(!empty($perfil)) {
-            //Verifico si el perfil tiene el comodín
-            $recurso = new RecursoPerfil();
-            if($recurso->count("recurso_id = ".Recurso::COMODIN." AND perfil_id= $perfil")) {
-                $perfil = NULL; //Para que liste todos los menús
+    public function getListadoMenuPadres($entorno='', $perfil='') {
+        if($entorno == Menu::BACKEND) {
+            $columns = 'padre.*';
+            $join = 'INNER JOIN menu AS padre ON padre.id = menu.menu_id ';        
+            $conditions = "padre.menu_id IS NULL";
+            if($entorno) {
+                $join.= 'LEFT JOIN recurso ON recurso.id = menu.recurso_id ';
+                $join.= 'LEFT JOIN recurso_perfil ON recurso.id = recurso_perfil.recurso_id ';
+                $conditions.= " AND padre.visibilidad = $entorno AND padre.activo = ".self::ACTIVO;
             }
-            $conditions.= (empty($perfil) OR $perfil==Perfil::SUPER_USUARIO) ? '' : " AND recurso_perfil.perfil_id = $perfil";
-        }
-        $group = 'padre.id';
-        $order = 'padre.posicion ASC';
-        return $this->find("columns: $columns", "join: $join", "conditions: $conditions", "group: $group", "order: $order");        
+            if(!empty($perfil)) {
+                //Verifico si el perfil tiene el comodín
+                $recurso = new RecursoPerfil();
+                if($recurso->count("recurso_id = ".Recurso::COMODIN." AND perfil_id= $perfil")) {
+                    $perfil = NULL; //Para que liste todos los menús
+                }
+                $conditions.= (empty($perfil) OR $perfil==Perfil::SUPER_USUARIO) ? '' : " AND recurso_perfil.perfil_id = $perfil";
+            }
+            $group = 'padre.id';
+            $order = 'padre.posicion ASC';
+            return $this->find("columns: $columns", "join: $join", "conditions: $conditions", "group: $group", "order: $order");        
+        } else {
+            $columns = 'menu.*';
+            $conditions = "menu.menu_id IS NULL AND menu.visibilidad = $entorno AND menu.activo = ".self::ACTIVO;
+            $group = 'menu.id';
+            $order = 'menu.posicion ASC';
+            return $this->find("columns: $columns", "conditions: $conditions", "group: $group", "order: $order");        
+        }        
     }
     
     /**
