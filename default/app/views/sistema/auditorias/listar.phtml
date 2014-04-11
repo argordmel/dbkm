@@ -10,6 +10,14 @@
     
     <?php View::process($page_module, $page_title, $set_title); ?>
     
+    <div class="btn-toolbar btn-toolbar-top">
+        <div class="row">
+            <div class="btn-actions">
+                <?php echo DwHtml::button("sistema/auditorias/", 'listar', NULL, 'fa-check', APP_AJAX); ?>
+            </div>            
+        </div>
+    </div>
+    
     <div class="container-overflow">
     
         <table class="table table-bordered table-hover table-striped table-condensed table-responsive">

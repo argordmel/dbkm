@@ -50,8 +50,8 @@
 
         <div class="row">
             <div class="form-actions">
-                <?php echo DwForm::cancel(); ?>
                 <?php echo DwForm::send('Guardar enrutamiento'); ?>
+                <?php echo DwForm::cancel(); ?>
             </div>
         </div>
 
@@ -79,8 +79,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>
                 <?php echo DwForm::submit("Crear", array('class'=>'btn btn-primary')); ?>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>
             </div>
             <?php echo DwForm::close(); ?>
         </div>
@@ -89,8 +89,7 @@
        
 <script type="text/javascript">
     $(function(){
-        $("#form-modal").submit(function(){
-            //if(validForm($(this).attr('name'), false)) {
+        $("#form-modal").submit(function(){            
                 variable = $('#variable');
                 valor = $("#valor");
                 $('<div class="form-group">'+
@@ -102,7 +101,6 @@
                 valor.attr('value', '');
                 jsSpinner('hide');
                 $("#form-add-config").modal('hide');
-            //}
             return false;
         });
         $("#form").submit(function(){

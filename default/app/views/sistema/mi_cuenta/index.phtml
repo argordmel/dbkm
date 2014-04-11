@@ -33,7 +33,7 @@
             
             <div class="row">
                 <div class="col-md-6">
-                    <?php echo DwForm::email('usuario.email', array('class'=>'input-email input-required mask-email'), $usuario->email, 'Email'); ?>
+                    <?php echo DwForm::email('usuario.email', array('class'=>'input-required mask-email'), $usuario->email, 'Email'); ?>
                 </div>
             </div>
                 
@@ -114,8 +114,9 @@
     
     <div class="row">
         <div class="form-actions">
-            <?php echo DwForm::cancel(); ?>
             <?php echo DwForm::send('Actualizar mis datos'); ?>
+            <?php echo DwForm::cancel(); ?>
+            <?php echo DwForm::focus('usuario.nombre'); ?>
         </div>
     </div>
 

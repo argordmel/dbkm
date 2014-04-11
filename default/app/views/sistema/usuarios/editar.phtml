@@ -109,8 +109,9 @@
     
     <div class="row">
         <div class="form-actions">
-            <?php echo DwForm::cancel(); ?>
             <?php echo DwForm::send('Editar usuario'); ?>
+            <?php echo DwForm::cancel(); ?>
+            <?php echo DwForm::focus('usuario.nombre'); ?>            
         </div>
     </div>
 

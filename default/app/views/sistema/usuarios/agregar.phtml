@@ -114,8 +114,9 @@
                     <div class="pull-left">
                         <?php echo DwForm::prevTab(); ?>                        
                     </div>                    
-                    <?php echo DwForm::cancel(); ?>
                     <?php echo DwForm::send('Crear usuario'); ?>
+                    <?php echo DwForm::cancel(); ?>
+                    <?php echo DwForm::focus('usuario.nombre'); ?>
                 </div>
             </div>
             

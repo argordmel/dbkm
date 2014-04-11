@@ -17,8 +17,9 @@
     
         <div class="row">
             <div class="form-actions">
-                <?php echo DwForm::cancel(); ?>
                 <?php echo DwForm::send('Guardar perfil'); ?>
+                <?php echo DwForm::cancel(); ?>
+                <?php echo DwForm::focus('perfil.perfil'); ?>
             </div>
         </div>
 

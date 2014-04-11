@@ -11,6 +11,8 @@
 
 <div class="container shell-view">
         
+    <?php View::process($page_module, $page_title, $set_title); ?>
+    
     <ul class="nav nav-tabs hidden-xs">
         <li class="active"><a href="#tab1" data-toggle="tab">Información del perfil</a></li>
         <li><a href="#tab2" data-toggle="tab">Usuarios asignados</a></li>
@@ -20,10 +22,9 @@
         <li><a href="#tab2" data-toggle="tab">Usuarios asignados</a></li>
     </ul>
     <div class="tab-content">
-
+        
         <div class="tab-pane active" id="tab1">
 
-            <?php View::process($page_module, $page_title, $set_title); ?>
 
             <?php echo DwForm::open(); ?>
                 <div class="row">
@@ -37,6 +38,16 @@
                         <?php echo DwForm::text('perfil.perfil', NULL, ($perfil->estado == Perfil::ACTIVO) ? 'ACTIVO' : 'BLOQUEADO', 'Estado'); ?>
                     </div>
                 </div>
+            
+                <div class="row">
+                    <div class="form-actions">
+                        <div class="pull-left">
+                            <?php echo DwButton::back(); ?>                           
+                        </div>
+                        <?php echo DwForm::nextTab(); ?>
+                    </div>
+                </div>
+            
             <?php echo DwForm::close(); ?>
 
         </div>
@@ -68,14 +79,16 @@
             </table>
 
             <?php View::partial('paginators/default', false, array('page'=>$usuarios, 'url'=>"sistema/perfiles/ver/$key/$order/")); ?>
+            
+            <div class="row">
+                <div class="form-actions">
+                    <div class="text-left">
+                        <?php echo DwForm::prevTab(); ?>                        
+                    </div>                                        
+                </div>
+            </div>
 
         </div>
     </div>
-
-    <div class="row">
-        <div class="form-actions">            
-            <?php echo DwButton::back(); ?>                           
-        </div>
-    </div>
-
+   
 </div>

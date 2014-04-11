@@ -107,8 +107,8 @@
 
         <div class="row">
             <div class="form-actions">
-                <?php echo DwForm::cancel(); ?>
                 <?php echo DwForm::send('Guardar configuración'); ?>
+                <?php echo DwForm::cancel(); ?>
             </div>
         </div>
 
@@ -137,8 +137,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>
                 <?php echo DwForm::submit("Crear", array('class'=>'btn btn-primary')); ?>
+                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>
             </div>
             <?php echo DwForm::close(); ?>
         </div>
@@ -147,20 +147,18 @@
 
 <script type="text/javascript">
     $(function(){
-        $("#form-modal").submit(function(){
-            //if(validForm($(this).attr('name'), false)) {
-                variable = $('#variable');
-                valor = $("#valor");
-                $('<div class="form-group">'+
-                '<label for="custom_'+variable.val()+'" class="control-label">'+variable.val()+':<span class="req">*</span></label>'+                
-                '<input id="custom_'+variable.val()+'" name="custom['+variable.val()+']" type="text" value="'+valor.val()+'" class="form-control input-lower input-required" required="required">'+
-                '<p class="help-block"> <span class="help-error" id="err_custom_'+variable.val()+'">&nbsp; </span></p>'+
-                '</div>').appendTo('#append-config');
-                variable.attr('value', '');
-                valor.attr('value', '');
-                jsSpinner('hide');
-                $("#form-add-config").modal('hide');
-            //}            
+        $("#form-modal").submit(function(){            
+            variable = $('#variable');
+            valor = $("#valor");
+            $('<div class="form-group">'+
+            '<label for="custom_'+variable.val()+'" class="control-label">'+variable.val()+':<span class="req">*</span></label>'+                
+            '<input id="custom_'+variable.val()+'" name="custom['+variable.val()+']" type="text" value="'+valor.val()+'" class="form-control input-lower input-required" required="required">'+
+            '<p class="help-block"> <span class="help-error" id="err_custom_'+variable.val()+'">&nbsp; </span></p>'+
+            '</div>').appendTo('#append-config');
+            variable.attr('value', '');
+            valor.attr('value', '');
+            jsSpinner('hide');
+            $("#form-add-config").modal('hide');            
             return false;
         });
     });
