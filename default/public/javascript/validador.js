@@ -156,7 +156,7 @@
                 return false;
             }
             var cont = 0;
-            form.find(":input").each(function(e) {                        
+            form.find(":input").each(function(e) { 
                 if($.validateForm.checkInput($(this)) !== true) {
                     console.log('Error: '+$(this).attr('name'));
                     cont++;
@@ -185,21 +185,23 @@
                 if($.validateForm.limit(input) !== true) {
                     return false;
                 }
-            }            
-            var clases = input.attr('class').split(' ');    
-            for(c = 0 ; c < clases.length ; c++) {                    
-                if($.inArray(clases[c], $.validateForm.validators) >= 0 && clases[c] !== 'input-required') {
-                    tmp = clases[c].split('-');
-                    if(tmp[1] === undefined || tmp[1] === null || tmp[1] === '') {
-                        continue;
-                    }            
-                    name = tmp[1].toLowerCase();                                    
-                    fn = '$.validateForm.'+name+'(input)';                    
-                    if(eval(fn) !== true) {
-                        return false;
+            }
+            if(input.attr('class') !== undefined) {
+                var clases = input.attr('class').split(' ');    
+                for(c = 0 ; c < clases.length ; c++) {                    
+                    if($.inArray(clases[c], $.validateForm.validators) >= 0 && clases[c] !== 'input-required') {
+                        tmp = clases[c].split('-');
+                        if(tmp[1] === undefined || tmp[1] === null || tmp[1] === '') {
+                            continue;
+                        }            
+                        name = tmp[1].toLowerCase();                                    
+                        fn = '$.validateForm.'+name+'(input)';                    
+                        if(eval(fn) !== true) {
+                            return false;
+                        }
                     }
-                }
-            } 
+                } 
+            }
             return true;
             
         },                
