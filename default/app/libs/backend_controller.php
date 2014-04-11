@@ -53,6 +53,9 @@ class BackendController extends Controller {
          */
         if(Input::isAjax()) {
             View::template(null);
+            if(!empty($_POST)) {
+                Session::set('change_url', TRUE);
+            }            
         }
         
         /**
