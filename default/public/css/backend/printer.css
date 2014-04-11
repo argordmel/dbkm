@@ -1,0 +1,11 @@
+/**
+Hoja de estilo para la vista de impresión
+**/
+body { padding-top: 5px !important; }
+#shell-content { font-size: 10px !important;}
+h4 { font-size: 15px; }
+h4 small { font-size: 12px; }
+.table { margin-bottom: 0px;}
+.table thead tr th {text-align: center; vertical-align: middle;}
+.table-condensed th, .table-condensed td { padding: 3px 1px;}
+.table th, .table td, .sub-header h5 { line-height: 13px !important;}

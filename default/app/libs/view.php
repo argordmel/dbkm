@@ -70,5 +70,57 @@ class View extends KumbiaView {
         return self::partial('dbkm_update');
     }
     
+    /**
+     * Método para mostrar una ventana de error
+     */
+    public static function error($template='backend/error') {
+        self::$_path = '_shared/errors/';
+        self::select('popup', $template);
+    }
+    
+    /**
+     * Método para saber si existe una vista de eror      
+     */
+    public static function hasError($template='backend/error') {
+        return (self::$_template == $template) ? true : false;            
+    }
+    
+    /**
+     * Método que muestra el reporte según el formato. Si es un formato desconocido muesra la página de error
+     *
+     * @param string $formato Formato a mostrar: html, pdf, xls, xml, ticket, etc
+     * @return boolean
+     */
+    public static function report($formato) {     
+        
+        $formato    = Filter::get($formato,'string');
+        $tipos      = explode('|', TYPE_REPORTS);
+        $templates  = array();
+        foreach($tipos as $tmp) {
+            $r = explode('.', $tmp);
+            if(count($r) > 1) {
+                $templates[$r[0]] = $r[1];
+            }
+        }
+
+        if(array_key_exists($formato, $templates)) {
+            $template       = 'backend/'.$templates[$formato];
+            $tmp_formato    = $formato.'.'.$templates[$formato];
+        } else {
+            $template = NULL;
+            $tmp_formato    = $formato;
+        }
+
+        if($formato == 'error') {
+            self::error();
+        } else if( !in_array($tmp_formato, $tipos) OR $formato == null) {
+            Flash::error('Error: El formato del reporte es incorrecto.');                
+            self::error();
+        } else {                   
+            self::response($formato, $template);
+        }        
+        
+    }
+    
 
 }

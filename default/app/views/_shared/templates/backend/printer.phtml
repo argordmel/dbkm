@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title><?php echo $page_title; ?></title>
+       <title><?php echo $page_title; ?></title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta charset="<?php echo APP_CHARSET; ?>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="robots" content="noindex,nofollow" /> 
+        <link rel="shortcut icon" href="<?php echo PUBLIC_PATH; ?>img/favicon.ico" type="image/x-icon" />
+        <?php Tag::css('bootstrap/bootstrap.min', 'all'); ?>
+        <?php Tag::css('bootstrap/bootstrap-theme.min', 'all'); ?>                
+        <?php Tag::css('font-awesome.min', 'all'); ?>        
+        <?php Tag::css('backend/base', 'all'); ?>
+        <?php Tag::css('backend/style', 'all'); ?>        
+        <?php Tag::css('backend/printer', 'all'); ?>
+        <?php echo Html::includeCss(); ?>
+        <?php if(!APP_LOCAL) { ?>
+            <link href="http://fonts.googleapis.com/css?family=Play:400,700" rel="stylesheet" type="text/css">
+        <?php } ?>
+        <style type="text/css">
+
+        </style>
+        <?php echo Tag::js('jquery/jquery.min').PHP_EOL; ?>
+        <script type="text/javascript">
+            function changeTitle(title) { if($(document).attr('title') != title) { $(document).attr('title', title); } }
+            $(function() {
+                window.print();
+            });
+        </script>
+
+    </head>
+    <body>
+
+        <div id="shell-load">            
+            <div id="shell-content" class="container-fluid">
+                <?php View::content(); ?>
+            </div>
+        </div>
+
+    </body>
+</html>

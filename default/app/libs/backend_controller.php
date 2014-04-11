@@ -104,7 +104,7 @@ class BackendController extends Controller {
                     }
                     return FALSE;
                 }
-            }            
+            }
         }
 
     }
