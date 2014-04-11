@@ -384,7 +384,7 @@ class DwForm extends Form {
             unset($attrs['input-group']);            
         }
         //Armo el input del form
-        $input.= parent::text($field, $attrs, $value, $type);
+        $input.= parent::$type($field, $attrs, $value);
         if($prepend) {
             $input.= '</div>';
         }
