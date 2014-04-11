@@ -62,5 +62,13 @@ class View extends KumbiaView {
         View::select(NULL, 'json');
     }
     
+    /**
+     * Método para mostrar el mensaje de actualizacion
+     */
+    public static function appUpdate() {
+        View::select(NULL, NULL);
+        return self::partial('dbkm_update');
+    }
+    
 
 }
