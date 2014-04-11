@@ -239,12 +239,12 @@ class Sistema {
         }  
         if($data==null) {
             //Si está en proceso de instalación
-            $data = array('/'=>'principal',
+            $data = array('/'=>'home',
                       '/sistema/instalacion/*'=>'delete-var',
                       '/*'=>'delete-var');
         }
         if(empty($data['/'])) {
-            $data['/'] = 'principal';
+            $data['/'] = 'home';
         }
         $rs = DwConfig::write('routes', $data, 'routes');
         if($rs) {
