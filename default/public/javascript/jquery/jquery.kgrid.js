@@ -196,7 +196,8 @@ $(function() {
         load_container = $(this).parents('.btn-toolbar:first').find('.form-search-container:first');        
         if(load_container.hasClass('hidden')) {
             load_container.removeClass('hidden').hide().fadeIn(250);
-            load_container.parent().next('hr').removeClass('hidden').hide().fadeIn(250);            
+            load_container.parent().next('hr').removeClass('hidden').hide().fadeIn(250);
+            load_container.find(':input:first').focus();
         } else {
             load_container.fadeOut(50).addClass('hidden');
             load_container.parent().next('hr').fadeOut(50).addClass('hidden');
