@@ -72,10 +72,10 @@ class Form
 			} elseif($value === null) { 
 				// Autocarga de datos
 				$form = View::getVar($formField[0]);
-				if(is_array($form)) {
-					if(isset($form[$formField[1]])) $value = $form[$formField[1]];
-				} elseif(is_object($form)) {
-					if(isset($form->$formField[1])) $value = $form->{$formField[1]};
+				if(is_array($form) && isset($form[$formField[1]])) {
+					$value = $form[$formField[1]];
+				} elseif(is_object($form) && isset($form->$formField[1])) {
+					$value = $form->{$formField[1]};
 				}
 			}
 		} else {
@@ -174,10 +174,10 @@ class Form
 			} else { 
 				// Autocarga de datos
 				$form = View::getVar($formField[0]);
-				if(is_array($form)) {
-					if(isset($form[$formField[1]])) $value = $form[$formField[1]];
-				} elseif(is_object($form)) {
-					if(isset($form->$formField[1])) $value = $form->{$formField[1]};
+				if(is_array($form) && isset($form[$formField[1]])) {
+					$value = $form[$formField[1]];
+				} elseif(is_object($form) && isset($form->$formField[1])) {
+					$value = $form->{$formField[1]};
 				}
 			}
 		} else {
@@ -256,7 +256,7 @@ class Form
         if ($action) {
             $action = PUBLIC_PATH . $action;
         } else {
-            $action = PUBLIC_PATH . substr(Router::get('route'), 1);
+            $action = PUBLIC_PATH . ltrim(Router::get('route'), '/');
         }
         return "<form action=\"$action\" method=\"post\" enctype=\"multipart/form-data\" $attrs>";
     }
@@ -571,7 +571,7 @@ class Form
         }
  
         // Obtiene name y id, y los carga en el scope
-        list($id, $name, $value) = self::getFieldData($field, FALSE);
+        list($id, $name, ) = self::getFieldData($field, FALSE);
         return "<input id=\"$id\" name=\"$name\" type=\"file\" $attrs/>";
     }
 
