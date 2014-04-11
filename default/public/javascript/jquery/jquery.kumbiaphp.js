@@ -67,15 +67,15 @@
             contenedor.append(cuerpo);
             contenedor.append(footer);                                                                                    
             cajon.append(contenedor);
-            dialogo.append(cajon);
-            
-            footer.append('<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>');
+            dialogo.append(cajon);            
             
             if(este.hasClass('js-link')) {
                 footer.append('<a class="btn btn-success js-link js-spinner" href="'+este.attr("href")+'">Aceptar</a>');
             } else {
                 footer.append('<button class="btn btn-success">Aceptar</a>');
             }
+            
+            footer.append('<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>');
                         
             $('.btn-success', dialogo).on('click',function(){
                 dialogo.modal('hide')
