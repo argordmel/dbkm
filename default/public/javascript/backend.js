@@ -9,6 +9,11 @@ function flashShow(msg, type) { $(".flash-message").empty(); $('.flash-message:f
 function flashClear() { $(".flash-message").empty(); }
 
 /**
+ * OpenPopup
+ */
+function popupReport(url) { var report = window.open(url , 'impresion', "width=800,height=500,left=50,top=50,scrollbars=yes,menubars=no,statusbar=NO,status=NO,resizable=YES,location=NO"); report.focus(); }
+
+/**
  * Funciones para limpiar caracteres al igual que el trim de php
  */
 function ltrim(str, opt) { if(opt) { while (str.charAt(0) == opt) str = str.substr(1, str.length - 1); } else { while (str.charAt(0) == " ") str = str.substr(1, str.length - 1); } return str; }

@@ -94,6 +94,62 @@
             });
             
         },
+        
+        /**
+         * Muestra mensaje para seleccionar el tipo de reporte
+         *
+         * @param Object event
+         */
+        cReport: function(event) {
+            event.preventDefault();
+            var este = $(this);
+            var reporte = $("#modal_reporte");
+            var data_title = este.attr('msg-title');
+            var data_format = este.attr('data-report-format').split('|');
+            if(data_title===undefined) {
+                data_title = 'Imprmir reporte';
+            }
+            if ($("#modal_confirmar").size() > 0 ){
+                reporte.empty();
+            } else {                
+                reporte = $('<div id="modal_reporte" tabindex="-1" role="dialog" aria-labelledby="modal_confirmar" aria-hidden="true"></div>');
+            }
+
+            var tmp_check = '';
+            for(i=0 ; i < data_format.length ; i++) {
+                tmp_checked = (i==0) ? 'checked="checked"' : '';
+                tmp_check = tmp_check + '<label class="checkbox-inline" style="font-size: 12px;"><input name="report-format-type" type="radio" '+tmp_checked+' value="'+data_format[i].toLowerCase()+'" style="margin: 0px;">&nbsp;'+data_format[i].toUpperCase()+'</label>';
+            }
+            var tmp_form = '<div class="row"><form>'+tmp_check+'</form></div>';
+
+            //Armo el modal
+            reporte.addClass('modal fade');
+            
+            var cajon       = $('<div class="modal-dialog"></div>');
+            var contenedor  = $('<div class="modal-content"></div>');
+            var header      = $('<div><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4 class="modal-title"><i class="icon-warning-sign" style="padding-right:5px; margin-top:5px;"></i>'+data_title+'</h4></div>').addClass('modal-header');
+            var cuerpo      = $('<div><p>En qué formato deseas ver este reporte?</p><p>Recuerda reciclar el papel</p>'+tmp_form+'</div>').addClass('modal-body');
+            var footer      = $('<div></div>').addClass('modal-footer');
+
+            contenedor.append(header);
+            contenedor.append(cuerpo);
+            contenedor.append(footer);                                                                                    
+            cajon.append(contenedor);
+            reporte.append(cajon);            
+                                    
+            footer.append('<button class="btn btn-success">Aceptar</a>');
+            footer.append('<button class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancelar</button>');
+            $('.btn-success', reporte).on('click',function(){
+                reporte.modal('hide')
+                checked = $("input:checked", reporte).val();
+                popup_url = rtrim(este.attr('href'), '/')+'/'+checked+'/';
+                popupReport(popup_url);
+            });
+            reporte.modal();
+            $(reporte).on('shown', function () {
+                $('input[type=radio]:checked', reporte).focus();
+            });
+        },
 
         /**
          * Aplica un efecto a un elemento
@@ -274,6 +330,9 @@
             
             // Back tab
             $("body").on('click', ".js-prev-tab", this.cPrevTab);
+            
+            // Back tab
+            $("body").on('click', ".js-report", this.cReport);
                         
             // Enlazar DatePicker
             $.KumbiaPHP.bindDatePicker();
