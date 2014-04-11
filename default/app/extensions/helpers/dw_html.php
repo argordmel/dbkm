@@ -92,8 +92,8 @@ class DwHtml extends Html {
         }
         
         if(!empty($action)) {
-            trim($action, '/').'/';
-        }
+            $action = trim($action, '/').'/';
+        }        
         $text = (!empty($text) && $icon) ? '<span class="hidden-xs">'.Filter::get($text, 'upper').'</span>' : Filter::get($text, 'upper');
         if($icon) {
             $text = '<i class="btn-icon-only fa '.$icon.'"></i> '.$text;
