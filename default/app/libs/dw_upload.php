@@ -101,7 +101,8 @@ class DwUpload {
     
     /**
      * Función que se encarga de gestionar el archivo
-     * @param strin $rename Nombre con el que se guardará el archivo
+     * @param strin $rename Nombre con el que se guardará el archivo     
+     * @return boolean|array
      */
     public function save($rename='') {
         
@@ -151,7 +152,8 @@ class DwUpload {
     
     /**
      * Método para identificar si está cargado el archivo
-     * @return type
+     * @param string $file
+     * @return boolean
      */
     public function isUploaded($file='') {
         $file = (empty($file)) ? $this->file : $file;
@@ -169,6 +171,8 @@ class DwUpload {
     
     /**
      * Método para verificar si se puede escribir sobre un directorio
+     * @param string $path
+     * @return boolean
      */
     public function isWritable($path='') {
         $path = empty($path) ? $this->path : $path;
@@ -185,6 +189,8 @@ class DwUpload {
     
     /**
      * Método para verificar el tamaño del archivo
+     * @param string $file
+     * @return boolean
      */
     public function isSizeValid($file='') {
         $file = empty($file) ? $this->file : $file;
@@ -199,7 +205,8 @@ class DwUpload {
     
     /**
      * Método para verificar si el tipo de archivo es permitido
-     * @param string $file Nombre del archivo cargado     
+     * @param string $file Nombre del archivo cargado  
+     * @return boolean   
      */
     public function isAllowedFiletype($file='') {          
         $file = empty($file) ? $_FILES[$this->file] : $_FILES[$file];
@@ -235,6 +242,8 @@ class DwUpload {
     
     /**
      * Método para registrar los tipos de archivo disponibles          
+     * @param string $types
+     * @return array
      */
     public function setAllowedTypes($types) {
         if ( ! is_array($types) && $types == '*')  {
@@ -246,6 +255,7 @@ class DwUpload {
     
     /**
      * Método para extraer la extension del archivo
+     * @param string $filename
      * @return string    
      */
     public function getExtension($filename) {
@@ -256,6 +266,7 @@ class DwUpload {
     
     /**
      * Método para definir si utiliza un md5 como nombre
+     * @param boolean $encrypt
      */
     public function setEncryptName($encrypt) {
         $this->encryptName = $encrypt;
@@ -280,7 +291,7 @@ class DwUpload {
 
     /**
      * Método para cargar un error
-     * @param type $error
+     * @param string $error
      */
     public function setError($error) {
         $this->_error = $error;
@@ -296,6 +307,8 @@ class DwUpload {
     
     /**
      * Modo para renombrar el archivo
+     * @param string $rename
+     * @return string
      */
     protected function _setFileName($rename) {        
         if($this->encryptName) {
@@ -309,7 +322,7 @@ class DwUpload {
 
     /**
      * Método que devuelve el valor en bytes del archivo
-     * @param type $size
+     * @param string $size
      * @return int
      */
     protected function _toBytes($size) {
