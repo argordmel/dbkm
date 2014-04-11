@@ -322,7 +322,25 @@
             var bindInputs = function() {                               
                 inputs.each(function() {                        
                     var input = $(this);
-                    var opts = { language: 'es', pickTime: false, format: 'YYYY-MM-DD' };                    
+                    if(input.find(':input:first').hasClass('input-time')) {
+                        var opts = { language: 'es', pickDate: false, format: 'hh:mm:00', icons: {
+                                                                                                time: "fa fa-clock-o",
+                                                                                                date: "fa fa-calendar",
+                                                                                                up: "fa fa-arrow-up",
+                                                                                                down: "fa fa-arrow-down"
+                                                                                            } 
+                        };
+                    } else if(input.find(':input:first').hasClass('input-datetime')) {
+                        var opts = { language: 'es', format: 'YYYY-MM-DD hh:mm:00', icons: {
+                                                                                                time: "fa fa-clock-o",
+                                                                                                date: "fa fa-calendar",
+                                                                                                up: "fa fa-arrow-up",
+                                                                                                down: "fa fa-arrow-down"
+                                                                                            }
+                        };
+                    } else {
+                        var opts = { language: 'es', pickTime: false, format: 'YYYY-MM-DD' };
+                    }
                     input.datetimepicker(opts);
                     if(input.find(':input').attr('min') !== undefined) {
                         input.data("DateTimePicker").setMinDate(input.find(':input').attr('min'));

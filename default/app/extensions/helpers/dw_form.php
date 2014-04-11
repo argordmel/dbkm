@@ -334,7 +334,7 @@ class DwForm extends Form {
             $tmp = self::_getFieldName($field);
             $input.= '<div class="input-group date datepicker" id="dp_'.$tmp['id'].'">';
             //Verifico si está definida la clase input-date
-            if(!preg_match("/\binput-date\b/i", $attrs['class'])) {
+            if(!preg_match("/\binput-date\b/i", $attrs['class']) && !preg_match("/\binput-datetime\b/i", $attrs['class'])) {
                 $attrs['class'] = 'input-date '.$attrs['class'];
             }
             $attrs['class'] = 'js-datepicker '.$attrs['class'];            
@@ -680,6 +680,58 @@ class DwForm extends Form {
      */
     public static function url($field, $attrs=null, $value=null, $label='', $help='') {
         return self::text($field, $attrs, $value, $label, $help, 'url');
+    }
+    
+    /**
+     * Método que genera un input type="time"
+     * @param type $field Nombre del input
+     * @param type $attrs Atributos del input
+     * @param type $value Valor por defecto
+     * @param type $label Detalle de la etiqueta label
+     * @param type $help Descripción del campo
+     * @return string
+     */
+    public static function time($field, $attrs=null, $value=null, $label='', $help='') {
+        //Tomo los nuevos atributos definidos en las clases
+        $attrs = self::_getAttrsClass($attrs, 'time');
+        //Armo el input
+        $input = self::getControls();
+        if(self::$_style=='form-search' OR self::$_style=='form-inline') {
+            $attrs['placeholder'] = $label;
+        }                  
+        
+        //Verifico si está definida la máscara mask-date
+        if(!preg_match("/\bmask-time\b/i", $attrs['class'])) {
+            $attrs['class'] = 'mask-time '.$attrs['class'];
+        }        
+        //Armo el input del form
+        if(!IS_DESKTOP) {
+            $input.= '<div class="input-group date">';
+            $input.= parent::text($field, $attrs, $value, 'date');
+        } else {
+            $tmp = self::_getFieldName($field);
+            $input.= '<div class="input-group date datepicker" id="dp_'.$tmp['id'].'">';
+            //Verifico si está definida la clase input-date
+            if(!preg_match("/\binput-time\b/i", $attrs['class'])) {
+                $attrs['class'] = 'input-time '.$attrs['class'];
+            }
+            $attrs['class'] = 'js-datepicker '.$attrs['class'];            
+            $input.= parent::text($field, $attrs, $value);
+        }        
+        $input.= '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>';                        
+        $input.= '</div>';
+        //Verifico si el formato del formulario muestra el help
+        if(self::$_help_block) {
+            $input.= self::help($help);
+        }
+        //Cierro el controls
+        $input.= self::getControls();
+        if(!self::$_help_block) {
+            return $input.PHP_EOL;
+        }
+        //Verifico si tiene un label
+        $label = ($label && self::$_show_label) ? self::label($label, $field, null, $attrs['class'])  : '';
+        return '<div class="form-group">'.$label.$input.'</div>'.PHP_EOL;
     }
     
     /**
