@@ -15,7 +15,7 @@
                         order_attr      : 'class="js-link js-data-order js-spinner"', //Atributos para los link de ordenamiento
                         order_container : 'shell-content', //Contendeor a cargar
                         
-                        col_hidden      : 'col-hidden', //Clase para indicar las columnas que se pueden ocultar                         
+                        col_hidden      : 'col-hidden' //Clase para indicar las columnas que se pueden ocultar                         
                     }
 
                     $.extend(opt, options); //Extiende las opciones recibidas con las default
