@@ -132,7 +132,7 @@ class DwHtml extends Html {
      * @param boolean $loadAjax
      * @return string
      */
-    public static function buttonTable($title, $action, $attrs = NULL, $type='info', $icon='icon-search', $loadAjax = APP_AJAX) {
+    public static function buttonTable($title, $action, $attrs = NULL, $type='info', $icon='fa-search', $loadAjax = APP_AJAX) {
         if(empty($attrs)) {
             $attrs = array();
             $attrs['class'] = "btn-small btn-$type";
