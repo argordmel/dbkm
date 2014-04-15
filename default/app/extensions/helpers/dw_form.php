@@ -642,20 +642,7 @@ class DwForm extends Form {
         }
         return self::text($field, $attrs, $value, $label, $help, $type);
     }
-
-    /**
-     * Método que genera un input type="tel"
-     * @param type $field Nombre del input
-     * @param type $attrs Atributos del input
-     * @param type $value Valor por defecto
-     * @param type $label Detalle de la etiqueta label
-     * @param type $help Descripción del campo
-     * @return string
-     */
-    public static function tel($field, $attrs=null, $value=null, $label='', $help='') {
-        return self::text($field, $attrs, $value, $label, $help, 'tel');
-    }
-
+   
     /**
      * Método que genera un input type="email"
      * @param type $field Nombre del input
