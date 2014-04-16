@@ -104,8 +104,12 @@
                                 if(th.attr('data-order')!=undefined) {
                                     text    = th.text();
                                     order   = th.attr('data-order');
-                                    asc     = opt.order_to+'order.'+order+'.asc/';
-                                    desc    = opt.order_to+'order.'+order+'.desc/';
+                                    
+                                    while (opt.order_to.charAt(opt.order_to.length - 1) == '/') 
+                                        opt.order_to = opt.order_to.substr(0, opt.order_to.length - 1);                                     
+                                    
+                                    asc     = opt.order_to+'/order.'+order+'.asc/';
+                                    desc    = opt.order_to+'/order.'+order+'.desc/';
                                     th.html('<div class="btn-group hidden-xs"><a class="" data-toggle="dropdown" href="#">'+text+' <span class="caret"></span></a><ul class="dropdown-menu"><li><a href="'+asc+'" '+opt.order_attr+' data-div="'+opt.order_container+'"><i class="fa fa-caret-up fa-pd-expand"></i>Ascendente</a></li><li><a href="'+desc+'" '+opt.order_attr+' data-div="'+opt.order_container+'"><i class="fa fa-caret-down fa-pd-expand"></i>Descendente</a></li></ul></div>');
                                 }
                             }                            
