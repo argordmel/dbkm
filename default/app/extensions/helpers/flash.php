@@ -89,21 +89,19 @@ class Flash {
     /**
      * Retorna los mensajes cargados como string
      */
-    public static function toString() {
-        if(Flash::hasMessage()) {
-            //Asigno los mensajes almacenados en sesión en una variable temporal
-            $tmp = self::has() ? Session::get('flash_message') : array();
-            $msg = array();
-            //Recorro los mensajes
-            foreach($tmp as $item) {
-                //Limpio los mensajes
-                $msg[] = str_replace('×', '', Filter::get($item, 'striptags'));
-            }
-            $flash = Filter::get(ob_get_clean(), 'striptags', 'trim'); //Almaceno los mensajes que hay en el buffer por los echo
-            $msg = Filter::get(join('<br />', $msg), 'trim');
-            self::clean(); //Limpio los mensajes de la sesión               
-            return ($flash) ? $flash.'<br />'.$msg : $msg;
+    public static function toString() {        
+        //Asigno los mensajes almacenados en sesión en una variable temporal
+        $tmp = self::hasMessage() ? Session::get('flash_message') : array();
+        $msg = array();
+        //Recorro los mensajes
+        foreach($tmp as $item) {
+            //Limpio los mensajes
+            $msg[] = str_replace('×', '', Filter::get($item, 'striptags'));
         }
+        $flash = Filter::get(ob_get_clean(), 'striptags', 'trim'); //Almaceno los mensajes que hay en el buffer por los echo
+        $msg = Filter::get(join('<br />', $msg), 'trim');
+        self::clean(); //Limpio los mensajes de la sesión               
+        return ($flash) ? $flash.'<br />'.$msg : $msg;        
     }
 
     /**
