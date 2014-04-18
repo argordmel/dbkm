@@ -59,7 +59,7 @@
             dialogo.addClass('modal fade');
             var cajon       = $('<div class="modal-dialog"></div>');
             var contenedor  = $('<div class="modal-content"></div>');
-            var header      = $('<div><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4 class="modal-title"><i class="icon-warning-sign" style="padding-right:5px; margin-top:5px;"></i>'+data_title+'</h4></div>').addClass('modal-header');
+            var header      = $('<div><button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button><h4 class="modal-title"><i class="fa fa-warning" style="padding-right:5px; margin-top:5px;"></i>'+data_title+'</h4></div>').addClass('modal-header');
             var cuerpo      = (data_body!=undefined) ? $('<div><p>'+data_body+'</p></div>').addClass('modal-body') : $('<div><p>Está seguro de continuar con esta operación?</p></div>').addClass('modal-body');
             var footer      = $('<div></div>').addClass('modal-footer');
 
