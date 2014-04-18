@@ -59,8 +59,9 @@ class EstadoUsuario extends ActiveRecord {
         if($optData) {            
             $obj->dump_result_self($optData);
         }
-        //Verifico el estado actual
-        $estado = $obj->getEstadoUsuario($obj->usuario_id); 
+        //Verifico el estado actual        
+        $old    = new EstadoUsuario();        
+        $estado = $old->getEstadoUsuario($obj->usuario_id); 
         //Verifico las acciones
         if($accion == 'registrar') {
             $obj->estado_usuario = self::ACTIVO;        

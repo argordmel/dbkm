@@ -50,12 +50,11 @@
         </script>
 
         <?php echo Tag::js('bootstrap/bootstrap.min').PHP_EOL; ?>        
-        <?php echo Tag::js('jsspin.min').PHP_EOL; ?>
         <?php echo Tag::js('jquery/jquery.spin').PHP_EOL; ?>        
         
         <?php echo Tag::js('html5shiv').PHP_EOL; ?>        
-        <?php echo Tag::js('utils/backend').PHP_EOL; ?>
-        <?php echo Tag::js('utils/validador').PHP_EOL; ?>
+        <?php echo Tag::js('backend').PHP_EOL; ?>
+        <?php echo Tag::js('validador').PHP_EOL; ?>
 
         <?php echo DwJs::alert('Se ha generado la siguiente excepción: <br /><span id="error-ajax"></span>.', 'title: Oops! hemos realizado algo mal.', 'name: errorAjax'); ?>
         <?php echo DwJs::alert('Se ha producido un error en la validación del formulario.', 'subtext: Verifica los datos e intenta nuevamente.', 'title: Formulario incorrecto', 'name: errorForm'); ?>

@@ -70,7 +70,8 @@
             dialogo.append(cajon);            
             
             if(este.hasClass('js-link')) {
-                footer.append('<a class="btn btn-success js-link js-spinner" href="'+este.attr("href")+'">Aceptar</a>');
+                var data_to = (este.attr('data-to') !== undefined) ? este.attr('data-to') : este.attr('href');
+                footer.append('<a class="btn btn-success js-link js-spinner" href="'+data_to+'">Aceptar</a>');
             } else {
                 footer.append('<button class="btn btn-success">Aceptar</a>');
             }

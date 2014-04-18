@@ -57,7 +57,7 @@ class PerfilesController extends BackendController {
         
         $perfil = new Perfil();
         if(!$perfil->find_first($id)) {
-            Flash::error('Lo sentimos, no se pudo establecer la información del menú');
+            Flash::error('Lo sentimos, no se pudo establecer la información del perfil');
             return Redirect::toAction('listar');
         }
         
@@ -83,7 +83,7 @@ class PerfilesController extends BackendController {
         
         $perfil = new Perfil();
         if(!$perfil->find_first($id)) {
-            Flash::error('Lo sentimos, no se pudo establecer la información del menú');            
+            Flash::error('Lo sentimos, no se pudo establecer la información del perfil');            
         } else {
             if($tipo=='inactivar' && $perfil->estado == Perfil::INACTIVO) {
                 Flash::info('El perfil ya se encuentra inactivo');
@@ -92,7 +92,7 @@ class PerfilesController extends BackendController {
             } else {
                 $estado = ($tipo=='inactivar') ? Perfil::INACTIVO : Perfil::ACTIVO;
                 if(Perfil::setPerfil('update', $perfil->to_array(), array('id'=>$id, 'estado'=>$estado))){
-                    ($estado==Perfil::ACTIVO) ? Flash::valid('El perfil se ha reactivado correctamente!') : Flash::valid('El perfil se ha inactivado correctamente!');
+                    ($estado==Perfil::ACTIVO) ? Flash::valid('El perfil se ha reactivado correctamente!') : Flash::valid('El perfil se ha bloqueado correctamente!');
                 }
             }                
         }
@@ -111,7 +111,7 @@ class PerfilesController extends BackendController {
         
         $perfil = new Perfil();
         if(!$perfil->find_first($id)) {
-            Flash::error('Lo sentimos, no se pudo establecer la información del menú');
+            Flash::error('Lo sentimos, no se pudo establecer la información del perfil');
             return Redirect::toAction('listar');
         }        
         
