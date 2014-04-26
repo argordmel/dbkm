@@ -91,7 +91,7 @@
                                     cols = $("#" + val + ", [headers="+ val +"]", table);
                                     (input.is(":checked")) ? cols.removeClass('hidden').removeAttr('style') : cols.addClass('hidden').attr('style', 'display: none !important');
                                 }).bind("updateCheck", function(){
-                                    if (th.hasClass('hide')) {
+                                    if (th.hasClass('hidden')) {
                                         $(this).attr("checked", false);
                                     } else {
                                         $(this).attr("checked", true);
@@ -104,7 +104,7 @@
                                 if(th.attr('data-order')!=undefined) {
                                     text    = th.text();
                                     order   = th.attr('data-order');
-                                    
+                                                                        
                                     while (opt.order_to.charAt(opt.order_to.length - 1) == '/') 
                                         opt.order_to = opt.order_to.substr(0, opt.order_to.length - 1);                                     
                                     
