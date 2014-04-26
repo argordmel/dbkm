@@ -360,25 +360,28 @@
         
         date: function(input) {            
             var v_msg   = $.validateForm.message(input, 'Fecha incorrecta');
-            var f_parts = input.val().split('-');            
-            if(f_parts.length !== 3) {               
-                return $.validateForm.showError(input, v_msg);
+            if(input.val().length > 0) {                
+                var f_parts = input.val().split('-');            
+                if(f_parts.length !== 3) {               
+                    return $.validateForm.showError(input, v_msg);
+                }
+                d1 = f_parts[0];
+                d2 = f_parts[1];
+                d3 = f_parts[2];            
+                if(d1.length === 4 && d2.length === 2 && d3.length === 2) { //YYYY-MM-DD                
+                    return $.validateForm.pattern(input, this.patterns.date, v_msg, d3+'-'+d2+'-'+d1);
+                } else if(d3.length === 4 && d2.length === 2 && d1.length === 2) { //DD-MM-YYYY
+                    return $.validateForm.pattern(input, this.patterns.date, v_msg);
+                } else {
+                    return $.validateForm.showError(input, v_msg);
+                }
             }
-            d1 = f_parts[0];
-            d2 = f_parts[1];
-            d3 = f_parts[2];            
-            if(d1.length === 4 && d2.length === 2 && d3.length === 2) { //YYYY-MM-DD                
-                return $.validateForm.pattern(input, this.patterns.date, v_msg, d3+'-'+d2+'-'+d1);
-            } else if(d3.length === 4 && d2.length === 2 && d1.length === 2) { //DD-MM-YYYY
-                return $.validateForm.pattern(input, this.patterns.date, v_msg);
-            } else {
-                return $.validateForm.showError(input, v_msg);
-            }
+            return $.validateForm.removeError(input);
         },
         
         dateRange: function(input, event) {
             
-            if(input.attr('data-invalid') === undefined) {              
+            if(input.attr('data-invalid') === undefined && input.val().length > 0) {              
                 
                 var container = input.parents('.row:first');                
                 
@@ -410,8 +413,8 @@
                     }                   
                 }
 
-            }
-            
+            }            
+            return $.validateForm.removeError(input);
         },
         
         pattern: function(input, pattern, msg, custom_val) {
