@@ -92,7 +92,7 @@
                     }                    
                     return true;
                 }).on('blur', 'input, textarea, select, checkbox, radio', function(e) {                   
-                    if($(this).parents('form:first').attr('js-validate-nolive') === undefined) {                        
+                    if($(this).parents('form:first').attr('js-validate-nolive') === undefined) {                                                
                         $.validateForm.checkInput($(this));
                     }
                 })
@@ -129,9 +129,7 @@
                     var este = $(this);
                     input = este.find(':input');                                        
                     setTimeout(function() {
-                        if($.validateForm.checkInput(input)) {
-                            $.validateForm.dateRange(input, e);                            
-                        }
+                        $.validateForm.checkInput(input, e);
                     }, 500);                                            
                 }); 
                 
@@ -140,10 +138,8 @@
                  */
                 $("body").on("change", 'form.js-validate .input-date', function (e) {            
                     input = $(this);
-                    setTimeout(function() {
-                        if($.validateForm.checkInput(input)) {
-                            $.validateForm.dateRange(input, e);                           
-                        }
+                    setTimeout(function() {                        
+                        $.validateForm.checkInput(input, e);                        
                     }, 500);
                 });               
                                
@@ -169,7 +165,7 @@
             return true;
         },
         
-        checkInput: function(input) {
+        checkInput: function(input, event) {
             $.validateForm.removeError(input);
             if(input.hasClass('input-required')) {        
                 if($.validateForm.required(input) !== true) {            
@@ -186,6 +182,7 @@
                     return false;
                 }
             }
+            
             if(input.attr('class') !== undefined) {
                 var clases = input.attr('class').split(' ');    
                 for(c = 0 ; c < clases.length ; c++) {                    
@@ -202,6 +199,13 @@
                     }
                 } 
             }
+            
+            if( ( input.hasClass('input-checkin') || input.hasClass('input-checkout') )  && input.hasClass('input-date')) {
+                if($.validateForm.dateRange(input, event) !== true) {
+                    return false;
+                }                           
+            }
+            
             return true;
             
         },                
@@ -381,8 +385,8 @@
                 if(input.hasClass('input-checkin')) {                                       
                     var input_checkin   = input;
                     var input_checkout  = container.find('.input-checkout');
-                    if(input_checkout.size() > 0) {      
-                        if(event.date !== undefined) {
+                    if(input_checkout.size() > 0) {
+                        if(event !== undefined && event.date !== undefined) {                            
                             input_checkout.parent().data("DateTimePicker").setMinDate(event.date);
                         }
                         if(input_checkout.val().length > 0) {
@@ -395,7 +399,7 @@
                     var input_checkout = input;
                     var input_checkin  = container.find('.input-checkin');                            
                     if(input_checkin.size() > 0) {                                    
-                        if(event.date !== undefined) {
+                        if(event !== undefined && event.date !== undefined) {                            
                             input_checkin.parent().data("DateTimePicker").setMaxDate(event.date);                
                         }
                         if(input_checkin.val().length > 0) {
