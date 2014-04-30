@@ -54,7 +54,7 @@ tbody td button.btn-disabled, tbody td button.input-disabled { min-width: 33px; 
 tbody td .btn { padding: 2px 5px !important; min-width: 21px;}
 
 hr.divider { margin: 5px 0px !important;}
-.btn-toolbar .btn, .btn-toolbar .btn-group { font-size: 12px; /*min-width: 15px;*/ margin-left: 5px !important;}
+.btn-toolbar .btn, .btn-toolbar .btn-group { font-size: 12px; /*min-width: 15px;*/ margin-left: 5px !important; float: left}
 .btn-toolbar .btn:first-child, .btn-toolbar .btn-group:first-child { margin-left: 0px !important;}
 .btn-toolbar i { font-size: 15px; }
 .btn-toolbar form { margin-bottom: 0px !important;}
