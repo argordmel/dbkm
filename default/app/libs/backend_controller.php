@@ -69,7 +69,7 @@ class BackendController extends Controller {
                 if($this->module_name == 'reporte') {
                     View::error();
                 } else {
-                    Redirect::to('sistema/login/entrar/');
+                    (Input::isAjax()) ? View::redirect('sistema/login/entrar/', TRUE) : Redirect::to('sistema/login/entrar/');                    
                 }
                 return false;
             }
