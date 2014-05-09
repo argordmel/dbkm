@@ -415,27 +415,7 @@ class DwForm extends Form {
      * @return string
      */
     public static function pass($field, $attrs=null, $value=null, $label='', $help='') {
-        //Tomo los nuevos atributos definidos en las clases
-        $attrs = self::_getAttrsClass($attrs, 'pass');
-        //Armo el input
-        $input = self::getControls();
-        if(self::$_style=='form-search' OR self::$_style=='form-inline') {
-            $attrs['placeholder'] = $label;
-        }
-        //Armo el input del form
-        $input.= parent::pass($field, $attrs, $value);
-        //Verifico si el formato del formulario muestra el help
-        if(self::$_help_block) {
-            $input.= self::help($help);
-        }
-        //Cierro el controls
-        $input.= self::getControls();
-        if(!self::$_help_block) {
-            return $input.PHP_EOL;
-        }
-        //Verifico si tiene un label
-        $label = ($label && self::$_show_label) ? self::label($label, $field, null, $attrs['class'])  : '';
-        return '<div class="form-group">'.$label.$input.'</div>'.PHP_EOL;
+        return self::text($field, $attrs, $value, $label, $help, 'pass');
     }
     /**
      * Método para crear un select a partir de un array de objetos de ActiveRecord. <br />
