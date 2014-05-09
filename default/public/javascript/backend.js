@@ -1,12 +1,12 @@
 /**
  * Mensajes tipo Flash
  */
-function flashInfo(msg) { return flashShow(msg, 'info'); }
-function flashError(msg) { return flashShow(msg, 'danger'); }
-function flashValid(msg) { return flashShow(msg, 'success'); }
-function flashWarning(msg) { return flashShow(msg, 'warning'); }
-function flashShow(msg, type) { $(".flash-message").empty(); $('.flash-message:first').append('<div class="alert alert-block alert-'+type+'"><button class="close" data-dismiss="alert" type="button">×</button>'+msg+'</div>'); }
-function flashClear() { $(".flash-message").empty(); }
+function flashInfo(msg, delay) { return flashShow(msg, 'info', delay); }
+function flashError(msg, delay) { return flashShow(msg, 'danger', delay); }
+function flashValid(msg, delay) { return flashShow(msg, 'success', delay); }
+function flashWarning(msg, delay) { return flashShow(msg, 'warning', delay); }
+function flashShow(msg, type, delay) { var tmp_id = Math.floor(Math.random()*11); if(delay===undefined) { delay = 3000; } $(".flash-message").empty(); $('.flash-message:first').append('<div id="alert-id-'+tmp_id+'" class="alert alert-block alert-'+type+'"><button class="close" data-dismiss="alert" type="button">×</button>'+msg+'</div><script type="text/javascript">if('+delay+' > 0) { $("#alert-id-'+tmp_id+'").hide().fadeIn(500).delay('+delay+').fadeOut(500); } else { $("#alert-id-'+tmp_id+'").hide().fadeIn(500); }</script>'); }
+function flashClear() { $(".flash-message").fadeOut(500).empty(); }
 
 /**
  * OpenPopup

@@ -33,7 +33,8 @@ class Flash {
         }        
         //Guardo el mensaje en el array
         if (isset($_SERVER['SERVER_SOFTWARE'])) {                    
-            self::$_contentMsj[] = '<div class="alert alert-block alert-'.$name.'"><button type="button" class="close" data-dismiss="alert">×</button>'.$msg.'</div>'.PHP_EOL;
+            $tmp_id              = round(1, 5000);
+            self::$_contentMsj[] = '<div id="alert-id-'.$tmp_id.'" class="alert alert-block alert-'.$name.'"><button type="button" class="close" data-dismiss="alert">×</button>'.$msg.'</div>'.PHP_EOL.'<script type="text/javascript">$("#alert-id-'.$tmp_id.'").hide().fadeIn(500).delay(4000).fadeOut(500);</script>';            
         } else {
             self::$_contentMsj[] = $name.': '.Filter::get($msg, 'striptags').PHP_EOL;            
         }        
