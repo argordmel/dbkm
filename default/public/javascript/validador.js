@@ -85,8 +85,8 @@
                  * Cuando se envía un formulario 
                  */
                 $('form.js-validate').onFirst('submit', function(e) {
-                    e.preventDefault();
-                    if($.validateForm.run($(this)) !== true) {
+                    if($.validateForm.run($(this)) !== true) {                        
+                        e.preventDefault();
                         e.stopImmediatePropagation();
                         return false;
                     }                    
