@@ -442,8 +442,7 @@
                     dataType: (este.attr('data-type') === undefined) ? 'json' : este.attr('data-type'),
                     maxFileSize: (este.attr('data-size') === undefined) ? 5000000 : este.attr('data-size'), //5MB
                     acceptFileTypes: (este.attr('data-files') === undefined) ? /(\.|\/)(gif|jpe?g|png)$/i : este.attr('data-files'),                    
-                    start: function() {
-                        flashClear(); 
+                    start: function() {                        
                         prgss.removeClass('fade');
                         prgss.find('.progress-bar:first').removeClass('progress-bar-danger').addClass('progress-bar-success');
                         $('[type=submit]').attr('disabled', 'disabled');
@@ -459,7 +458,7 @@
                                 prgss.find('.progress-bar:first').removeClass('progress-bar-success').addClass('progress-bar-danger');
                                 flashError('Oops! el archivo no se ha podido cargar. <br />Detalle del error: '+(result.message!=null) ? result.message : textStatus);
                             } else {
-                                flashValid('El archivo se ha cargado correctamente!');
+                                flashValid((result.message === undefined) ? 'El archivo se ha cargado correctamente!' : result.message);
                                 if(este.attr('data-success') != undefined) {
                                     fn = este.attr('data-success')+'(result, este)';
                                     eval(fn);
