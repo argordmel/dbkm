@@ -25,6 +25,13 @@ class DwUpload {
     public $file_ext;
     
     /**
+     * Nombre del archivo cargado
+     *
+     * @var string
+     */
+    public $oldName;
+    
+    /**
      * Nombre con el que se guardará el archivo
      *
      * @var string
@@ -74,6 +81,13 @@ class DwUpload {
      * @var boolean
      */
     public $resizeHeight = 200;
+    
+    /**
+     * Tamaño del archivo cargado
+     * @var string
+     */
+    protected $size = 0;
+    
 
     /**
      * Tamaño maximo del archivo
@@ -113,7 +127,7 @@ class DwUpload {
             //Los errores son cargados en el método 
             return FALSE;
         }                
-        if(!$this->isSizeValid()) { //El tamaño es válido?            
+        if(!$this->size = $this->isSizeValid()) { //El tamaño es válido?            
             return FALSE;
         }                              
         if (!$this->isAllowedFiletype()) {// Verifico si el tipo de archivo es permitido             
@@ -143,7 +157,7 @@ class DwUpload {
                 }
             }
             unset($_FILES[$this->file]);
-            return array('error'=>false, 'path'=>$this->path, 'name'=>$this->name);
+            return array('error'=>false, 'path'=>$this->path, 'name'=>$this->name, 'oldName'=>$this->oldName, 'size'=>$this->_toBytes4Humans($this->size));
         }                
         $this->setError('No se pudo copiar el archivo al servidor. Intenta nuevamente.');
         return FALSE;
@@ -193,14 +207,14 @@ class DwUpload {
      * @return boolean
      */
     public function isSizeValid($file='') {
-        $file = empty($file) ? $this->file : $file;
-        $total_bytes = ($this->maxSize) ? $this->_toBytes($this->maxSize) : 0;        
-        $file_size = $_FILES[$file]['size'];        
-        if($this->maxSize !== NULL && ( $file_size > $total_bytes ) ) {
+        $file           = empty($file) ? $this->file : $file;
+        $total_bytes    = ($this->maxSize) ? $this->_toBytes($this->maxSize) : 0;        
+        $this->size     = $_FILES[$file]['size'];        
+        if($this->maxSize !== NULL && ( $this->size > $total_bytes ) ) {
             $this->setError("No se admiten archivos superiores a $this->maxSize");
             return FALSE;
         }
-        return TRUE;
+        return $this->size;
     }
     
     /**
@@ -313,8 +327,9 @@ class DwUpload {
     protected function _setFileName($rename) {        
         if($this->encryptName) {
             $name = md5(uniqid().time()).'.'.$this->file_ext;
+            $this->oldName = $_FILES[$this->file]['name'];
         } else {
-            $name = empty($rename) ? $_FILES[$this->file]['name'] : $rename.'.'.$this->file_ext;
+            $name = empty($rename) ? $_FILES[$this->file]['name'] : $rename.'.'.$this->file_ext;            
         }
         return $name;
     }
@@ -331,6 +346,17 @@ class DwUpload {
             $size = floatval($size) * $bytes_array[$matches[1]];
         }
         return intval(round($size, 2));
+    }
+    
+    /**
+     * Método que devuelve el tamaño de un archivo
+     * @param string $size
+     * @return int
+     */
+    protected function _toBytes4Humans($size) {
+        $base = log($size) / log(1024);
+        $suffixes = array('B', 'KB', 'MB', 'GB', 'TB');   
+        return round(pow(1024, $base - floor($base)), 2) . $suffixes[floor($base)];
     }
 }
 
