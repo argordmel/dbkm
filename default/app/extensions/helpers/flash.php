@@ -95,9 +95,12 @@ class Flash {
         $tmp = self::hasMessage() ? Session::get('flash_message') : array();
         $msg = array();
         //Recorro los mensajes
-        foreach($tmp as $item) {
+        foreach($tmp as $item) {            
             //Limpio los mensajes
-            $msg[] = str_replace('×', '', Filter::get($item, 'striptags'));
+            $item  = explode('<script', $item);
+            if(!empty($item[0])) {
+                $msg[] = str_replace('×', '', Filter::get($item[0], 'striptags'));                
+            }
         }
         $flash = Filter::get(ob_get_clean(), 'striptags', 'trim'); //Almaceno los mensajes que hay en el buffer por los echo
         $msg = Filter::get(join('<br />', $msg), 'trim');
