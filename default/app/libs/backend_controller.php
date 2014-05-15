@@ -74,6 +74,11 @@ class BackendController extends Controller {
                 return false;
             }
         } else if( DwAuth::isLogged() && $this->controller_name!='login' ) {
+            
+            if(!defined('SKIN')) {
+                define('SKIN', Session::get('tema'));
+            }
+            
             $acl = new DwAcl(); //Cargo los permisos y templates
             if (!$acl->check(Session::get('perfil_id'))) {
                 Flash::error('Tu no posees privilegios para acceder a <b>' . Router::get('route') . '</b>');
@@ -85,9 +90,6 @@ class BackendController extends Controller {
                 }               
                 return FALSE;
             }
-            if(!defined('SKIN')) {
-                define('SKIN', Session::get('tema'));
-            }                       
             
             if(APP_UPDATE && (Session::get('perfil_id') != Perfil::SUPER_USUARIO) ) { //Solo el super usuario puede hacer todo
                 if($this->module_name!='dashboard' && $this->controller_name!='index') {
