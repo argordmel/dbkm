@@ -329,7 +329,7 @@ class DwForm extends Form {
         //Armo el input del form
         if(!IS_DESKTOP) {
             $input.= '<div class="input-group date">';
-            $input.= parent::text($field, $attrs, $value, 'date');
+            $input.= parent::date($field, $attrs, $value);
         } else {
             $tmp = self::_getFieldName($field);
             $input.= '<div class="input-group date datepicker" id="dp_'.$tmp['id'].'">';
