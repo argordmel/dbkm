@@ -96,16 +96,29 @@ class DwMenu {
             foreach(self::$_main as $main) {
                 $text = $main->menu.'<b class="caret"></b>';
                 $html.= '<li class="dropdown">';
-                $html.= DwHtml::link('#', $text, array('class'=>'dropdown-toggle', 'data-toggle'=>'dropdown'), NULL, FALSE);
+                $html.= DwHtml::link('#', $text, array('class'=>'dropdown-toggle', 'data-toggle'=>'dropdown'), $main->icono, TRUE);
                 if(array_key_exists($main->menu, self::$_items)) {
                     $html.= '<ul class="dropdown-menu">';
                     foreach(self::$_items[$main->menu] as $item) {                         
-                        $active = ($item->url==$route) ? 'active' : null;                        
-                        $html.= '<li class="'.$active.'">'.DwHtml::link($item->url, $item->menu, NULL, $item->icon, FALSE).'</li>';
+                        $active     = ($item->url==$route) ? 'active' : null;   
+                        $submenu    = $item->getListadoSubmenu(self::$_entorno, $item->id, self::$_perfil);
+                        if($submenu) {                            
+                            $html.= '<li class="'.$active.' dropdown dropdown-submenu">';
+                            $html.= DwHtml::link($item->url, $item->menu.' <b class="caret"></b>', array('class'=>'dropdown-toggle', 'role'=>"button", "data-toggle"=>"dropdown"), NULL);
+                            $html.= '<ul class="dropdown-menu">';
+                            foreach($submenu as $tmp) {
+                                $html.= '<li>'.DwHtml::link($tmp->url, $tmp->menu, null, $tmp->icono).'</li>'.PHP_EOL;
+                            }
+                            $html.= '</ul>';
+                            $html.= '</li>';
+                        } else {                            
+                            $html.= '<li class="'.$active.'">'.DwHtml::link($item->url, $item->menu, NULL, $item->icon, TRUE).'</li>';
+                        }                        
                     }
                     $html.= '</ul>';
                 }
                 $html.= '</li>'.PHP_EOL;
+                //$html.= '<li class="divider"></li>'.PHP_EOL;
             }
             $html.= '</ul>';
 

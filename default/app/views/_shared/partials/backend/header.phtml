@@ -1,22 +1,52 @@
-<header class="navbar navbar-inverse navbar-fixed-top user-nav" role="banner">
+<header class="navbar navbar-inverse navbar-fixed-top user-nav" role="navigation" id="slide-nav">
     
     <div class="container">
-        <div class="navbar-header">
-            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-navbar-collapse">
-                <span class="sr-only">Menú principal</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
+        
+        <div class="navbar-header hidden-xs">            
             <?php echo DwHtml::link('dashboard', DwHtml::img("kumbiaphp.png", APP_NAME, array('style'=>'height: 30px; margin-top: 2.5%')), '' , FALSE); ?>                
         </div>
         
-        <div class="pull-right">
+        <div class="navbar-header visible-xs">
+            <a class="navbar-toggle"> 
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            </a>
+            <?php echo DwHtml::link('dashboard', APP_NAME, array('class'=>'navbar-brand'), '' , FALSE); ?>           
+        </div>
+        
+        <div id="slidemenu" class="visible-xs"> 
+            
+            <div class="text-center navbar-form" style="height: 50px;">
+                <?php echo DwHtml::link('dashboard', DwHtml::img("kumbiaphp.png", APP_NAME, array('style'=>'height: 30px; margin-top: 2.5%')), '' , FALSE); ?>                
+            </div>
+            <div class="slide-navbar">                
+                <?php echo DwMenu::phone(); ?>
+                <ul class="nav navbar-nav">                                    
+                    <li class="divider"></li>
+                    <li><?php echo DwHtml::link('sistema/mi_cuenta/', 'Mi Cuenta'); ?></li>
+                    <li><?php echo DwHtml::link('sad/faq/', 'Centro de ayuda'); ?></li>
+                    <li class="divider"></li>                    
+                    <li><?php echo DwHtml::link('login/salir/', 'Salir', array('class'=>'no-load'), 'fa-power-off', FALSE); ?></li>
+                    <li class="divider"></li>                       
+                    <li>                        
+                        <div class="text-center">
+                            <p style="color: #f5f5f5">&copy; Copyright <?php echo date("Y"); ?>.</p>
+                            <p style="color: #f5f5f5">Todos los derechos reservados.</p>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        
+        <div class="pull-right hidden-xs">
             <ul class="nav navbar-nav">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"><i class="icon-user"></i> <?php echo Session::get('login'); ?> <b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu" style="left: auto; right: 0 !important">                                
-                        <li><?php echo DwHtml::link('sistema/mi_cuenta/', 'Perfil'); ?></li>
+                        <li><?php echo DwHtml::link('sistema/mi_cuenta/', 'Mi Cuenta'); ?></li>
                         <li class="divider"></li>
                         <li><?php echo DwHtml::link('sistema/login/salir', 'Salir', array('class'=>'no-load'), 'icon-off', FALSE); ?></li>                
                     </ul>
@@ -24,12 +54,6 @@
             </ul>
         </div>       
         
-    </div>    
-    
-    <div class="visible-xs">            
-        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
-            <?php echo DwMenu::phone(); ?>                
-        </nav>        
-    </div>
+    </div>            
     
 </header>
