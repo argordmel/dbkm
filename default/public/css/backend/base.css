@@ -170,6 +170,8 @@ body.slide-active { overflow-x: hidden }
 #slide-nav .navbar-toggle.slide-active .icon-bar { background: orange }
 .navbar-header { position: relative }
 .slide-navbar { overflow: auto; }
+.slide-navbar a { font-size: 18px; margin: 5px 0; }
+.slide-navbar > ul > li { margin: 5px 0px; }
 
 @media (max-width:767px) {
     .navbar-inverse { background: #222222; }

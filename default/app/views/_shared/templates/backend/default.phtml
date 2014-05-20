@@ -4,7 +4,8 @@
         <title><?php echo $page_title; ?></title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta charset="<?php echo APP_CHARSET; ?>">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+        <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
         <meta name="robots" content="noindex,nofollow" /> 
         <link rel="shortcut icon" href="<?php echo PUBLIC_PATH; ?>img/favicon.ico" type="image/x-icon" />
         <?php Tag::css('bootstrap/bootstrap.min'); ?>
@@ -17,10 +18,8 @@
         <?php Tag::css('backend/base'); ?>
         <?php Tag::css('backend/style'); ?>
         <?php Tag::css('backend/themes/'.SKIN.'/'.SKIN); ?>
-        <?php echo Html::includeCss(); ?>
-        <?php if(!APP_LOCAL) { ?>
-            <link href="http://fonts.googleapis.com/css?family=Play:400,700" rel="stylesheet" type="text/css">
-        <?php } ?>
+        <?php echo Html::includeCss(); ?>        
+        <link href="http://fonts.googleapis.com/css?family=Play:400,700" rel="stylesheet" type="text/css">        
         <style type="text/css">
             <?php if(APP_MAYUS) { ?>            
             .input-lower, .input-email, email, .mask-email, .js-datepicker { text-transform: none !important; font-size: 14px !important}
@@ -48,7 +47,7 @@
 
         <?php View::partial('backend/header'); ?>
 
-        <?php if(!IS_MOBILE) {?>
+        <?php if(IS_TABLET || IS_DESKTOP) {?>
             <?php View::partial('backend/main'); ?>
         <?php } ?>
 
@@ -82,7 +81,7 @@
 
 
         <script type="text/javascript">
-            <?php if(!IS_MOBILE) { ?>
+            <?php if(IS_TABLET || IS_DESKTOP) {?>
             $(document).ready(function() {
                 url = (window.location.hash.lenth >1) ? window.hash : window.location.pathname;
                 url = url.split('order')[0].split('pag')[0];
