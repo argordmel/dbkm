@@ -2,12 +2,12 @@
 /**
  * Descripcion: Controlador que se encarga de la gestión de los menús del sistema
  *
- * @category    
- * @package     Controllers 
+ * @category
+ * @package     Controllers
  */
 
 class MenusController extends BackendController {
-    
+
     /**
      * Método que se ejecuta antes de cualquier acción
      */
@@ -15,26 +15,26 @@ class MenusController extends BackendController {
         //Se cambia el nombre del módulo actual
         $this->page_module = 'Gestión de menús';
     }
-    
+
     /**
      * Método principal
      */
     public function index() {
         Redirect::toAction('listar');
     }
-    
+
     /**
      * Método para listar
      */
-    public function listar($order='order.posicion.asc', $page='page.1') { 
+    public function listar($order='order.posicion.asc', $page='page.1') {
         $page = (Filter::get($page, 'page') > 0) ? Filter::get($page, 'page') : 1;
         $menu = new Menu();
-        $this->menus = $menu->getListadoMenuPadres(); 
-        $this->front = $menu->getListadoMenuPadres(Menu::FRONTEND);        
-        $this->order = $order;        
+        $this->menus = $menu->getListadoEdicion(Menu::BACKEND);
+        $this->front = $menu->getListadoEdicion(Menu::FRONTEND);
+        $this->order = $order;
         $this->page_title = 'Listado de menús del sistema';
     }
-    
+
     /**
      * Método para agregar
      */
@@ -45,33 +45,33 @@ class MenusController extends BackendController {
                     Flash::valid('El menú se ha creado correctamente! <br/>Por favor recarga la página para verificar los cambios.');
                 } else {
                     Flash::valid('El menú se ha creado correctamente!');
-                }                
+                }
                 return Redirect::toAction('listar');
-            }          
+            }
         }
         $this->page_title = 'Agregar menú';
     }
-    
+
     /**
      * Método para editar
      */
-    public function editar($key) {        
+    public function editar($key) {
         if(!$id = Security::getKey($key, 'upd_menu', 'int')) {
             return Redirect::toAction('listar');
         }
-        
+
         $menu = new Menu();
         if(!$menu->find_first($id)) {
             Flash::error('Lo sentimos, pero no se ha podido establecer la información del menú');
             return Redirect::toAction('listar');
         }
-        
+
         if($menu->id <= 2) {
             Flash::warning('Lo sentimos, pero este menú no se puede editar.');
             return Redirect::toAction('listar');
         }
-        
-        if(Input::hasPost('menu')) {            
+
+        if(Input::hasPost('menu')) {
             if(Menu::setMenu('update', Input::post('menu'), array('id'=>$id))){
                 if(APP_AJAX) {
                     Flash::valid('El menú se ha actualizado correctamente! <br/>Por favor recarga la página para verificar los cambios.');
@@ -81,23 +81,23 @@ class MenusController extends BackendController {
                 return Redirect::toAction('listar');
             }
         }
-            
+
         $this->menu = $menu;
         $this->page_title = 'Actualizar menú';
-        
+
     }
-    
+
     /**
      * Método para inactivar/reactivar
      */
     public function estado($tipo, $key) {
         if(!$id = Security::getKey($key, $tipo.'_menu', 'int')) {
             return Redirect::toAction('listar');
-        }        
-        
+        }
+
         $menu = new Menu();
         if(!$menu->find_first($id)) {
-            Flash::error('Lo sentimos, pero no se ha podido establecer la información del menú');            
+            Flash::error('Lo sentimos, pero no se ha podido establecer la información del menú');
         } else {
             if($menu->id <= 2) {
                 Flash::warning('Lo sentimos, pero este menú no se puede editar.');
@@ -112,25 +112,25 @@ class MenusController extends BackendController {
                 if(Menu::setMenu('update', $menu->to_array(), array('id'=>$id, 'activo'=>$estado))){
                     ($estado==Menu::ACTIVO) ? Flash::valid('El menú se ha reactivado correctamente!') : Flash::valid('El menú se ha inactivado correctamente!');
                 }
-            }                
+            }
         }
-        
+
         return Redirect::toAction('listar');
     }
-    
+
     /**
      * Método para eliminar
      */
-    public function eliminar($key) {         
+    public function eliminar($key) {
         if(!$id = Security::getKey($key, 'eliminar_menu', 'int')) {
             return Redirect::toAction('listar');
-        }        
-        
+        }
+
         $menu = new Menu();
         if(!$menu->find_first($id)) {
             Flash::error('Lo sentimos, pero no se ha podido establecer la información del menú');
             return Redirect::toAction('listar');
-        }      
+        }
         if($menu->id <= 2) {
             Flash::warning('Lo sentimos, pero este menú no se puede eliminar.');
             return Redirect::toAction('listar');
@@ -144,9 +144,9 @@ class MenusController extends BackendController {
         } catch(KumbiaException $e) {
             Flash::error('Este menú no se puede eliminar porque se encuentra relacionado con otro registro.');
         }
-        
+
         return Redirect::toAction('listar');
     }
-    
+
 }
 
