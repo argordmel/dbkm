@@ -1,39 +1,77 @@
-![KumbiaPHP](http://proto.kumbiaphp.com/img/kumbiaphp.png)
-Fácil, rápido y en español
----
-Bienvenidos a KumbiaPHP Framework 
+DBKM Daily Backend Manager
+====================
 
-Preparando la salida de la beta2.
+Backend para aplicaciones web con KumbiaPHP con la elegancia de Bootstrap de Twitter.
 
-Manual en construcción de la beta2: http://goo.gl/aPgvZ
+Con el DBKM podrás gestionar de manera rápida y segura los usuarios, perfiles, recursos, menús, y mucho más!.
 
-Rápida introducción a lo nuevo de la beta2 (faltan por añadir): http://wiki.kumbiaphp.com/KumbiaPHP_Framework_Versi%C3%B3n_1.0_Beta2
+.. image:: http://soyprogramador.liz.mx/wp-content/uploads/2013/01/image5.png
 
-CRUD en beta2: http://wiki.kumbiaphp.com/Beta2_CRUD_en_KumbiaPHP_Framework
+`Demo <http://dbkm.dailyscript.com.co>`_
+-------------------
 
-API para usuarios de la beta2: http://www.kumbiaphp.com/api/beta2/
+Usuario: admin
 
-API para los desarrolladores del core: http://www.kumbiaphp.com/api/beta2-dev/
+Pass: 123456
 
-Seguimos trabajando para actualizar bien el phpdoc y tener actualizado el API.
+Documentación
+-------------------
 
+`Guía de inicio rápido <doc/index.rst>`_
 
-Comunidad
-===
-http://www.kumbiaphp.com  Web oficial  (pronto en KumbiaPHP http://proto.kumbiaphp.com, bienvenida ayuda con el diseño)
+Instalación
+-------------------
+Para instalar el DBKM simplemente lo descargas, creas una base de datos e importas el archivo backup-1.sql.gz ubicado en la carpeta "app/temp/backup", editas el databases.ini y databases.org.ini con los parámetros de conexión.
 
-http://wiki.kumbiaphp.com Wiki
+Usuario: admin
 
-http://foro.kumbiaphp.com Foro de KumbiaPHP
+Pass: 123456
 
-http://groups.google.com/group/kumbia/   Grupo de KumbiaPHP +1.500 programadores
+Perfiles
+-------------------
+La gestión de perfiles permite administrar los direfentes roles de los usuarios que acceden al sistema.
 
-irc://irc.freenode.org/#kumbiaphp  IRC
+Recursos
+-------------------
+Los recursos son las acciones o métodos que se pueden ejecutar en los controladores
 
-Largo historial de repos durante estos años ;)
+Privilegios
+-------------------
+Los privilegios son los recursos que puede acceder cada perfil creado, brindando una mayor seguridad y escalabilidad al sistema
 
-cvs(sf.net), svn(sf.net), bzr(launchpad.com) y ahora git(github.com)
+Menús
+-------------------
+La administración de menús permite gestionar los diferentes menús para que los usuarios accedan a los recursos.  Por ahora cada menú puede tener un submenú
 
-Licencia
-===
-New BSD
+Empresa
+-------------------
+Permite la administración de los datos básicos de la empresa
+
+Sucursales
+-------------------
+Si esta opción está habilitada, permite gestionar las sucursales de la empresa y asignarla a un usuario específico
+
+Accesos
+-------------------
+Permite la visualización de las entradas y salidas de los usuarios del sistema
+
+Backups
+-------------------
+Permite crear copias de seguridad y restaurar el sistema en un punto específico
+
+Auditorías
+-------------------
+Las acciones que realizan los usuarios en el sistema se registran para tener un control sobre los eventos generados.
+
+Visor de sucesos
+-------------------
+Si está activo, permite la visualización de los logs de las consultas generadas en la base de datos, para tener un control sobre la base de datos
+
+Mantenimiento
+-------------------
+Permite optimizar, vaciar el cache, desfragmentar y reparar (si es posible) las tablas de la base de datos
+
+Archivos de configuración
+-------------------
+Permite editar los diferentes archivos de configuración del sistema ubicados en la carpeta "config" de la aplicación
+
