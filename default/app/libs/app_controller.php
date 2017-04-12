@@ -26,7 +26,7 @@ class AppController extends Controller {
     }
 
     final protected function finalize() {
-        
+
     }
 
 }

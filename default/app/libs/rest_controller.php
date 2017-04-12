@@ -2,7 +2,7 @@
 
 /**
  * Controlador para manejar peticiones REST
- * 
+ *
  * Por defecto cada acción se llama como el método usado por el cliente
  * (GET, POST, PUT, DELETE, OPTIONS, HEADERS, PURGE...)
  * ademas se puede añadir mas acciones colocando delante el nombre del método
@@ -22,11 +22,11 @@ class RestController extends KumbiaRest {
      * ****************************************
      */
     final protected function initialize() {
-        
+
     }
 
     final protected function finalize() {
-        
+
     }
 
 }

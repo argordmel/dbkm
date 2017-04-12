@@ -7,32 +7,34 @@
  * @package     Helpers
  */
 
+require_once CORE_PATH . 'extensions/helpers/form.php';
+
 class DwForm extends Form {
-    
+
      /**
      * Contador para los labels, checbox y radios
      * @var int
      */
     protected static $_counter = 0;
-    
+
     /**
      * Contador para los formularios abiertos
      * @var int
      */
     protected static $_form = 1;
-    
+
     /**
      * Identificación del formulario abierto
      * @var array
      */
     protected static $_name = array();
-    
+
     /**
      * Tipo de estilo de formulario
      * @var string
      */
     protected static $_style='form-vertical';
-        
+
     /**
      * Variable que indica si muestra el label
      * @var boolean
@@ -44,10 +46,10 @@ class DwForm extends Form {
      * @var boolean
      */
     protected static $_help_block = false;
-    
+
     /**
      * Método que utiliza los atributos de un input o form para aplicar parámetros por defecto
-     * 
+     *
      * @param array $attrs
      * @param string $type
      * @return string
@@ -58,7 +60,7 @@ class DwForm extends Form {
             if(isset($attrs['class'])) {
                 if(preg_match("/\bno-ajax\b/i", $attrs['class'])) {
                     $formAjax = FALSE;
-                }                
+                }
                 //Verifico si está definida la clase para ajax, pero si no se encuentra el aplicativo para ajax
                 if(preg_match("/\bjs-remote\b/i", $attrs['class']) && !$formAjax) {
                     $formAjax = TRUE;
@@ -68,7 +70,7 @@ class DwForm extends Form {
                     //Verifico si está definida la clase para ajax
                     if(!preg_match("/\bjs-remote\b/i", $attrs['class'])) {
                         $attrs['class'] = 'js-remote '.$attrs['class'];
-                    }                   
+                    }
                 }
             } else {
                 //Asigno que pertenece a la clase de validación y si utiliza ajax
@@ -85,7 +87,7 @@ class DwForm extends Form {
                 $attrs['name'] = $attrs['id'];
             }
             //Verifico el estilo de formulario
-            self::setStyleForm((isset($attrs['form-style'])) ? $attrs['form-style'] : 'form-vertical');            
+            self::setStyleForm((isset($attrs['form-style'])) ? $attrs['form-style'] : 'form-vertical');
             //Mantengo la información del formulario
             self::$_name['id']      = $attrs['id'];
             self::$_name['name']    = $attrs['name'];
@@ -102,9 +104,9 @@ class DwForm extends Form {
             } else {
                 //Si no está definida las clases las asigno según el tipo
                 $attrs['class'] = ( ($type != 'checkbox') && ($type != 'radio') ) ? "form-control span12 " : "";
-            }            
+            }
             //Verifico si se utiliza la mayúscula solo para los text y textarea
-            if( ($type=='text') OR ($type=='textarea') ) {                
+            if( ($type=='text') OR ($type=='textarea') ) {
                 if( (APP_MAYUS && !preg_match("/\binput-lower\b/i", $attrs['class']) ) OR preg_match("/\binput-upper\b/i", $attrs['class']) ) {
                     $attrs['onchange'] = !isset($attrs['onchange']) ? 'this.value=this.value.toUpperCase()' : rtrim($attrs['onchange'],';').'; this.value=this.value.toUpperCase()';
                 }
@@ -114,10 +116,10 @@ class DwForm extends Form {
                 if(!preg_match("/\bjs-upload\b/i", $attrs['class'])) {
                     $attrs['class'] = 'js-upload '.$attrs['class'];
                 }
-                //Reviso si está la url a donde envía               
+                //Reviso si está la url a donde envía
                 if(!isset($attrs['data-to'])) {
                     Flash::error('No se ha especificado la url para la carga de archivo(s).');
-                }                
+                }
                 //Reviso el tipo de archivo
                 if(!isset($attrs['data-files'])) {
                     $attrs['data-files'] = '@';
@@ -148,10 +150,10 @@ class DwForm extends Form {
         }
         return $attrs;
     }
-    
+
     /**
      * Método para obtener el id y el nombre de un campo bajo el patrón modelo.campo
-     * 
+     *
      * @param string $field
      * @return array
      */
@@ -166,20 +168,20 @@ class DwForm extends Form {
         }
         return array('id' => $id, 'name' => $name);
     }
-    
+
     /**
      * Método para setear el stilo del formulario
      */
     public static function setStyleForm($style='form-vertical') {
-        self::$_style = $style;    
+        self::$_style = $style;
         //Valido si se muestra el label o el help block según el tipo de formulario
         self::$_show_label = (self::$_style=='form-search' OR self::$_style=='form-inline') ? FALSE : TRUE;
         self::$_help_block = (self::$_style=='form-search') ? FALSE : TRUE;
     }
-    
+
     /**
      * Método para abrir y cerrar un div controls en los input
-     * 
+     *
      * @staticvar boolean $i
      * @return string
      */
@@ -195,29 +197,29 @@ class DwForm extends Form {
         }
         return null;
     }
-    
+
     /**
      * Método para generar automáticamente las etiquetas <label> de los input
-     * 
+     *
      * @param string $label Texto a mostrar
      * @param string $field Nombre del campo asignado
      * @param array $attrs Atributos de la etiqueta
      * @param boolean $req Indica si se muestra el campo como requerido
-     * @param string $type Nombre del tipo de input: radio, checkbox o textarea     
+     * @param string $type Nombre del tipo de input: radio, checkbox o textarea
      * @return string
      */
     public static function label($text, $field, $attrs=NULL, $req='', $type='text') {
         //Extraigo el id y name
         if(!empty($field)) {
             extract(self::_getFieldName($field));
-        }        
+        }
         if(!is_array($attrs)) {
             $attrs = array();
         }
         if(self::$_style == 'form-horizontal') {
             $attrs['class'] =  'col-md-2 '.$attrs['class'];
         }
-        
+
         $label = '';
         if($text!='') {
             $id = (empty($id)) ? NULL : $id; //Por si el field=NULL
@@ -237,10 +239,10 @@ class DwForm extends Form {
         }
         return $label;
     }
-    
+
     /**
      * Método que devuelve el help-block de un input
-     * 
+     *
      * @param string $help Texto a mostrar
      * @param string $field Nombre del campo
      * @return string
@@ -253,47 +255,47 @@ class DwForm extends Form {
         //Se arma el help
         $help = "<p class=\"help-block\">$help ";
         $help.= "<small class=\"help-error\"></small>";
-        $help.= '</p>';        
+        $help.= '</p>';
         return $help;
     }
-    
+
     /**
      * Abre una etiqueta de formulario
-     * 
+     *
      * @param string $action Lugar al que envía
      * @param string $method Método de envío
-     * @param string $attrs Atrributos     
+     * @param string $attrs Atrributos
      * @return string
      */
     public static function open($action=null, $method='post', $attrs=null) {
-        
+
         $form = '';
         $attrs = self::_getAttrsClass($attrs, 'form'); //Verifico los atributos
-        
+
         //Verifico si se valida
         if( (preg_match("/\bjs-validate\b/i", $attrs['class'])) ) {
             $attrs['novalidate'] = 'novalidate';
         }
-        
+
         if($method=='') {
             $method= 'post';
         }
         $tmp_m = $method;
-        
+
         if(empty($action)) {
             extract(Router::get());
             $action = ($module)  ? "$module/$controller/$action/" : "$controller/$action/";
             if($parameters) {
                 $action.= join('/', $parameters).'/';
             }
-        }        
+        }
         $form.= parent::open($action, $tmp_m, $attrs);//Obtengo la etiqueta para abrir el formulario
         return $form.PHP_EOL;
     }
-    
+
     /**
      * Método para aplicar el foco a un input
-     * 
+     *
      * @param string $field Nombre del campo: modelo.campo
      * @return string
      */
@@ -302,30 +304,30 @@ class DwForm extends Form {
         extract(self::_getFieldName($field));
         return '<script text="type/javascript">$(function() { $("#'.$id.'").focus(); });</script>';
     }
-        
+
     /**
      * Método que genera un input date
-     * 
+     *
      * @param type $field Nombre del input
      * @param type $attrs Atributos del input
      * @param type $value Valor por defecto
      * @param type $label Detalle de la etiqueta label
-     * @param type $help Descripción del campo     
+     * @param type $help Descripción del campo
      * @return string
      */
-    public static function date($field, $attrs=null, $value=null, $label='', $help='') {        
+    public static function date($field, $attrs=null, $value=null, $label='', $help='') {
         //Tomo los nuevos atributos definidos en las clases
         $attrs = self::_getAttrsClass($attrs, 'date');
         //Armo el input
         $input = self::getControls();
         if(self::$_style=='form-search' OR self::$_style=='form-inline') {
             $attrs['placeholder'] = $label;
-        }                  
-        
+        }
+
         //Verifico si está definida la máscara mask-date
         if(!preg_match("/\bmask-date\b/i", $attrs['class'])) {
             $attrs['class'] = 'mask-date '.$attrs['class'];
-        }        
+        }
         //Armo el input del form
         if(!IS_DESKTOP) {
             $input.= '<div class="input-group date">';
@@ -337,10 +339,10 @@ class DwForm extends Form {
             if(!preg_match("/\binput-date\b/i", $attrs['class']) && !preg_match("/\binput-datetime\b/i", $attrs['class'])) {
                 $attrs['class'] = 'input-date '.$attrs['class'];
             }
-            $attrs['class'] = 'js-datepicker '.$attrs['class'];            
+            $attrs['class'] = 'js-datepicker '.$attrs['class'];
             $input.= parent::text($field, $attrs, $value);
-        }        
-        $input.= '<span class="input-group-addon"><i class="fa fa-calendar"></i></span>';                        
+        }
+        $input.= '<span class="input-group-addon"><i class="fa fa-calendar"></i></span>';
         $input.= '</div>';
         //Verifico si el formato del formulario muestra el help
         if(self::$_help_block) {
@@ -355,8 +357,8 @@ class DwForm extends Form {
         $label = ($label && self::$_show_label) ? self::label($label, $field, null, $attrs['class'])  : '';
         return '<div class="form-group">'.$label.$input.'</div>'.PHP_EOL;
     }
-    
-    
+
+
     /**
      * Método que genera un input text basandose en el bootstrap de twitter
      * @param type $field Nombre del input
@@ -374,14 +376,14 @@ class DwForm extends Form {
         $input = self::getControls();
         if(self::$_style=='form-search' OR self::$_style=='form-inline') {
             $attrs['placeholder'] = $label;
-        }  
+        }
         $prepend = FALSE;
         //Verifico si tiene un prepend
-        if(isset($attrs['input-group'])) {            
+        if(isset($attrs['input-group'])) {
             $input.= '<div class="input-group">';
             $input.= '<span class="input-group-addon">'.$attrs['input-group'].'</span>';
             $prepend = TRUE;
-            unset($attrs['input-group']);            
+            unset($attrs['input-group']);
         }
         //Armo el input del form
         $input.= parent::$type($field, $attrs, $value);
@@ -401,17 +403,17 @@ class DwForm extends Form {
         $label = ($label && self::$_show_label) ? self::label($label, $field, null, $attrs['class'])  : '';
         return '<div class="form-group">'.$label.$input.'</div>'.PHP_EOL;
     }
-    
-    
+
+
     /**
      * Método que genera un input tipo password
-     * 
+     *
      * @param type $field Nombre del input
      * @param type $attrs Atributos del input
      * @param type $value Valor por defecto
      * @param type $label Detalle de la etiqueta label
-     * @param type $help Descripción del campo     
-     * 
+     * @param type $help Descripción del campo
+     *
      * @return string
      */
     public static function pass($field, $attrs=null, $value=null, $label='', $help='') {
@@ -420,7 +422,7 @@ class DwForm extends Form {
     /**
      * Método para crear un select a partir de un array de objetos de ActiveRecord. <br />
      * Permite mostrar varios valores por fila y valor con slug
-     * 
+     *
      * @param string $field Nombre del select: modelo.campo
      * @param string, array $show Campo a mostrar de la consulta.  Es posible mostrar mas de un campo con array('campo1', 'campo2')
      * @param object $data Array de objetos. Puede dejarse nulo y carga automáticamente la data o indicar el modelo, método y parámetros
@@ -449,7 +451,7 @@ class DwForm extends Form {
         if(is_array($attrs)) { //Cargo los atributos
             $attrs = Tag::getAttrs($attrs);
         }
-        
+
         list($id, $name, $value) = self::getFieldData($field, $value);
 
         $options = '';
@@ -538,21 +540,21 @@ class DwForm extends Form {
         return '<div class="form-group">'.$label.$input.'</div>'.PHP_EOL;
 
     }
-    
-    
+
+
     /**
      * Método que genera un campo select
-     * 
+     *
      * @param type $field Nombre del input
      * @param array $data Datos a mostrar
      * @param type $attrs Atributos para el select
      * @param type $value Valor por defecto
      * @param type $label Texto a mostrar en la etiqueta label
      * @param type $help Texto a mostrar en el help-block
-     * 
+     *
      * @return string
      */
-    public static function select($field, $data=array(), $attrs = NULL, $value = NULL, $label='', $help='') {        
+    public static function select($field, $data=array(), $attrs = NULL, $value = NULL, $label='', $help='', $opt=NULL) {
         $attrs = self::_getAttrsClass($attrs, 'select');
         if(empty($data)) {
             $data = array(''=>'Selección');
@@ -570,10 +572,10 @@ class DwForm extends Form {
         $label = ($label && self::$_show_label) ? self::label($label, $field, null, $attrs['class'])  : '';
         return '<div class="form-group">'.$label.$input.'</div>'.PHP_EOL;
     }
-    
+
     /**
      * Método para crear un input tipo textarea
-     * 
+     *
      * @param string $field Nombre del input
      * @param array $attrs Atributos del input
      * @param string $value Valor del input
@@ -588,7 +590,7 @@ class DwForm extends Form {
         $input = self::getControls();
         if(self::$_style=='form-search' OR self::$_style=='form-inline') {
             $attrs['placeholder'] = $label;
-        }        
+        }
         //Tomo el input del form
         $input.= parent::textarea($field, $attrs, $value);
         //Verifico si el formato del formulario muestra el help
@@ -605,7 +607,7 @@ class DwForm extends Form {
         $label = ($label && self::$_show_label) ? self::label($label, $field, null, $attrs['class'])  : '';
         return '<div class="form-group">'.$label.$input.'</div>'.PHP_EOL;
     }
-    
+
     /**
      * Método que genera un input type="number"
      * @param type $field Nombre del input
@@ -622,7 +624,7 @@ class DwForm extends Form {
         }
         return self::text($field, $attrs, $value, $label, $help, $type);
     }
-   
+
     /**
      * Método que genera un input type="email"
      * @param type $field Nombre del input
@@ -648,7 +650,7 @@ class DwForm extends Form {
     public static function url($field, $attrs=null, $value=null, $label='', $help='') {
         return self::text($field, $attrs, $value, $label, $help, 'url');
     }
-    
+
     /**
      * Método que genera un input type="time"
      * @param type $field Nombre del input
@@ -665,12 +667,12 @@ class DwForm extends Form {
         $input = self::getControls();
         if(self::$_style=='form-search' OR self::$_style=='form-inline') {
             $attrs['placeholder'] = $label;
-        }                  
-        
+        }
+
         //Verifico si está definida la máscara mask-date
         if(!preg_match("/\bmask-time\b/i", $attrs['class'])) {
             $attrs['class'] = 'mask-time '.$attrs['class'];
-        }        
+        }
         //Armo el input del form
         if(!IS_DESKTOP) {
             $input.= '<div class="input-group date">';
@@ -682,10 +684,10 @@ class DwForm extends Form {
             if(!preg_match("/\binput-time\b/i", $attrs['class'])) {
                 $attrs['class'] = 'input-time '.$attrs['class'];
             }
-            $attrs['class'] = 'js-datepicker '.$attrs['class'];            
+            $attrs['class'] = 'js-datepicker '.$attrs['class'];
             $input.= parent::text($field, $attrs, $value);
-        }        
-        $input.= '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>';                        
+        }
+        $input.= '<span class="input-group-addon"><i class="fa fa-clock-o"></i></span>';
         $input.= '</div>';
         //Verifico si el formato del formulario muestra el help
         if(self::$_help_block) {
@@ -700,7 +702,7 @@ class DwForm extends Form {
         $label = ($label && self::$_show_label) ? self::label($label, $field, null, $attrs['class'])  : '';
         return '<div class="form-group">'.$label.$input.'</div>'.PHP_EOL;
     }
-    
+
     /**
      * Método para generar un select con un único registro
      * @param string $field Nombre del campo
@@ -716,7 +718,7 @@ class DwForm extends Form {
         $input = self::select($field, $data, $attrs, $value, $label, $help);
         return $input.PHP_EOL;
     }
-    
+
     /**
      * Método para abrir/cerrar un fieldset
      * @staticvar boolean $i
@@ -749,12 +751,12 @@ class DwForm extends Form {
         }
         return "<legend $attrs>$text</legend>";
     }
-    
+
     /**
      * Método que genera un input type="file"
      * @param type $field Nombre del input
-     * @param type $attrs Atributos del input     
-     * @param type $label Detalle de la etiqueta label     
+     * @param type $attrs Atributos del input
+     * @param type $label Detalle de la etiqueta label
      * @return string
      */
     public static function upload($field, $attrs=null, $label='') {
@@ -765,27 +767,27 @@ class DwForm extends Form {
         if(self::$_style=='form-search' OR self::$_style=='form-inline') {
             $attrs['placeholder'] = $label;
         }
-        
+
         if (is_array($attrs)) {
             $attrs2 = Tag::getAttrs($attrs);
         }
         // Obtiene name y id, y los carga en el scope
         list($id, $name, $value) = self::getFieldData($field, FALSE);
         $input.="<input id=\"$id\" name=\"$name\" type=\"file\" $attrs2/>";
-        
+
         //Cierro el controls
         $input.= self::getControls();
-        
+
         if(empty($label)) {
             $label = 'Examinar';
         }
-        
+
         //Verifico si tiene un label
         $label = "<span>$label</span>";
         return '<div class="form-group btn btn-success fileinput-button"><i class="fa fa-plus fa-pd-expand"></i>'.$label.$input.'</div>'.PHP_EOL;
-        
+
     }
-    
+
     /**
      * Método par generar un input="checkbox"
      * @param type $field Nombre del campo
@@ -797,21 +799,21 @@ class DwForm extends Form {
      */
     public static function check($field, $checkValue, $attrs = NULL, $checked = NULL, $label='') {
         //Tomo los nuevos atributos definidos en las clases
-        $attrs = self::_getAttrsClass($attrs, 'checkbox');                
-        $input = self::label($label, $field, null, $attrs['class'], 'checkbox');        
-        $input = str_replace('</label>', '', $input); //Quito el cierre de la etiqueta label        
-        //        
-        //Armo el input del form        
+        $attrs = self::_getAttrsClass($attrs, 'checkbox');
+        $input = self::label($label, $field, null, $attrs['class'], 'checkbox');
+        $input = str_replace('</label>', '', $input); //Quito el cierre de la etiqueta label
+        //
+        //Armo el input del form
         if (is_array($attrs)) {
             $attrs = Tag::getAttrs($attrs);
-        }        
-        
+        }
+
         // Obtiene name y id para el campo y los carga en el scope
         list($id, $name, $checked) = self::getFieldDataCheck($field, $checkValue, $checked);
-        
-        if(strpos($name, '[]') !== false)  {                        
-            $id = str_replace(array('[', ']'), '_', $id);            
-        } 
+
+        if(strpos($name, '[]') !== false)  {
+            $id = str_replace(array('[', ']'), '_', $id);
+        }
 
         if ($checked) {
             $checked = 'checked="checked"';
@@ -819,12 +821,12 @@ class DwForm extends Form {
         if($label) {
             self::$_counter--;//Para que tome el contador del label
         }
-        $input.= "<input id=\"$id".self::$_counter."\" name=\"$name\" type=\"checkbox\" value=\"$checkValue\" $attrs $checked/>"; 
-        self::$_counter++;//Para que siga                
+        $input.= "<input id=\"$id".self::$_counter."\" name=\"$name\" type=\"checkbox\" value=\"$checkValue\" $attrs $checked/>";
+        self::$_counter++;//Para que siga
         $input.= '</label>';//Cierro el label
         return $input.PHP_EOL;
     }
-    
+
     /**
      * Método par generar un input="radio"
      * @param type $field Nombre del campo
@@ -836,35 +838,35 @@ class DwForm extends Form {
      */
     public static function radio($field, $radioValue, $attrs = NULL, $checked = NULL, $label='') {
         //Tomo los nuevos atributos definidos en las clases
-        $attrs = self::_getAttrsClass($attrs, 'radio');                
-        $input = self::label($label, $field, null, $attrs['class'], 'radio');        
-        $input = str_replace('</label>', '', $input); //Quito el cierre de la etiqueta label        
-        
-        //Armo el input del form        
+        $attrs = self::_getAttrsClass($attrs, 'radio');
+        $input = self::label($label, $field, null, $attrs['class'], 'radio');
+        $input = str_replace('</label>', '', $input); //Quito el cierre de la etiqueta label
+
+        //Armo el input del form
         if (is_array($attrs)) {
             $attrs = Tag::getAttrs($attrs);
-        }        
-        
+        }
+
         // Obtiene name y id para el campo y los carga en el scope
         list($id, $name, $checked) = self::getFieldDataCheck($field, $radioValue, $checked);
-                
-        $id = str_replace(array('[', ']'), '_', $id);            
-        
+
+        $id = str_replace(array('[', ']'), '_', $id);
+
         if ($checked) {
             $checked = 'checked="checked"';
         }
         if($label) {
             self::$_counter--;//Para que tome el contador del label
         }
-        $input.= "<input id=\"$id".self::$_counter."\" name=\"$name\" type=\"radio\" value=\"$radioValue\" $attrs $checked/>"; 
-        self::$_counter++;//Para que siga                
+        $input.= "<input id=\"$id".self::$_counter."\" name=\"$name\" type=\"radio\" value=\"$radioValue\" $attrs $checked/>";
+        self::$_counter++;//Para que siga
         $input.= '</label>';//Cierro el label
         return $input.PHP_EOL;
-    }      
-            
+    }
+
     /**
      * Método para mostrar el botón para enviar un formulario
-     * 
+     *
      * @param string $title
      * @param string $icon
      * @param array $attrs
@@ -874,10 +876,10 @@ class DwForm extends Form {
     public static function send($title='Guardar registro', $icon='fa-save', $attrs=array(), $text='guardar') {
         return DwButton::save($title, $icon, $attrs, $text);
     }
-    
+
     /**
      * Método para mostrar el botón de cancelar
-     * 
+     *
      * @param string $redir
      * @param string $title
      * @param string $icon
@@ -886,31 +888,31 @@ class DwForm extends Form {
     public static function cancel($redir=NULL, $title='', $icon='fa-ban') {
         return DwButton::cancel($redir, $title, $icon);
     }
-    
+
     /**
      * Método para mostrar el botón de resetear el formulario
-     * 
+     *
      * @param string $icon
      * @return strig
      */
-    public static function reset($icon='fa-undo') {
+    public static function reset($icon='fa-undo', $form=NULL, $formUpdate=FALSE) {
         return DwButton::reset(self::$_name['id'], FALSE, $icon);
-    }   
-    
+    }
+
     /**
      * Método para avanzar en un tab
      */
     public static function nextTab() {
         return DwButton::nextTab();
     }
-    
+
     /**
      * Método para retroceder en un tab
      */
     public static function prevTab() {
         return DwButton::prevTab();
     }
-    
+
     /**
      * Método para generar un token en los formularios
      */
@@ -934,7 +936,7 @@ class DwForm extends Form {
             return false;
         }
     }
-    
+
     /**
      * Crea un botón tipo submit
      *

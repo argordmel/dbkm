@@ -5,7 +5,7 @@
     <?php View::process($page_module, $page_title, $set_title); ?>
 
     <div class="btn-toolbar btn-toolbar-top">
-        <div class="row">            
+        <div class="row">
             <div class="btn-actions">
                 <?php echo DwHtml::button("sistema/configuracion/", 'basic', array('class'=>'btn-success active'), 'fa-asterisk', APP_AJAX); ?>
                 <?php echo DwHtml::button("sistema/configuracion/config/", 'config all', array('class'=>'btn-info'), 'fa-asterisk', APP_AJAX); ?>
@@ -29,8 +29,6 @@
 
                     <?php echo DwForm::text('application.name', array('class'=>'input-lower input-required'), $config['application']['name'], 'Nombre del proyecto:'); ?>
 
-                    <?php echo DwForm::text('application.timezone', array('class'=>'input-lower input-required'), $config['application']['timezone'], 'Timezone:'); ?>
-
                     <?php echo DwForm::select('application.production', array('Off'=>'No', 'On'=>'Si'), array('class'=>'input-required'), $config['application']['production'], 'Proyecto en producción:'); ?>
 
                     <?php echo DwForm::select('application.database', array('development'=>'Development', 'production'=>'Production'), array('class'=>'input-required'), $config['application']['database'], 'Entorno de conexión:'); ?>
@@ -41,7 +39,7 @@
 
             <div class="col-md-1">&nbsp;</div>
 
-            <div class="col-md-4">                
+            <div class="col-md-4">
                 <?php echo DwForm::fieldset("Configuración personalizada"); ?>
                 <?php if(isset($config['custom'])) { ?>
                     <?php foreach($config['custom'] as $campo => $valor): ?>

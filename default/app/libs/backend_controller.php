@@ -15,11 +15,13 @@ require_once CORE_PATH . 'kumbia/controller.php';
  * @package Controller
  */
 
+require_once APP_PATH . 'extensions/helpers/dw_form.php';
+
 //Cargo los modelos básicos
 Load::models('sistema/usuario', 'sistema/menu');
 
 class BackendController extends Controller {
-    
+
     /**
     * Titulo de la página
     */
@@ -39,7 +41,7 @@ class BackendController extends Controller {
      * Variable que indica el cambio de título de la página en las respuestas ajax
      */
     public $set_title = TRUE;
-    
+
     /**
      * Inicio de transacciones
      */
@@ -47,7 +49,7 @@ class BackendController extends Controller {
 
 
     final protected function initialize() {
-        
+
         /**
          * Si el método de entrada es ajax, el tipo de respuesta es sólo la vista
          */
@@ -55,9 +57,9 @@ class BackendController extends Controller {
             View::template(null);
             if(!empty($_POST)) {
                 Session::set('change_url', TRUE);
-            }            
+            }
         }
-        
+
         /**
          * Verifico que haya iniciado sesión
          */
@@ -69,16 +71,16 @@ class BackendController extends Controller {
                 if($this->module_name == 'reporte') {
                     View::error();
                 } else {
-                    (Input::isAjax()) ? View::redirect('sistema/login/entrar/', TRUE) : Redirect::to('sistema/login/entrar/');                    
+                    (Input::isAjax()) ? View::redirect('sistema/login/entrar/', TRUE) : Redirect::to('sistema/login/entrar/');
                 }
                 return false;
             }
         } else if( DwAuth::isLogged() && $this->controller_name!='login' ) {
-            
+
             if(!defined('SKIN')) {
                 define('SKIN', Session::get('tema'));
             }
-            
+
             $acl = new DwAcl(); //Cargo los permisos y templates
             if (!$acl->check(Session::get('perfil_id'))) {
                 Flash::error('Tu no posees privilegios para acceder a <b>' . Router::get('route') . '</b>');
@@ -87,10 +89,10 @@ class BackendController extends Controller {
                     header('http/1.1 403 forbidden'); //Agrego la cabecera de forbidden
                 } else {
                     View::select(NULL);
-                }               
+                }
                 return FALSE;
             }
-            
+
             if(APP_UPDATE && (Session::get('perfil_id') != Perfil::SUPER_USUARIO) ) { //Solo el super usuario puede hacer todo
                 if($this->module_name!='dashboard' && $this->controller_name!='index') {
                     $msj = 'Estamos en labores de actualización y mantenimiento.';
@@ -113,12 +115,12 @@ class BackendController extends Controller {
 
     final protected function finalize() {
         $this->page_title = trim($this->page_title).' | '.APP_NAME;
-        
+
         //Se muestra la vista según el tipo de reporte
         if(Router::get('module') == 'reporte') {
             View::report($this->page_format);
         }
-        
+
         //Se verifica si se cambia el título de la página, cuando se hacen peticiones por ajax
         if($this->set_title && Input::isAjax()) {
             $this->set_title = TRUE;

@@ -27,7 +27,7 @@ class AdminController extends Controller
 
     final protected function finalize()
     {
-        
+
     }
 
 }

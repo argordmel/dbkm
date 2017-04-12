@@ -45,7 +45,8 @@ class DwHtml extends Html {
             if(!preg_match('/^(http|ftp|https)\:\/\/+[a-z0-9\.\_-]+$/i', $action)) {
                 $extensions = 'ogg|ogv|svg|svgz|eot|otf|woff|mp4|ttf|rss|atom|jpg|jpeg|gif|png|ico|zip|tgz|gz|rar|bz2|doc|docx|xls|xlsx|exe|ppt|pptx|tar|mid|midi|wav|bmp|rtf';
                 $array      = explode('|', $extensions);
-                $temp       = end(explode('.', $action));
+                $temp       = explode('.', $action);
+                $temp       = end($temp);
                 if(in_array($temp, $array)) {
                     $action = PUBLIC_PATH.trim($action, '/');
                 } else {
