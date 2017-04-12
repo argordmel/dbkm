@@ -14,18 +14,18 @@
  *
  * @category   Kumbia
  * @package    Acl
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
  * @see AclRole
  */
-include CORE_PATH . 'libs/acl/role/role.php';
+include __DIR__ .'/role/role.php';
 
 /**
  * @see AclResource
  */
-include CORE_PATH . 'libs/acl/resource/resource.php';
+include __DIR__ .'/resource/resource.php';
 
 /**
  * Listas ACL (Access Control List)
@@ -48,9 +48,9 @@ include CORE_PATH . 'libs/acl/resource/resource.php';
  *
  * @category   Kumbia
  * @package    Acl
+ * @deprecated 1.0 use ACL2
  */
-class Acl
-{
+class Acl {
 
     /**
      * Nombres de Roles en la lista ACL
@@ -105,16 +105,15 @@ class Acl
      * Ej:
      * <code>$acl->add_role(new Acl_Role('administrador'), 'consultor');</code>
      *
-     * @param string $roleObject
-     * @return boolean
+     * @param AclRole $roleObject
+     * @return false|null
      */
-    public function add_role(AclRole $roleObject, $access_inherits='')
-    {
+    public function add_role(AclRole $roleObject, $access_inherits = '') {
         if (in_array($roleObject->name, $this->roles_names)) {
             return false;
         }
-        $this->roles[] = $roleObject;
-        $this->roles_names[] = $roleObject->name;
+        $this->roles[]                             = $roleObject;
+        $this->roles_names[]                       = $roleObject->name;
         $this->access[$roleObject->name]['*']['*'] = 'A';
         if ($access_inherits) {
             $this->add_inherit($roleObject->name, $access_inherits);
@@ -127,8 +126,7 @@ class Acl
      * @param string $role
      * @param string $role_to_inherit
      */
-    public function add_inherit($role, $role_to_inherit)
-    {
+    public function add_inherit($role, $role_to_inherit) {
         if (!in_array($role, $this->roles_names)) {
             return false;
         }
@@ -169,8 +167,7 @@ class Acl
      * @param string $role_name
      * @return boolean
      */
-    public function is_role($role_name)
-    {
+    public function is_role($role_name) {
         return in_array($role_name, $this->roles_names);
     }
 
@@ -181,8 +178,7 @@ class Acl
      * @param string $resource_name
      * @return boolean
      */
-    public function is_resource($resource_name)
-    {
+    public function is_resource($resource_name) {
         return in_array($resource_name, $this->resources_names);
     }
 
@@ -202,14 +198,13 @@ class Acl
      * </code>
      *
      * @param AclResource $resource
-     * @return boolean
+     * @return boolean|null
      */
-    public function add_resource(AclResource $resource)
-    {
+    public function add_resource(AclResource $resource) {
         if (!in_array($resource->name, $this->resources)) {
-            $this->resources[] = $resource;
+            $this->resources[]                  = $resource;
             $this->access_list[$resource->name] = array();
-            $this->resources_names[] = $resource->name;
+            $this->resources_names[]            = $resource->name;
         }
         if (func_num_args() > 1) {
             $access_list = func_get_args();
@@ -221,11 +216,10 @@ class Acl
     /**
      * Agrega accesos a un Resource
      *
-     * @param $resource
+     * @param string $resource
      * @param $access_list
      */
-    public function add_resource_access($resource, $access_list)
-    {
+    public function add_resource_access($resource, $access_list) {
         if (is_array($access_list)) {
             foreach ($access_list as $access_name) {
                 if (!in_array($access_name, $this->access_list[$resource])) {
@@ -245,8 +239,7 @@ class Acl
      * @param string $resource
      * @param mixed $access_list
      */
-    public function drop_resource_access($resource, $access_list)
-    {
+    public function drop_resource_access($resource, $access_list) {
         if (is_array($access_list)) {
             foreach ($access_list as $access_name) {
                 if (in_array($access_name, $this->access_list[$resource])) {
@@ -293,8 +286,7 @@ class Acl
      * @param string $resource
      * @param mixed $access
      */
-    public function allow($role, $resource, $access)
-    {
+    public function allow($role, $resource, $access) {
         if (!in_array($role, $this->roles_names)) {
             throw new KumbiaException("No existe el rol '$role' en la lista");
 
@@ -347,8 +339,7 @@ class Acl
      * @param string $resource
      * @param mixed $access
      */
-    public function deny($role, $resource, $access)
-    {
+    public function deny($role, $resource, $access) {
         if (!in_array($role, $this->roles_names)) {
             throw new KumbiaException("No existe el rol '$role' en la lista");
 
@@ -393,11 +384,10 @@ class Acl
      *
      * @param string $role
      * @param string $resource
-     * @param mixed $access
-     * @return boolean
+     * @param mixed $access_list
+     * @return boolean|null
      */
-    public function is_allowed($role, $resource, $access_list)
-    {
+    public function is_allowed($role, $resource, $access_list) {
         if (!in_array($role, $this->roles_names)) {
             throw new KumbiaException("El rol '$role' no existe en la lista en acl::is_allowed");
 
@@ -422,12 +412,15 @@ class Acl
 
         /* foreach($this->access[$role] as ){
 
-          } */
+        } */
         // FIXME: Por lo pronto hacemos esta validación, luego se mejorará
-        if (!isset($this->access[$role][$resource][$access_list]))
+        if (!isset($this->access[$role][$resource][$access_list])) {
             return false;
-        if ($this->access[$role][$resource][$access_list] == "A")
+        }
+
+        if ($this->access[$role][$resource][$access_list] == "A") {
             return true;
+        }
     }
 
     /**
@@ -436,15 +429,14 @@ class Acl
      *
      * @access private
      */
-    private function rebuild_access_list()
-    {
-        for ($i = 0; $i <= ceil(count($this->roles) * count($this->roles) / 2); $i++) {
+    private function rebuild_access_list() {
+        for ($i = 0; $i <= ceil(count($this->roles)*count($this->roles)/2); $i++) {
             foreach ($this->roles_names as $role) {
                 if (isset($this->role_inherits[$role])) {
                     foreach ($this->role_inherits[$role] as $role_inherit) {
                         if (isset($this->access[$role_inherit])) {
                             foreach ($this->access[$role_inherit] as $resource_name => $access) {
-                                foreach ($access as $access_name => $value) {
+                                foreach ($access as $access_name                       => $value) {
                                     if (!in_array($access_name, $this->access_list[$resource_name])) {
                                         unset($this->access[$role_inherit][$resource_name][$access_name]);
                                     } else {

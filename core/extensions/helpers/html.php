@@ -13,8 +13,8 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * @category   KumbiaPHP
- * @package    Helpers 
- * @copyright  Copyright (c) 2005-2014 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @package    Helpers
+ * @copyright  Copyright (c) 2005 - 2017 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -27,13 +27,6 @@
 class Html
 {
 
-    /**
-     * Alternador para tabla zebra
-     *
-     * @var boolean
-     * @deprecated
-     */
-    protected static $_trClassAlternate = TRUE;
     /**
      * Metatags
      *
@@ -49,7 +42,7 @@ class Html
 
     /**
      * Crea un enlace usando la constante PUBLIC_PATH, para que siempre funcione
-     * 
+     *
      * @example Html::link
      * echo Html::link('controller/action','Enlace')
      * Crea un enlace a ese controller y acción con el nombre Enlace
@@ -59,7 +52,7 @@ class Html
      * @param string|array $attrs Atributos adicionales
      * @return string
      */
-    public static function link($action, $text, $attrs = NULL)
+    public static function link($action, $text, $attrs = '')
     {
         if (is_array($attrs)) {
             $attrs = Tag::getAttrs($attrs);
@@ -71,20 +64,17 @@ class Html
      * Crea un enlace a una acción del mismo controller que estemos
      *
      * @example Html::linkAction
-     * echo Html::linkAction('accion/','Enlace a la acción del mismo controller') 
+     * echo Html::linkAction('accion/','Enlace a la acción del mismo controller')
      *
      * @param string $action
      * @param string $text Texto a mostrar
      * @param string|array $attrs Atributos adicionales
      * @return string
      */
-    public static function linkAction($action, $text, $attrs = NULL)
+    public static function linkAction($action, $text, $attrs = '')
     {
-        if (is_array($attrs)) {
-            $attrs = Tag::getAttrs($attrs);
-        }
-
-        return '<a href="' . PUBLIC_PATH . Router::get('controller_path') . "/$action\" $attrs >$text</a>";
+        $action = Router::get('controller_path') . "/$action";
+        return self::link($action, $text, $attrs);
     }
 
     /**
@@ -95,44 +85,9 @@ class Html
      * @param string|array $attrs Atributos adicionales
      * @return string
      */
-    public static function img($src, $alt=NULL, $attrs = NULL)
+    public static function img($src, $alt='', $attrs = '')
     {
-        if (is_array($attrs)) {
-            $attrs = Tag::getAttrs($attrs);
-        }
-        return '<img src="' . PUBLIC_PATH . "img/$src\" alt=\"$alt\" $attrs />";
-    }
-
-    /**
-     * Aplica estilo zebra a una tabla.
-     *
-     * @param string $class class css
-     * @param string|array $attrs
-     * @return string
-     * @deprecated Mejor usar CSS
-     */
-    public static function trClass($class, $attrs = NULL)
-    {
-        if (is_array($attrs)) {
-            $attrs = Tag::getAttrs($attrs);
-        }
-        if (self::$_trClassAlternate) {
-            self::$_trClassAlternate = FALSE;
-            return "<tr class='$class' $attrs >";
-        } else {
-            self::$_trClassAlternate = TRUE;
-            return "<tr $attrs >";
-        }
-    }
-
-    /**
-     * Inicia el alternador de clase para tabla zebra
-     *
-     * @deprecated Mejor usar CSS
-     */
-    public static function trClassStart()
-    {
-        self::$_trClassAlternate = TRUE;
+        return '<img src="' . PUBLIC_PATH . "img/$src\" alt=\"$alt\" ".Tag::getAttrs($attrs).' />';
     }
 
     /**
@@ -141,7 +96,7 @@ class Html
      * @param string $content contenido del metatag
      * @param string|array $attrs atributos
      */
-    public static function meta($content, $attrs = NULL)
+    public static function meta($content, $attrs = '')
     {
         if (is_array($attrs)) {
             $attrs = Tag::getAttrs($attrs);
@@ -165,10 +120,10 @@ class Html
      *
      * @param array $array Array con el contenido del metatag
      * @param string $type por defecto ul, y si no ol
-     * @param string|array $attrs atributos 
+     * @param string|array $attrs atributos
      * @return string
      */
-    public static function lists($array, $type = 'ul', $attrs = NULL)
+    public static function lists($array, $type = 'ul', $attrs = '')
     {
         if (is_array($attrs)) {
             $attrs = Tag::getAttrs($attrs);
@@ -203,7 +158,7 @@ class Html
      * @param string $href direccion url del recurso a enlazar
      * @param string|array $attrs atributos
      */
-    public static function headLink($href, $attrs = NULL)
+    public static function headLink($href, $attrs = '')
     {
         if (is_array($attrs)) {
             $attrs = Tag::getAttrs($attrs);
@@ -218,7 +173,7 @@ class Html
      * @param string $action ruta de accion
      * @param string|array $attrs atributos
      */
-    public static function headLinkAction($action, $attrs = NULL)
+    public static function headLinkAction($action, $attrs = '')
     {
         self::headLink(PUBLIC_PATH . $action, $attrs);
     }
@@ -229,7 +184,7 @@ class Html
      * @param string $resource ubicacion del recurso en public
      * @param string|array $attrs atributos
      */
-    public static function headLinkResource($resource, $attrs = NULL)
+    public static function headLinkResource($resource, $attrs = '')
     {
         self::headLink(PUBLIC_PATH . $resource, $attrs);
     }
@@ -264,8 +219,7 @@ class Html
      */
     public static function gravatar($email, $alt='gravatar', $size=40, $default='mm')
     {
-        $grav_url = "http://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . '?d=' . urlencode($default) . '&s=' . $size;
+        $grav_url = "//www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . '?d=' . urlencode($default) . '&amp;s=' . $size;
         return '<img src="' . $grav_url . '" alt="' . $alt . '" class="avatar" width="' . $size . '" height="' . $size . '" />';
     }
-
 }

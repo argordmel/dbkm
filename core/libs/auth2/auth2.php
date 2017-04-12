@@ -14,25 +14,25 @@
  *
  * @category   Kumbia
  * @package    Auth
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
 /**
  * Clase Base para la gestion de autenticación
- * 
+ *
  * @category   Kumbia
  * @package    Auth
+ * @deprecated 0.9 use KumbiaAuth
  */
-abstract class Auth2
-{
+abstract class Auth2 {
 
     /**
      * Mensaje de Error
      *
      * @var String
      */
-    protected $_error = null;
+    protected $_error = '';
     /**
      * Campo de la BD donde se guarda el nombre de usuario
      *
@@ -41,7 +41,7 @@ abstract class Auth2
     protected $_login = 'login';
     /**
      * Campo de la BD donde se guarda la clave/pass
-     * 
+     *
      * @var String
      */
     protected $_pass = 'password';
@@ -53,7 +53,7 @@ abstract class Auth2
     protected $_algos = 'md5';
     /**
      * Clave de sesion
-     * 
+     *
      * @var string
      */
     protected $_key = 'jt2D14KIdRs7LA==';
@@ -75,8 +75,7 @@ abstract class Auth2
      *
      * @param string $field nombre de campo que recibe por POST
      */
-    public function setLogin($field)
-    {
+    public function setLogin($field) {
         $this->_login = $field;
     }
 
@@ -85,8 +84,7 @@ abstract class Auth2
      *
      * @param string $field nombre de campo que recibe por POST
      */
-    public function setPass($field)
-    {
+    public function setPass($field) {
         $this->_pass = $field;
     }
 
@@ -95,8 +93,7 @@ abstract class Auth2
      *
      * @param string $key clave de sesion
      */
-    public function setKey($key)
-    {
+    public function setKey($key) {
         $this->_key = $key;
     }
 
@@ -108,26 +105,24 @@ abstract class Auth2
      * @param $mode string Valor opcional del método de identificación (auth)
      * @return bool
      */
-    public function identify($login=NULL, $pass=NULL, $mode=NULL)
-    {
+    public function identify($login = '', $pass = '', $mode = '') {
         if ($this->isValid()) {
             return TRUE;
         } else {
             // check
-            if ( ($mode=='auth') or (isset($_POST['mode']) && $_POST['mode'] === 'auth') ) {
-                $login = empty($login) ? Input::post($this->_login) : $login;
-                $pass = empty($pass) ? Input::post($this->_pass) : $pass;                
+            if (($mode == 'auth') || (isset($_POST['mode']) && $_POST['mode'] === 'auth')) {
+                $login = empty($login)?Input::post($this->_login):$login;
+                $pass  = empty($pass)?Input::post($this->_pass):$pass;
                 return $this->_check($login, $pass);
-            } else {
-                //FAIL
-                return FALSE;
             }
+            //FAIL
+            return false;
         }
     }
 
     /**
      * Realiza el proceso de autenticacion segun para cada adapter
-     * 
+     *
      * @param $username
      * @param $password
      * @return bool
@@ -140,19 +135,17 @@ abstract class Auth2
      * @param void
      * @return void
      */
-    public function logout()
-    {
+    public function logout() {
         Session::set($this->_key, FALSE);
         session_destroy();
     }
 
     /**
      * Verifica que exista una identidad válida para la session actual
-     * 
+     *
      * @return bool
      */
-    public function isValid()
-    {
+    public function isValid() {
         session_regenerate_id(TRUE);
 
         if ($this->_checkSession) {
@@ -164,56 +157,51 @@ abstract class Auth2
 
     /**
      * Verificar que no se inicie sesion desde browser distinto con la misma IP
-     * 
+     *
      */
-    private function _checkSession()
-    {
+    private function _checkSession() {
         Session::set('USERAGENT', $_SERVER['HTTP_USER_AGENT']);
         Session::set('REMOTEADDR', $_SERVER['REMOTE_ADDR']);
 
         if ($_SERVER['REMOTE_ADDR'] !== Session::get('REMOTEADDR') ||
-                $_SERVER['HTTP_USER_AGENT'] !== Session::get('USERAGENT')) {
+            $_SERVER['HTTP_USER_AGENT'] !== Session::get('USERAGENT')) {
             session_destroy();
         }
     }
 
     /**
      * Indica que no se inicie sesion desde browser distinto con la misma IP
-     * 
+     *
      * @param bool $check
      */
-    public function setCheckSession($check)
-    {
+    public function setCheckSession($check) {
         $this->_checkSession = $check;
     }
 
     /**
      * Indica algoritmo de cifrado
-     * 
+     *
      * @param string $algos
      */
-    public function setAlgos($algos, $salt = NULL)
-    {
+    public function setAlgos($algos, $salt = '') {
         $this->_algos = $algos;
     }
 
     /**
      * Obtiene el mensaje de error
-     * 
+     *
      * @return string
      */
-    public function getError()
-    {
+    public function getError() {
         return $this->_error;
     }
 
     /**
      * Indica el mensaje de error
-     * 
+     *
      * @param string $error
      */
-    public function setError($error)
-    {
+    public function setError($error) {
         $this->_error = $error;
     }
 
@@ -221,8 +209,7 @@ abstract class Auth2
      * Logger de las operaciones Auth
      * @param $msg
      */
-    public static function log($msg)
-    {
+    public static function log($msg) {
         $date = date('Y-m-d', strtotime('now'));
         Logger::custom('AUTH', $msg, "auth-$date.log");
     }
@@ -232,14 +219,13 @@ abstract class Auth2
      *
      * @param string $adapter (model, openid, oauth)
      */
-    public static function factory($adapter = NULL)
-    {
+    public static function factory($adapter = '') {
         if (!$adapter) {
             $adapter = self::$_defaultAdapter;
         }
 
-        require_once CORE_PATH . "libs/auth2/adapters/{$adapter}_auth.php";
-        $class = $adapter . 'auth';
+        require_once __DIR__ ."/adapters/{$adapter}_auth.php";
+        $class = $adapter.'auth';
 
         return new $class;
     }
@@ -249,8 +235,7 @@ abstract class Auth2
      *
      * @param string $adapter nombre del adaptador por defecto
      */
-    public static function setDefault($adapter)
-    {
+    public static function setDefault($adapter) {
         self::$_defaultAdapter = $adapter;
     }
 

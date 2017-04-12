@@ -13,8 +13,8 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * @category   Kumbia
- * @package    Controller 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @package    Controller
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -52,12 +52,12 @@ class Controller
      */
     public $parameters;
     /**
-     * Limita la cantidad correcta de 
+     * Limita la cantidad correcta de
      * parametros de una action
      *
      * @var bool
      */
-    public $limit_params = TRUE;
+    public $limit_params = true;
     /**
      * Nombre del scaffold a usar
      *
@@ -66,79 +66,78 @@ class Controller
     public $scaffold;
 
     /**
+     * Data disponble para mostrar
+     */
+    public $data;
+
+    /**
      * Constructor
      *
-     * @param string $module modulo al que pertenece el controlador
-     * @param string $controller nombre del controlador
-     * @param string $action nombre de la accion
-     * @param array $parameters parametros enviados por url
+     * @param array $args
      */
-    public function __construct($module, $controller, $action, $parameters)
+    public function __construct($args)
     {
-        //TODO: enviar un objeto
-        $this->module_name = $module;
-        $this->controller_name = $controller;
-        $this->parameters = $parameters;
-        $this->action_name = $action;
+        /*modulo al que pertenece el controlador*/
+        $this->module_name = $args['module'];
+        $this->controller_name = $args['controller'];
+        $this->parameters = $args['parameters'];
+        $this->action_name = $args['action'];
+        View::select($args['action']);
+        View::setPath($args['controller_path']);
     }
 
     /**
      * BeforeFilter
-     * 
-     * @return bool
+     *
+     * @return false|null
      */
     protected function before_filter()
     {
-        
     }
 
     /**
      * AfterFilter
-     * 
-     * @return bool
+     *
+     * @return false|null
      */
     protected function after_filter()
     {
-        
     }
 
     /**
      * Initialize
-     * 
-     * @return bool
+     *
+     * @return false|null
      */
     protected function initialize()
     {
-        
     }
 
     /**
      * Finalize
-     * 
-     * @return bool
+     *
+     * @return false|null
      */
     protected function finalize()
     {
-
     }
 
     /**
      * Ejecuta los callback filter
      *
      * @param boolean $init filtros de inicio
-     * @return bool
+     * @return false|null
      */
-    final public function k_callback($init = FALSE)
+    final public function k_callback($init = false)
     {
         if ($init) {
-            if ($this->initialize() !== FALSE) {
+            if ($this->initialize() !== false) {
                 return $this->before_filter();
             }
-            return FALSE;
+            return false;
         }
 
         $this->after_filter();
         $this->finalize();
     }
-
 }

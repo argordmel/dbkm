@@ -16,7 +16,7 @@
  *
  * @category   Kumbia
  * @package    Core
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
@@ -35,6 +35,14 @@ require CORE_PATH . 'kumbia/config.php';
  * @see Load
  */
 require CORE_PATH . 'kumbia/load.php';
+
+/**
+ * modificado por nelsonrojas
+ * el problema: al usar console controller create produce un error en linea 85.
+ *              no reconoce FileUtil
+ * solucion: incluir la libreria con la linea siguiente
+ */
+require CORE_PATH . 'libs/file_util/file_util.php';
 
 /**
  * Manejador de consolas de KumbiaPHP
@@ -191,7 +199,7 @@ class Console
      * @param array $values array de valores validos para entrada
      * @return string Valor leido desde la consola
      * */
-    public static function input($message, $values=NULL)
+    public static function input($message, $values = null)
     {
         // abre la entrada
         $stdin = fopen('php://stdin', 'r');

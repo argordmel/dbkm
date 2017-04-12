@@ -13,13 +13,13 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * Validate es una Clase que realiza validaciones Lógicas
- * 
+ *
  * @category   KumbiaPHP
- * @package    validate 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @package    validate
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
-require dirname(__FILE__).'/validations.php';
+require __DIR__.'/validations.php';
 class Validate
 {
     /**
@@ -39,17 +39,17 @@ class Validate
      * @var array
      */
     protected $rules = array();
-	/**
-	 * Contructor
-	 * @param Object $obj Objeto a validar
-	 */
-	
-	/**
-	 * Almacena si la variable a validar es un objeto antes de convertirlo
-	 * @var boolean
-	 */
-	protected $is_obj = false;
-    
+    /**
+     * Contructor
+     * @param Object $obj Objeto a validar
+     */
+
+    /**
+     * Almacena si la variable a validar es un objeto antes de convertirlo
+     * @var boolean
+     */
+    protected $is_obj = false;
+
     /**
      * El parametro $rules debe contener esta forma
      *  array(
@@ -64,9 +64,9 @@ class Validate
      * @param array $rules Aray de reglas a validar
      */
     public function __construct($obj, Array $rules){
-    	$this->is_obj = is_object($obj);
-    	$this->obj = (object)$obj;
-    	$this->rules = $rules;
+        $this->is_obj = is_object($obj);
+        $this->obj = (object)$obj;
+        $this->rules = $rules;
     }
 
     /**
@@ -74,31 +74,33 @@ class Validate
      * @return bool Devuelve true si todo es válido
      */
     public function exec(){
-    	/*Recorrido por todos los campos*/
-    	foreach ($this->rules as $field => $fRule){
-    		$value = self::getValue($this->obj, $field);
-    		/*Regla individual para cada campo*/
-    		foreach ($fRule as $ruleName => $param) {
+        /*Recorrido por todos los campos*/
+        foreach ($this->rules as $field => $fRule){
+            $value = self::getValue($this->obj, $field);
+            /*Regla individual para cada campo*/
+            foreach ($fRule as $ruleName => $param) {
                 $ruleName = self::getRuleName($ruleName, $param);
-    			$param =  self::getParams($param);
-    			/*Es una validación de modelo*/
-    			if($ruleName[0] == '@'){
+                $param =  self::getParams($param);
+                /*Ignore the rule is starts with "#"*/
+                if($ruleName[0] == '#') continue;
+                /*Es una validación de modelo*/
+                if($ruleName[0] == '@'){
                     $this->modelRule($ruleName, $param, $field);
-    			}elseif(!Validations::$ruleName($value, $param)){
-    				$this->addError($param, $field);
-    			}
-    		}
-    	}
-    	/*Si no hay errores devuelve true*/
-    	return empty($this->messages);
+                }elseif(!Validations::$ruleName($value, $param, $this->obj)){
+                    $this->addError($param, $field, $ruleName);
+                }
+            }
+        }
+        /*Si no hay errores devuelve true*/
+        return empty($this->messages);
     }
 
     /**
      * Ejecuta una validación de modelo
      * @param string $rule nombre de la regla
      * @param array $param
-     * @param strin $field Nombre del campo
-     * @return bool 
+     * @param string $field Nombre del campo
+     * @return bool
      */
     protected function modelRule($rule, $param, $field){
         if(!$this->is_obj){
@@ -111,8 +113,8 @@ class Validate
             trigger_error('El metodo para la validacion no existe', E_USER_WARNING);
             return false;
         }
-        if(!$obj->$ruleName($field, $param)){ 
-           $this->addError($param, $field);
+        if(!$obj->$ruleName($field, $param)){
+           $this->addError($param, $field, $ruleName);
         }
         return true;
     }
@@ -120,16 +122,17 @@ class Validate
     /**
      * Agrega un nuevo error
      * @param Array $param parametros
-     * @param string Nombre del campo
+     * @param string $field Nombre del campo
+     * @param string $rule Nombre de la regla
      */
-    protected function addError(Array $param, $field){
-         $this->messages[] = isset($param['error']) ?
-                $param['error']: "El campo '$field' no es válido";
+    protected function addError(Array $param, $field, $rule){
+         $this->messages[$field][] = isset($param['error']) ?
+                $param['error']: Validations::getMessage($rule);
     }
 
     /**
      * Devuelve el nombre de la regla
-     * @param string $rulename
+     * @param string $ruleName
      * @param mixed $param
      * @return string
      */
@@ -159,14 +162,30 @@ class Validate
 
     /**
      * Devuelve los mensajes de error
-     * 
+     *
      */
     public function getMessages(){
         return $this->messages;
     }
 
+    /**
+     * Version de instancias para flush error
+     */
+    public function flash(){
+        self::errorToFlash($this->getMessages());
+    }
+
     public static function fail($obj, Array $rules){
         $val = new self($obj, $rules);
         return $val->exec() ? false:$val->getMessages();
+    }
+
+    /**
+     * Envia los mensajes de error via flash
+     * @param Array $error
+     */
+    public static function errorToFlash(Array $error){
+        foreach ($error as $value)
+            Flash::error($value);
     }
 }

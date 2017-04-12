@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Db
- * @subpackage Adapters 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Adapters
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
@@ -165,8 +165,7 @@ class DbPdoAccess extends DbPDO
     {
         $create_sql = "CREATE TABLE $table (";
         if (!is_array($definition)) {
-            new KumbiaException("Definici&oacute;n invalida para crear la tabla '$table'");
-            return false;
+            throw new KumbiaException("Definición inválida para crear la tabla '$table'");
         }
         $create_lines = array();
         $index = array();

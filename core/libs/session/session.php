@@ -13,11 +13,15 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * @category   Kumbia
- * @package    Session 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @package    Session
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
+/*Session start*/
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
 /**
  * Modelo orientado a objetos para el acceso a datos en Sesiones
  *
@@ -26,17 +30,18 @@
  */
 class Session
 {
-
+    const SESSION = 'KUMBIA_SESSION';
     /**
      * Crear o especificar el valor para un indice de la sesión
      * actual
      *
      * @param string $index
+     * @param mixed  $value
      * @param string $namespace
      */
-    public static function set($index, $value, $namespace='default')
+    public static function set($index, $value, $namespace = 'default')
     {
-        $_SESSION['KUMBIA_SESSION'][APP_PATH][$namespace][$index] = $value;
+        $_SESSION[self::SESSION][APP_PATH][$namespace][$index] = $value;
     }
 
     /**
@@ -48,10 +53,8 @@ class Session
      */
     public static function get($index, $namespace='default')
     {
-        if (isset($_SESSION['KUMBIA_SESSION'][APP_PATH][$namespace][$index])) {
-            return $_SESSION['KUMBIA_SESSION'][APP_PATH][$namespace][$index];
-        } else {
-            return null;
+        if (isset($_SESSION[self::SESSION][APP_PATH][$namespace][$index])) {
+            return $_SESSION[self::SESSION][APP_PATH][$namespace][$index];
         }
     }
 
@@ -63,7 +66,7 @@ class Session
      */
     public static function delete($index, $namespace='default')
     {
-        unset($_SESSION['KUMBIA_SESSION'][APP_PATH][$namespace][$index]);
+        unset($_SESSION[self::SESSION][APP_PATH][$namespace][$index]);
     }
 
     /**
@@ -75,7 +78,6 @@ class Session
      */
     public static function has($index, $namespace='default')
     {
-        return isset($_SESSION['KUMBIA_SESSION'][APP_PATH][$namespace][$index]);
+        return isset($_SESSION[self::SESSION][APP_PATH][$namespace][$index]);
     }
-
 }

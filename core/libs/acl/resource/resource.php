@@ -15,7 +15,7 @@
  * @category   Kumbia
  * @package    Acl
  * @subpackage AclResource
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -40,9 +40,8 @@ class AclResource
      * Constructor de la clase Rol
      *
      * @param string $name
-     * @return AclResource
      */
-    function __construct($name)
+    public function __construct($name)
     {
         if ($name == '*') {
             throw new KumbiaException('Nombre invalido "*" para nombre de Resource en Acl_Resoruce::__constuct');
@@ -56,7 +55,7 @@ class AclResource
      * @param string $name
      * @param string $value
      */
-    function __set($name, $value)
+    public function __set($name, $value)
     {
         if ($name != 'name') {
             $this->$name = $value;

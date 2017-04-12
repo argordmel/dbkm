@@ -14,7 +14,7 @@
  *
  * @category   Kumbia
  * @package    Security
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 session_register("rsa_key");
@@ -40,8 +40,6 @@ abstract class Security
         } else {
             return $xCode;
         }
-
-        return null;
     }
 
     public static function createSecureRSAKey($kumbia=true)
@@ -52,17 +50,11 @@ abstract class Security
                 if ((time() % 8) == 0) {
                     return self::generateRSAKey($kumbia);
                 } else {
-                    if ($kumbia) {
-                        echo "<input type='hidden' id='rsa32_key' value=\"{$_SESSION['rsa_key']}\"/>";
-                    } else {
-                        echo "<input type='hidden' id='rsa32_key' value=\"{$_SESSION['rsa_key']}\"/>";
-                    }
+                    echo "<input type='hidden' id='rsa32_key' value=\"{$_SESSION['rsa_key']}\"/>";
                 }
             } else {
                 return self::generateRSAKey($kumbia);
             }
         }
-        return null;
     }
-
 }

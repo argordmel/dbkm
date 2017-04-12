@@ -13,11 +13,11 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * PDO SQLite Database Support
- * 
+ *
  * @category   Kumbia
  * @package    Db
- * @subpackage Adapters 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Adapters
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
@@ -30,7 +30,7 @@ require_once CORE_PATH . 'libs/db/adapters/pdo.php';
  *
  * @category   Kumbia
  * @package    Db
- * @subpackage Adapters 
+ * @subpackage Adapters
  */
 class DbPdoSQLite extends DbPDO
 {
@@ -130,9 +130,8 @@ class DbPdoSQLite extends DbPDO
     {
         if ($if_exists) {
             return $this->query("DROP TABLE IF EXISTS $table");
-        } else {
-            return $this->query("DROP TABLE $table");
         }
+        return $this->query("DROP TABLE $table");
     }
 
     /**
@@ -152,8 +151,7 @@ class DbPdoSQLite extends DbPDO
     {
         $create_sql = "CREATE TABLE $table (";
         if (!is_array($definition)) {
-            new KumbiaException("Definici&oacute;n invalida para crear la tabla '$table'");
-            return false;
+            throw new KumbiaException("Definici&oacute;n invalida para crear la tabla '$table'");
         }
         $create_lines = array();
         $index = array();

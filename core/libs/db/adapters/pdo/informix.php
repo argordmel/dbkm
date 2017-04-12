@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Db
- * @subpackage Adapters 
- * @copyright  Copyright (c) 2005-2012 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Adapters
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
@@ -102,16 +102,22 @@ class DbPdoInformix extends DbPDO
     /**
      * Devuelve un LIMIT valido para un SELECT del RBDM
      *
-     * @param integer $number
+     * @param string $sql
      * @return string
      */
-    public function limit($sql, $number)
+    public function limit($sql)
     {
-        /**
-         * No esta soportado por Informix
-         */
-        $number = (int) $number;
-        return "$sql -- LIMIT $number\n";
+        $params = Util::getParams(func_get_args());
+        
+        $limit ='';
+        if(isset($params['offset'])){
+            $limit .= " SKIP $params[offset]";
+        }
+        if(isset($params['limit'])){
+            $limit .= " FIRST $params[limit]";
+        }
+
+        return str_ireplace("SELECT ", "SELECT $limit ", $sql);
     }
 
     /**
@@ -151,8 +157,7 @@ class DbPdoInformix extends DbPDO
     {
         $create_sql = "CREATE TABLE $table (";
         if (!is_array($definition)) {
-            new KumbiaException("Definici&oacute;n invalida para crear la tabla '$table'");
-            return false;
+            throw new KumbiaException("Definición inválida para crear la tabla '$table'");
         }
         $create_lines = array();
         $index = array();
@@ -236,13 +241,13 @@ class DbPdoInformix extends DbPDO
         /**
          * Informix no soporta schemas
          * TODO: No hay un metodo identificable para obtener llaves primarias
-         * no nulos y tama�os reales de campos
+         * no nulos y tamaños reales de campos
          * Primary Key, Null?
          */
         $describe = $this->fetch_all("SELECT c.colname AS Field, c.coltype AS Type,
-				'YES' AS NULL, c.collength as Length
-				 FROM systables t, syscolumns c WHERE
-		 		c.tabid = t.tabid AND t.tabname = '$table' ORDER BY c.colno");
+                'YES' AS NULL, c.collength as Length
+                 FROM systables t, syscolumns c WHERE
+                c.tabid = t.tabid AND t.tabname = '$table' ORDER BY c.colno");
         $final_describe = array();
         foreach ($describe as $field) {
             //Serial

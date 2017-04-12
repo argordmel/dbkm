@@ -14,16 +14,16 @@
  *
  * Permite almacenar valores durante la ejecución de la aplicación. Implementa el
  * patrón de diseño Registry
- * 
+ *
  * @category   Kumbia
- * @package    security 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @package    security
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
 /**
  * Clase para el almacenar valores durante una petición.
- * 
+ *
  * Permite almacenar valores durante la ejecución de la aplicación. Implementa el
  * patrón de diseño Registry
  *
@@ -60,9 +60,7 @@ class Registry
      */
     public static function append($index, $value)
     {
-        if (!isset(self::$registry[$index])) {
-            self::$registry[$index] = array();
-        }
+        self::exist($index);
         self::$registry[$index][] = $value;
     }
 
@@ -74,9 +72,7 @@ class Registry
      */
     public static function prepend($index, $value)
     {
-        if (!isset(self::$registry[$index])) {
-            self::$registry[$index] = array();
-        }
+        self::exist($index);
         array_unshift(self::$registry[$index], $value);
     }
 
@@ -90,9 +86,17 @@ class Registry
     {
         if (isset(self::$registry[$index])) {
             return self::$registry[$index];
-        } else {
-            return null;
+        } 
+    }
+    
+    /**
+     * Crea un index si no existe
+     *
+     * @param string $index
+     */
+    protected function exist($index) {
+        if (!isset(self::$registry[$index])) {
+            self::$registry[$index] = array();
         }
     }
-
 }

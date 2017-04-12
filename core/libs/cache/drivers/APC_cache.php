@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Cache
- * @subpackage Drivers 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Drivers
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -42,10 +42,9 @@ class APCCache extends Cache
         $this->_group = $group;
 
         $data = apc_fetch("$id.$group");
-        if ($data === FALSE) {
-            return null;
+        if ($data !== FALSE) {
+            return $data;
         }
-        return $data;
     }
 
     /**

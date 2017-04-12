@@ -11,10 +11,10 @@
  * If you did not receive a copy of the license and are unable to
  * obtain it through the world-wide-web, please send an email
  * to license@kumbiaphp.com so we can send you a copy immediately.
- * 
+ *
  * @category   Kumbia
- * @package    Core 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @package    Core
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -37,26 +37,14 @@ class Util
      * @param boolean $lower indica si es lower camelcase
      * @return string
      * */
-    public static function camelcase($s, $lower=FALSE)
+    public static function camelcase($s, $lower = false)
     {
         // Notacion lowerCamelCase
         if ($lower) {
-            return self::lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $s))));
+            return lcfirst(str_replace(' ', '', ucwords(str_replace('_', ' ', $s))));
         }
 
         return str_replace(' ', '', ucwords(str_replace('_', ' ', $s)));
-    }
-
-    /**
-     * Descameliza una cadena camelizada y la convierte a smallcase
-     * @deprecated mejor usar el metodo smallcase directamente
-     *
-     * @param string $str Texto para descamelizar
-     * @return string
-     */
-    public static function uncamelize($str)
-    {
-        return self::smallcase($str);
     }
 
     /**
@@ -66,7 +54,7 @@ class Util
      * */
     public static function smallcase($s)
     {
-        return strtolower(preg_replace('/([A-Z])/', "_\\1", self::lcfirst($s)));
+        return strtolower(preg_replace('/([A-Z])/', "_\\1", lcfirst($s)));
     }
 
     /**
@@ -97,33 +85,6 @@ class Util
     public static function humanize($s)
     {
         return strtr($s, '_-', '  ');
-    }
-
-    /**
-     * Merge Two Arrays Overwriting Values $a1
-     * from $a2
-     * @deprecated
-     *
-     * @param array $a1
-     * @param array $a2
-     * @return array
-     */
-    public static function array_merge_overwrite($a1, $a2)
-    {
-        return $a2 + $a1;
-    }
-
-    /**
-     * Insertar para arrays númericos
-     * @deprecated No es necesario
-     *
-     * @param array &$array array donde se insertará (por referencia)
-     * @param int $position Indice donde se realizara la insercion
-     * @param mixed $insert Valor a insertar
-     * */
-    public static function array_insert(&$array, $position, $insert)
-    {
-        array_splice($array, $position, 0, $insert);
     }
 
     /**
@@ -160,46 +121,6 @@ class Util
     {
         $items = explode(',', $lista);
         return '"' . implode('","', $items) . '"';
-    }
-
-    /**
-     * Crea un path.
-     * @deprecated
-     * @todo Mover este método a una lib para manejo de ficheros.
-     * En salir la beta2 se eliminará del Util
-     *
-     * @param string $path ruta a crear
-     * @return boolean
-     */
-    public static function mkpath($path)
-    {
-        return FileUtil::mkdir($path);
-    }
-
-    /**
-     * Elimina un directorio.
-     * @deprecated
-     * @todo Mover este método a una lib para manejo de ficheros.
-     * En salir la beta2 se eliminará del Util
-     *
-     * @param string $dir ruta de directorio a eliminar
-     * @return boolean
-     */
-    public static function removedir($dir)
-    {
-        return FileUtil::rmdir($dir);
-    }
-
-    /**
-     * Coloca la primera letra en minuscula
-     *
-     * @param string $s cadena a convertir
-     * @return string
-     */
-    public static function lcfirst($s)
-    {
-        $s[0] = strtolower($s[0]);
-        return $s;
     }
 
 }

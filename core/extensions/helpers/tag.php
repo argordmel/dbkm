@@ -14,7 +14,7 @@
  *
  * @category   KumbiaPHP
  * @package    Helpers
- * @copyright  Copyright (c) 2005-2014 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -37,11 +37,12 @@ class Tag
     /**
      * Convierte los argumentos de un metodo de parametros por nombre a un string con los atributos
      *
-     * @param array $params argumentos a convertir
+     * @param string|array $params argumentos a convertir
      * @return string
      */
     public static function getAttrs($params)
     {
+        if(!is_array($params))return (string)$params;
         $data = '';
         foreach ($params as $k => $v) {
             $data .= " $k=\"$v\"";

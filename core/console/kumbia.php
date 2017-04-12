@@ -16,11 +16,11 @@
  *
  * @category   Kumbia
  * @package    Console
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 // Define el CORE_PATH
-define('CORE_PATH', dirname(dirname(__FILE__)) . '/');
+define('CORE_PATH', dirname(__DIR__) . '/');
 
 /**
  * @see Console

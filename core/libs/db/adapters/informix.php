@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Db
- * @subpackage Adapters 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Adapters
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -24,7 +24,7 @@
  *
  * @category   Kumbia
  * @package    Db
- * @subpackage Adapters 
+ * @subpackage Adapters
  */
 class DbInformix extends DbBase implements DbBaseInterface
 {
@@ -169,10 +169,9 @@ class DbInformix extends DbBase implements DbBaseInterface
         $this->set_return_rows(true);
         if ($result_query === false) {
             throw new KumbiaException($this->error(" al ejecutar <em>\"$sql_query\"</em>"));
-        } else {
-            $this->last_result_query = $result_query;
-            return $result_query;
         }
+        $this->last_result_query = $result_query;
+        return $result_query;
     }
 
     /**
@@ -409,12 +408,12 @@ class DbInformix extends DbBase implements DbBaseInterface
      * @return string
      */
     public function limit($sql){
-		   /** 
-                 * No esta soportado por Informix 
-                 */ 
-                return "$sql \n"; 
-	}
-    
+           /**
+                 * No esta soportado por Informix
+                 */
+                return "$sql \n";
+    }
+
 
     /**
      * Borra una tabla de la base de datos
@@ -542,8 +541,8 @@ class DbInformix extends DbBase implements DbBaseInterface
         // no nulos y tamaños reales de campos
         // Primary Key, Null
         $describe = $this->fetch_all("SELECT c.colname AS Field, c.coltype AS Type,
-				'YES' AS NULL FROM systables t, syscolumns c WHERE
-		 		c.tabid = t.tabid AND t.tabname = '$table' ORDER BY c.colno");
+                'YES' AS NULL FROM systables t, syscolumns c WHERE
+                c.tabid = t.tabid AND t.tabname = '$table' ORDER BY c.colno");
         $final_describe = array();
         foreach ($describe as $field) {
             //Serial

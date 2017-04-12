@@ -15,7 +15,7 @@
  * @category   Kumbia
  * @package    Db
  * @subpackage ActiveRecord
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
@@ -61,7 +61,7 @@ require CORE_PATH . 'libs/db/db.php';
  * cambiados (En Desarrollo)
  * $subselect : Permitira crear una entidad ActiveRecord de solo lectura que
  * mapearia los resultados de un select directamente a un Objeto (En Desarrollo)
- * 
+ *
  * @category   Kumbia
  * @package    Db
  * @subpackage ActiveRecord
@@ -370,7 +370,7 @@ class KumbiaActiveRecord
             if ($this->{$this->primary_key[0]}) {
                 return self::get($relation->model)->find_first("{$relation->fk}={$this->db->add_quotes($this->{$this->primary_key[0]}) }");
             } else {
-                return NULL;
+                return;
             }
         } elseif (array_key_exists($mmodel, $this->_has_many)) {
             $relation = $this->_has_many[$mmodel];
@@ -500,13 +500,13 @@ class KumbiaActiveRecord
         if (($data = $this->_get_relation_data($mmodel)) !== FALSE) {
             return $data;
         }
-        
+
         if (method_exists($this, $method)) {
             call_user_func_array(array($this, $method), $args);
         } else {
             throw new KumbiaException("No existe el método '$method' en ActiveRecord::" . get_class($this));
         }
-        
+
         return $this->$method($args);
     }
 
@@ -736,7 +736,7 @@ class KumbiaActiveRecord
      * Return Fist Record
      *
      * Recibe los mismos parametros que find
-     * 
+     *
      * @param mixed $what
      * @return ActiveRecord Cursor
      */
@@ -760,13 +760,13 @@ class KumbiaActiveRecord
         $what['limit'] = 1;
         $select.= $this->convert_params_to_sql($what);
         $resp = false;
-        
+
         $result = $this->db->fetch_one($select);
         if ($result) {
             $this->dump_result_self($result);
             $resp = $this->dump_result($result);
         }
-        
+
         return $resp;
     }
 
@@ -826,9 +826,9 @@ class KumbiaActiveRecord
 
     /*
      * Arma una consulta SQL con el parametro $what, así:
-     * 	$what = Util::getParams(func_get_args());
-     * 	$select = "SELECT * FROM Clientes";
-     * 	$select.= $this->convert_params_to_sql($what);
+     *  $what = Util::getParams(func_get_args());
+     *  $select = "SELECT * FROM Clientes";
+     *  $select.= $this->convert_params_to_sql($what);
      *
      * @param string|array $what
      * @return string
@@ -1644,7 +1644,7 @@ class KumbiaActiveRecord
                 }
                 if (isset($this->$np)) {
                     $fields[] = $np;
-                    if (is_null($this->$np) || $this->$np == '') {
+                    if (is_null($this->$np) || $this->$np == '' && $this->$np!='0') {
                         $values[] = 'NULL';
                     } else {
                         /**
@@ -1663,7 +1663,7 @@ class KumbiaActiveRecord
             $fields = array();
             $values = array();
             foreach ($this->fields as $field) {
-                if ($field != $this->primary_key[0] && !$this->id) {
+                if ($field != $this->primary_key[0] || $this->{$this->primary_key[0]}) {
                     if (in_array($field, $this->_at)) {
                         if ($config['type'] == 'oracle') {
                             $this->$field = date("Y-m-d");
@@ -1678,7 +1678,7 @@ class KumbiaActiveRecord
                     if (isset($this->$field) && $this->$field !== '' && $this->$field !== NULL) {
                         $fields[] = self::sql_sanitize($field);
 
-                        if (($this->_data_type[$field] == 'datetime' OR $this->_data_type[$field] == 'date') && ($config['type'] == 'mysql' OR $config['type'] == 'mysqli')) {
+                        if (($this->_data_type[$field] == 'datetime' || $this->_data_type[$field] == 'date') && ($config['type'] == 'mysql' || $config['type'] == 'mysqli')) {
                             $values[] = $this->db->add_quotes(date("Y-m-d G:i:s", strtotime($this->$field)));
                         } elseif ($this->_data_type[$field] == 'date' && $config['type'] == 'oracle') {
                             //Se debe especificar el formato de fecha en Oracle
@@ -2229,7 +2229,7 @@ class KumbiaActiveRecord
         $params = Util::getParams(func_get_args());
         for ($i = 0; isset($params[$i]); $i++) {
             $relation = Util::smallcase($params[$i]);
-            $index = explode('/', $relation); 
+            $index = explode('/', $relation);
             $index = end($index);
             if (!array_key_exists($index, $this->_has_one)) {
                 $this->_has_one[$index] = new stdClass();
@@ -2252,7 +2252,7 @@ class KumbiaActiveRecord
         $params = Util::getParams(func_get_args());
         for ($i = 0; isset($params[$i]); $i++) {
             $relation = Util::smallcase($params[$i]);
-            $index = explode('/', $relation); 
+            $index = explode('/', $relation);
             $index = end($index);
             if (!array_key_exists($index, $this->_belongs_to)) {
                 $this->_belongs_to[$index] = new stdClass();
@@ -2275,7 +2275,7 @@ class KumbiaActiveRecord
         $params = Util::getParams(func_get_args());
         for ($i = 0; isset($params[$i]); $i++) {
             $relation = Util::smallcase($params[$i]);
-            $index = explode('/', $relation); 
+            $index = explode('/', $relation);
             $index = end($index);
             if (!array_key_exists($index, $this->_has_many)) {
                 $this->_has_many[$index] = new stdClass();
@@ -2478,6 +2478,7 @@ class KumbiaActiveRecord
             /**
              * Carga la clase
              * */
+			$model = Util::smallcase($Model);
             $file = APP_PATH . "models/$model.php";
             if (is_file($file)) {
                 include $file;

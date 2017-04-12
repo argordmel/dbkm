@@ -15,7 +15,7 @@
  * @category   Kumbia
  * @package    Filter
  * @subpackage BaseFilter
- * @copyright  Copyright (c) 2005-2012 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -36,10 +36,10 @@ class Ipv4Filter implements FilterInterface
      * @param array $options
      * @return string
      */
-    public static function execute($s, $options)
+    public static function execute($value, $options)
     {
         $patron = '/[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/';
-        if (preg_match($patron, $s, $regs)) {
+        if (preg_match($patron, $value, $regs)) {
             return $regs[0];
         } else {
             return '';

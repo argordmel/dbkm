@@ -14,7 +14,7 @@
  *
  * @category   Kumbia
  * @package    I18n
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
@@ -82,12 +82,7 @@ class I18n
          * Si se pasan multiples parametros
          * */
         if (func_num_args() > 3) {
-            $args = func_get_args();
-            /**
-             * Se remplaza con vsprintf
-             * */
-            unset($args[0], $args[1], $args[2]);
-            $sentence = vsprintf($sentence, $args);
+            $sentence = $sentence = self::sprintf($sentence, func_get_args(), 3);
         }
 
         return $sentence;
@@ -111,12 +106,7 @@ class I18n
          * Si se pasan multiples parametros
          * */
         if (func_num_args() > 2) {
-            $args = func_get_args();
-            /**
-             * Se remplaza con vsprintf
-             * */
-            unset($args[0], $args[1]);
-            $sentence = vsprintf($sentence, $args);
+            $sentence = $sentence = self::sprintf($sentence, func_get_args(), 2);
         }
 
         return $sentence;
@@ -131,7 +121,7 @@ class I18n
      * @param int $category categoria del mensaje (LC_CTYPE, LC_NUMERIC, LC_TIME, LC_COLLATE, LC_MONETARY, LC_MESSAGES, LC_ALL)
      * @return string
      * */
-    public function cnget($sentence1, $sentence2, $n, $category)
+    public static function cnget($sentence1, $sentence2, $n, $category)
     {
         /**
          * Obtengo la traduccion en funcion del dominio
@@ -142,15 +132,16 @@ class I18n
          * Si se pasan multiples parametros
          * */
         if (func_num_args() > 4) {
-            $args = func_get_args();
-            /**
-             * Se remplaza con vsprintf
-             * */
-            unset($args[0], $args[1], $args[2], $args[3]);
-            $sentence = vsprintf($sentence, $args);
+            $sentence = self::sprintf($sentence, func_get_args(), 4);
         }
 
         return $sentence;
     }
-
+    
+    
+    private static function sprintf($sentence, $args, $offset)
+    {
+        return vsprintf( $sentence, array_slice( $args, $offset));
+        
+    }
 }

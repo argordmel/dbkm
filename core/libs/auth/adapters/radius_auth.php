@@ -15,7 +15,7 @@
  * @category Kumbia
  * @package Auth
  * @subpackage Adapters
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -117,7 +117,7 @@ class RadiusAuth implements AuthInterface
     public function get_identity()
     {
         if (!$this->resource) {
-            new KumbiaException("La conexión al servidor Radius es inválida");
+            throw new KumbiaException("La conexión al servidor Radius es inválida");
         }
         $identity = array("username" => $this->username, "realm" => $this->username);
         return $identity;
@@ -161,9 +161,8 @@ class RadiusAuth implements AuthInterface
 
         if (radius_send_request($radius) == RADIUS_ACCESS_ACCEPT) {
             return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**

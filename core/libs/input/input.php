@@ -13,126 +13,132 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * Clase para manejar los datos del request
- * 
+ *
  * @category   Kumbia
  * @package    Input
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
-class Input 
+class Input
 {
-	/**
-	 * Verifica o obtiene el metodo de la peticion
-	 *
-	 * @param string $method
-	 * @return mixed
-	 */
-	public static function is($method = NULL)
-	{
-		if($method){			
-			return $method == $_SERVER['REQUEST_METHOD'];
-		}
-		return $_SERVER['REQUEST_METHOD'];
-	}
-        
-	/**
-	 * Indica si el request es AJAX
-	 *
-	 * @return boolean
-	 */
-	public static function isAjax()
-	{
-		return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
-	}
-        
-	/**
-	 * Obtiene un valor del arreglo $_POST
-	 *
-	 * @param string $var
-	 * @return mixed
-	 */
-	public static function post($var)
-	{
-		return filter_has_var(INPUT_POST, $var) ? $_POST[$var] : NULL;
-	}
+    /**
+     * Verifica o obtiene el metodo de la peticion
+     *
+     * @param string $method
+     * @return mixed
+     */
+    public static function is($method = '')
+    {
+        if($method){
+            return $method == $_SERVER['REQUEST_METHOD'];
+        }
+        return $_SERVER['REQUEST_METHOD'];
+    }
 
-	/**
-	 * Obtiene un valor del arreglo $_GET, aplica el filtro FILTER_SANITIZE_STRING
-	 * por defecto
-	 *
-	 * @param string $var
-	 * @return mixed
-	 */
-	public static function get($var = NULL)
-	{
-		if($var){
-			$value = filter_has_var(INPUT_GET, $var) ? filter_input(INPUT_GET, $var, FILTER_SANITIZE_STRING) : NULL;
-		} else {
-			$value = filter_input_array (INPUT_GET, FILTER_SANITIZE_STRING);
-		}
-			
-		return $value;
-	}
+    /**
+     * Indica si el request es AJAX
+     *
+     * @return boolean
+     */
+    public static function isAjax()
+    {
+        return (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest');
+    }
 
-	/**
-	 * Obtiene un valor del arreglo $_REQUEST
- 	 *
-	 * @param string $var
-	 * @return mixed
-	 */
-	public static function request($var)
-	{
-		return isset($_REQUEST[$var]) ? $_REQUEST[$var] : NULL;
-	}
+    /**
+     * Obtiene un valor del arreglo $_POST
+     *
+     * @param string $var
+     * @return mixed
+     */
+    public static function post($var = '')
+    {
+        return self::getFilter($_POST, $var);
+    }
 
-	/**
-	 * Verifica si existe el elemento indicado en $_POST
-	 *
-	 * @param string $var elemento a verificar
-	 * @return boolean
-	 */
-	public static function hasPost($var) 
-	{
-		return filter_has_var(INPUT_POST, $var);
-	}
+    /**
+     * Obtiene un valor del arreglo $_GET, aplica el filtro FILTER_SANITIZE_STRING
+     * por defecto
+     *
+     * @param string $var
+     * @return mixed
+     */
+    public static function get($var = '')
+    {
+        return self::getFilter($_GET, $var);
+    }
 
-	/**
-	 * Verifica si existe el elemento indicado en $_GET
-	 *
-	 * @param string $var elemento a verificar
-	 * @return boolean
-	 */
-	public static function hasGet($var)
-	{
-		return filter_has_var(INPUT_GET, $var);
-	}
+    /**
+     * Obtiene un valor del arreglo $_REQUEST
+     *
+     * @param string $var
+     * @return mixed
+     */
+    public static function request($var = '')
+    {
+        return self::getFilter($_REQUEST, $var);
+    }
 
-	/**
-	 * Verifica si existe el elemento indicado en $_REQUEST
-	 *
-	 * @param string $var elemento a verificar
-	 * @return boolean
-	 */
-	public static function hasRequest($var) 
-	{
-		return isset($_REQUEST[$var]);
-	}
-        
-	/**
-	 * Elimina elemento indicado en $_POST
-	 *
-	 * @param string $var elemento a verificar
-	 * @return boolean|null
-	 */
-	public static function delete($var = NULL) 
-	{
-		if($var){
-			unset($_POST[$var]);
-		} else {
-			unset($_POST);
-		}
-	}
-	
+
+    /**
+     * Obtiene un valor del arreglo $_SERVER
+     *
+     * @param string $var
+     * @return mixed
+     */
+    public static function server($var = '')
+    {
+        return self::getFilter($_SERVER, $var);
+    }
+
+    /**
+     * Verifica si existe el elemento indicado en $_POST
+     *
+     * @param string $var elemento a verificar
+     * @return boolean
+     */
+    public static function hasPost($var)
+    {
+        return (bool)self::post($var);
+    }
+
+    /**
+     * Verifica si existe el elemento indicado en $_GET
+     *
+     * @param string $var elemento a verificar
+     * @return boolean
+     */
+    public static function hasGet($var)
+    {
+        return (bool)self::get($var);
+    }
+
+    /**
+     * Verifica si existe el elemento indicado en $_REQUEST
+     *
+     * @param string $var elemento a verificar
+     * @return boolean
+     */
+    public static function hasRequest($var)
+    {
+        return (bool)self::request($var);
+    }
+
+    /**
+     * Elimina elemento indicado en $_POST
+     *
+     * @param string $var elemento a verificar
+     * @return boolean|null
+     */
+    public static function delete($var = '')
+    {
+        if($var){
+            $_POST[$var] = array();
+        } else {
+            $_POST = array();
+        }
+    }
+
     /**
     * Permite Obtener el Agente de Usuario (User Agent)
     * @return String
@@ -151,22 +157,43 @@ class Input
         }elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
             return $_SERVER['HTTP_X_FORWARDED_FOR'];
         }else{
-            return $_SERVER['REMOTE_ADDR'];    
+            return $_SERVER['REMOTE_ADDR'];
         }
     }
 
 
     /**
-	 * Obtiene y filtra un valor del arreglo $_REQUEST
-	 * Por defecto, usa SANITIZE
- 	 *
-	 * @param string $var
-	 * @return mixed
-	 */
-	public static function filter($var)
+     * Obtiene y filtra un valor del arreglo $_REQUEST
+     * Por defecto, usa SANITIZE
+     *
+     * @param string $var
+     * @return mixed
+     */
+    public static function filter($var)
     {
-		//TODO
+        //TODO
     }
 
-    
+    /**
+     * Devuelve el valor dentro de un array con clave en formato uno.dos.tres
+     * @param Array array que contiene la variable
+     * @param string $str clave a usar
+     * @return mixed
+     */
+    protected static function getFilter(Array $var, $str){
+        if(empty($str))
+            return filter_var_array($var);
+        $arr = explode('.', $str);
+        $value = $var;
+        foreach ($arr as $key) {
+            if(isset($value[$key])){
+                $value = $value[$key];
+            } else{
+                $value = NULL;
+                break;
+            }
+        }
+        return is_array($value)?filter_var_array($value): filter_var($value);
+    }
+
 }

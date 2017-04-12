@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Db
- * @subpackage Adapters 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Adapters
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
@@ -110,10 +110,10 @@ class DbPdoMsSQL extends DbPDO
         $params = Util::getParams(func_get_args());
 
         if(!isset($params['offset']) && isset($params['limit'])){
-			return str_ireplace("SELECT ", "SELECT TOP $params[limit] ", $sql);
-		}
-		$orderby = stristr($sql, 'ORDER BY');
-		if ($orderby !== false) {
+            return str_ireplace("SELECT ", "SELECT TOP $params[limit] ", $sql);
+        }
+        $orderby = stristr($sql, 'ORDER BY');
+        if ($orderby !== false) {
             $sort = (stripos($orderby, 'desc') !== false) ? 'desc' : 'asc';
             $order = str_ireplace('ORDER BY', '', $orderby);
             $order = trim(preg_replace('/ASC|DESC/i', '', $order));
@@ -167,8 +167,7 @@ class DbPdoMsSQL extends DbPDO
     {
         $create_sql = "CREATE TABLE $table (";
         if (!is_array($definition)) {
-            new KumbiaException("Definici&oacute;n invalida para crear la tabla '$table'");
-            return false;
+            throw new KumbiaException("Definici&oacute;n invalida para crear la tabla '$table'");
         }
         $create_lines = array();
         $index = array();

@@ -13,23 +13,28 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * Validate es una Clase que realiza validaciones Lógicas
- * 
+ *
  * @category   KumbiaPHP
- * @package    validate 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @package    validate
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 class Validations
 {
-	/**
-	 * Constantes para definir los patrones
-	 */
-  
-	/*
-	 * El valor deber ser solo letras y números
-	 */
-	const IS_ALPHANUM = '/^[\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{Nd}]+$/mu';
-	 
+    /**
+     * Constantes para definir los patrones
+     */
+
+    /*
+     * El valor deber ser solo letras y números
+     */
+    const IS_ALPHANUM = '/^[\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{Nd}]*$/mu';
+
+    /**
+     * Solo letras
+     */
+    const IS_ALPHA    = '/^(?:[^\W\d_]|([ ]))*$/mu';
+
     /**
      * Almacena la Expresion Regular
      *
@@ -37,11 +42,11 @@ class Validations
      */
     public static $regex = NULL;
 
-    
+
     /**
      * Valida que sea numérico
      * @param  mixed $check Valor a ser chequeado
-     * @return bool        
+     * @return bool
      */
     public static function numeric($check){
         return is_numeric($check);
@@ -57,7 +62,7 @@ class Validations
     {
         return filter_var($check, FILTER_VALIDATE_INT);
     }
-    
+
     /**
      * Valida que una cadena este entre un rango.
      * Los espacios son contados
@@ -86,12 +91,11 @@ class Validations
     }
 
     /**
-     * Valida que es un número se encuentre 
+     * Valida que es un número se encuentre
      * en un rango minímo y máximo
-     * 
+     *
      * @param int $value
-     * @param int $min
-     * @param int $max
+     * @param array $param min, max
      */
     public static function range($value, $param)
     {
@@ -109,12 +113,12 @@ class Validations
      * @param array $param
      * @return bool
      */
-    public static function selet($value, $param)
+    public static function select($value, $param)
     {
         $list = isset($param['list']) && is_array($param['list']) ? $param['list'] : array();
-        return in_array($value, $list);
+        return in_array($value, array_keys($list));
     }
-    
+
     /**
      * Valida que una cadena sea un mail
      * @param string $mail
@@ -124,7 +128,7 @@ class Validations
     {
         return filter_var($mail, FILTER_VALIDATE_EMAIL);
     }
-    
+
     /**
      * Valida URL
      *
@@ -136,7 +140,7 @@ class Validations
         $flag = isset($param['flag'])? $param['flag'] : 0;
         return filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_HOST_REQUIRED | $flag);
     }
-    
+
     /**
      * Valida que sea una IP, por defecto v4
      * TODO: Revisar este método
@@ -147,7 +151,7 @@ class Validations
     {
         return filter_var($ip, FILTER_VALIDATE_IP, $flags);
     }
-    
+
     /**
      * Valida que un string no sea null
      *
@@ -156,56 +160,103 @@ class Validations
      */
     public static function required($check)
     {
-        return !empty($check) && $check!='0';
+        return (boolean) strlen(trim($check));
     }
-    
+
     /**
      * Valida que un String sea alpha-num (incluye caracteres acentuados)
      * TODO: Revisar este método
-     * 
+     *
      * @param string $string
      * @return bool
      */
     public static function alphanum($string)
     {
-        return self::pattern($string, self::IS_ALPHANUM);
+        return self::pattern($string, array('regexp' => self::IS_ALPHANUM));
     }
-    
+
+
+
+    /**
+     * Valida que un String sea alpha (incluye caracteres acentuados y espacio)
+     *
+     * @param string $string
+     * @return bool
+     */
+    public static function alpha($string)
+    {
+        return self::pattern($string, array('regexp' => self::IS_ALPHA));
+    }
+
+
     /**
      * Valida una fecha
      * @param string $value fecha a validar acorde al formato indicado
-     * @param string $format como en DateTime  
+     * @param array $param como en DateTime
      * @return boolean
      */
-    public static function date($value, $format = 'd-m-y')
+    public static function date($value, $param)
     {
+        $format = isset($param['format'])? $param['format'] : 'Y-m-d';
         $date = DateTime::createFromFormat($format, $value);
         return $date && $date->format($format) == $value;
     }
-    
+
     /**
      * Valida un string dada una Expresion Regular
      *
      * @param string $check
-     * @param string $regex
+     * @param array $param  regex
      * @return bool
      */
     public static function pattern($check, $param)
     {
-        $regex = isset($param['regex'])? $param['regex'] : '/.*/';
-        return filter_var($check, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $regex)));
+        $regex = isset($param['regexp'])? $param['regexp'] : '/.*/';
+        return empty($check) || FALSE !== filter_var($check, FILTER_VALIDATE_REGEXP, array('options' => array('regexp' => $regex)));
     }
-    
+
     /**
      * Valida si es un número decimal
-     * 
+     *
      * @param string $value
-     * @param string $decimal
+     * @param array $param
      * @return boolean
      */
     public static function decimal($value, $param)
     {
         $decimal = isset($param['decimal'])? $param['decimal'] : ',';
-		return filter_var($value, FILTER_VALIDATE_FLOAT, array('options' => array('decimal' => $decimal)));
-	}
+        return filter_var($value, FILTER_VALIDATE_FLOAT, array('options' => array('decimal' => $decimal)));
+    }
+
+    /**
+     * Valida si los valores son iguales
+     *
+     * @param string $value
+     * @param array $param
+     * @param object $obj
+     * @return boolean
+     */
+    public static function equal($value, $param, $obj)
+    {
+        $equal = isset($param['to'])? $param['to'] : '';
+        return ($obj->$equal == $value);
+    }
+
+    /**
+     * Devuelve el mensaje por defecto de una validación
+     * @param string $key
+     * @return string
+     */
+    public static function getMessage($key){
+        $arr  = array(
+            'required' => 'Este campo es requerido',
+            'alphanum' => 'Debe ser un valor alfanumérico',
+            'alpha'    => 'Solo caracteres alfabeticos',
+            'length'   => 'Longitud incorrecta',
+            'email'    => 'Email no válido',
+            'pattern'  => 'El valor no posee el formato correcto',
+            'date'     => 'Fecha no valida'
+        );
+        return $arr[$key];
+    }
 }

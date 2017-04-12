@@ -13,10 +13,10 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * Clase Base para gestión de ACL
- * 
+ *
  * @category   Kumbia
  * @package    Acl
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -40,7 +40,7 @@ abstract class Acl2
 
     /**
      * Verifica si el usuario puede acceder al recurso
-     * 
+     *
      * @param string $resource recurso al cual se verificará acceso
      * @param string $user usuario de la acl
      * @return boolean
@@ -60,7 +60,7 @@ abstract class Acl2
 
     /**
      * Verifica si un rol puede acceder al recurso
-     * 
+     *
      * @param string $role
      * @param string $resource
      * @return boolean
@@ -84,7 +84,7 @@ abstract class Acl2
 
     /**
      * Obtiene los roles del usuario al que se le valida si puede acceder al recurso
-     * 
+     *
      * @param string $user usuario al que se le valida acceso
      * @return array roles de usuario
      */
@@ -100,7 +100,7 @@ abstract class Acl2
 
     /**
      * Obtiene los padres del rol
-     * 
+     *
      * @param string $role nombre de rol
      * @return array padres del rol
      */
@@ -111,13 +111,13 @@ abstract class Acl2
      *
      * @param string $adapter (simple, model, xml, ini)
      */
-    public static function factory($adapter = NULL)
+    public static function factory($adapter = '')
     {
         if (!$adapter) {
             $adapter = self::$_defaultAdapter;
         }
 
-        require_once CORE_PATH . "libs/acl2/adapters/{$adapter}_acl.php";
+        require_once __DIR__ . "/adapters/{$adapter}_acl.php";
         $class = $adapter . 'acl';
 
         return new $class;

@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Db
- * @subpackage Adapters 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Adapters
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
@@ -108,7 +108,7 @@ abstract class DbPDO extends DbBase implements DbPDOInterface
                 $this->pdo->setAttribute(PDO::ATTR_CURSOR, PDO::CURSOR_FWDONLY);
             }
             //Selecciona charset
-            if ($config['type'] == 'mysql' and isset($config['charset'])) {
+            if ($config['type'] == 'mysql' && isset($config['charset'])) {
                 $this->pdo->exec('set character set ' . $config['charset']);
             }
             $this->initialize();

@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Cache
- * @subpackage Drivers 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Drivers
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -51,10 +51,8 @@ class SqliteCache extends Cache
         $count = sqlite_fetch_single($result);
 
         if (!$count) {
-            sqlite_exec($this->_db, ' CREATE TABLE cache (id TEXT, "group" TEXT, value TEXT, lifetime TEXT) ');
+            sqlite_exec(' CREATE TABLE cache (id TEXT, "group" TEXT, value TEXT, lifetime TEXT) ', $this->_db);
         }
-
-        return $this->_db;
     }
 
     /**
@@ -89,7 +87,7 @@ class SqliteCache extends Cache
      * @param int $lifetime tiempo de vida en forma timestamp de unix
      * @return boolean
      */
-    public function save($value, $lifetime=null, $id=false, $group='default')
+    public function save($value, $lifetime='', $id='', $group='default')
     {
         if (!$id) {
             $id = $this->_id;
@@ -112,10 +110,10 @@ class SqliteCache extends Cache
 
         // Ya existe el elemento cacheado
         if ($count) {
-            return sqlite_exec($this->_db, " UPDATE cache SET value='$value', lifetime='$lifetime' WHERE id='$id' AND \"group\"='$group' ");
+            return sqlite_exec(" UPDATE cache SET value='$value', lifetime='$lifetime' WHERE id='$id' AND \"group\"='$group' ", $this->_db);
         }
 
-        return sqlite_exec($this->_db, " INSERT INTO cache (id, \"group\", value, lifetime) VALUES ('$id','$group','$value','$lifetime') ");
+        return sqlite_exec(" INSERT INTO cache (id, \"group\", value, lifetime) VALUES ('$id','$group','$value','$lifetime')", $this->_db);
     }
 
     /**
@@ -124,13 +122,13 @@ class SqliteCache extends Cache
      * @param string $group
      * @return boolean
      */
-    public function clean($group=false)
+    public function clean($group='')
     {
         if ($group) {
             $group = addslashes($group);
-            return sqlite_exec($this->_db, " DELETE FROM cache WHERE \"group\"='$group' ");
+            return sqlite_exec(" DELETE FROM cache WHERE \"group\"='$group' ", $this->_db);
         }
-        return sqlite_exec($this->_db, " DELETE FROM cache ");
+        return sqlite_exec(" DELETE FROM cache ", $this->_db);
     }
 
     /**
@@ -145,7 +143,7 @@ class SqliteCache extends Cache
         $id = addslashes($id);
         $group = addslashes($group);
 
-        return sqlite_exec($this->_db, " DELETE FROM cache WHERE id='$id' AND \"group\"='$group' ");
+        return sqlite_exec(" DELETE FROM cache WHERE id='$id' AND \"group\"='$group' ", $this->_db);
     }
 
 }

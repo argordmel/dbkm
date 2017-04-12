@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Cache
- * @subpackage Drivers 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Drivers
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -67,7 +67,6 @@ class FileCache extends Cache
             fclose($fh);
             return $data;
         }
-        return null;
     }
 
     /**
@@ -77,9 +76,9 @@ class FileCache extends Cache
      * @param string $group
      * @param string $value
      * @param int $lifetime tiempo de vida en forma timestamp de unix
-     * @return false|integer
+     * @return bool
      */
-    public function save($value, $lifetime=null, $id=false, $group='default')
+    public function save($value, $lifetime='', $id='', $group='default')
     {
         if (!$id) {
             $id = $this->_id;
@@ -92,7 +91,7 @@ class FileCache extends Cache
             $lifetime = 'undefined';
         }
 
-        return file_put_contents(APP_PATH . 'temp/cache/' . $this->_getFilename($id, $group), "$lifetime\n$value");
+        return (bool) file_put_contents(APP_PATH . 'temp/cache/' . $this->_getFilename($id, $group), "$lifetime\n$value");
     }
 
     /**
@@ -101,7 +100,7 @@ class FileCache extends Cache
      * @param string $group
      * @return boolean
      */
-    public function clean($group=false)
+    public function clean($group='')
     {
         $pattern = $group ? APP_PATH . 'temp/cache/' . '*.' . md5($group) : APP_PATH . 'temp/cache/*';
         foreach (glob($pattern) as $filename) {

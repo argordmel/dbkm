@@ -14,8 +14,8 @@
  *
  * @category   Kumbia
  * @package    Cache
- * @subpackage Drivers 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @subpackage Drivers
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -24,13 +24,13 @@
  *
  * @category   Kumbia
  * @package    Cache
- * @subpackage Drivers 
+ * @subpackage Drivers
  */
 class NixfileCache extends Cache
 {
     /**
      * Maxima marca de tiempo aproximada para procesadores de 32bits
-     * 
+     *
      * 18 de Enero de 2038
      */
     const MAX_TIMESTAMP = 2147401800;
@@ -64,8 +64,6 @@ class NixfileCache extends Cache
         if (is_file($filename) && filemtime($filename) >= time()) {
             return file_get_contents($filename);
         }
-
-        return null;
     }
 
     /**
@@ -77,7 +75,7 @@ class NixfileCache extends Cache
      * @param int $lifetime tiempo de vida en forma timestamp de unix
      * @return boolean
      */
-    public function save($value, $lifetime = NULL, $id = FALSE, $group = 'default')
+    public function save($value, $lifetime = '', $id = '', $group = 'default')
     {
         if (!$id) {
             $id = $this->_id;
@@ -102,7 +100,7 @@ class NixfileCache extends Cache
      * @param string $group
      * @return boolean
      */
-    public function clean($group = FALSE)
+    public function clean($group = '')
     {
         $pattern = $group ? APP_PATH . 'temp/cache/' . '*.' . md5($group) : APP_PATH . 'temp/cache/*';
         foreach (glob($pattern) as $filename) {

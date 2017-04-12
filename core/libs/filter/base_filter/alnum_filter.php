@@ -15,7 +15,7 @@
  * @category   Kumbia
  * @package    Filter
  * @subpackage BaseFilter
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -42,7 +42,7 @@ class AlnumFilter implements FilterInterface
          * Revisa si PCRE esta compilado para soportar UNICODE
          * de esta forma filtra tambien tildes y otros caracteres latinos
          */
-        if (@preg_match('/\pL/u', 'a')) {
+        if (preg_match('/\pL/u', 'a')) {
             $patron = '/[^\p{L}\p{N}]/';
         } else {
             $patron = '/[^a-zA-Z0-9\s]/';

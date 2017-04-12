@@ -14,17 +14,17 @@
  *
  * @category   Kumbia
  * @package    Db
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 /**
  * @see DbBaseInterface
  */
-require_once dirname(__FILE__) . '/db_base_interface.php';
+require_once __DIR__ . '/db_base_interface.php';
 /**
  * @see DbBase
  */
-require_once dirname(__FILE__) . '/db_base.php';
+require_once __DIR__ . '/db_base.php';
 
 /**
  * Clase que maneja el pool de conexiones
@@ -78,7 +78,7 @@ class Db
         // carga los valores por defecto para la conexión, si no existen
         $default = array('port' => 0, 'dsn' => NULL, 'dbname' => NULL, 'host' => 'localhost', 'username' => NULL, 'password' => NULL);
         $config = $config + $default;
-        $path = dirname(__FILE__); 
+        $path = __DIR__;
 
         //Si usa PDO
         if (isset($config['pdo'])) {

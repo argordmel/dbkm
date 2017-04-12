@@ -1,10 +1,28 @@
 <?php
+/**
+ * KumbiaPHP web & app Framework
+ *
+ * LICENSE
+ *
+ * This source file is subject to the new BSD license that is bundled
+ * with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://wiki.kumbiaphp.com/Licencia
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@kumbiaphp.com so we can send you a copy immediately.
+ *
+ * @category   Kumbia
+ * @package    Controller
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
+ * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ */
 
-require_once dirname(__FILE__) . '/controller.php';
+require_once __DIR__ . '/controller.php';
 
 /**
  * Controlador para manejar peticiones REST
- * 
+ *
  * Por defecto cada acción se llama como el método usado por el cliente
  * (GET, POST, PUT, DELETE, OPTIONS, HEADERS, PURGE...)
  * ademas se puede añadir mas acciones colocando delante el nombre del método
@@ -26,7 +44,7 @@ class KumbiaRest extends Controller {
     /**
      * Permite definir parser personalizados por MIME TYPE
      * Esto es necesario para interpretar las entradas
-     * Se define como un MIME type como clave y el valor debe ser un 
+     * Se define como un MIME type como clave y el valor debe ser un
      * callback que devuelva los datos interpretado
      */
     protected $_inputType = array(
@@ -44,7 +62,7 @@ class KumbiaRest extends Controller {
     protected $_fOutput = null;
 
     /**
-     * Permite definir las salidas disponibles, 
+     * Permite definir las salidas disponibles,
      * de esta manera se puede presentar la misma salida en distintos
      * formatos a requerimientos del cliente
      */
@@ -55,8 +73,8 @@ class KumbiaRest extends Controller {
         'text/csv' => 'csv',
     );
 
-    public function __construct($module, $controller, $action, $parameters) {
-        parent::__construct($module, $controller, $action, $parameters);
+    public function __construct($arg) {
+        parent::__construct($arg);
         $this->initREST();
     }
 
@@ -71,13 +89,12 @@ class KumbiaRest extends Controller {
         View::select(null, $this->_fOutput);
         $this->rewriteActionName();
 
-
     }
 
     /**
      * Reescribe la acción
      */
-    protected function rewriteActionName(){
+    protected function rewriteActionName() {
         /**
          * reescribimos la acción a ejecutar, ahora tendra será el metodo de
          * la peticion: get(:id), getAll , put, post, delete, etc.
@@ -178,7 +195,7 @@ class KumbiaRest extends Controller {
             502 => '502 Bad Gateway',
             503 => '503 Service Unavailable',
             504 => '504 Gateway Timeout',
-            505 => '505 HTTP Version Not Supported'
+            505 => '505 HTTP Version Not Supported',
         );
         if (isset($code[$num])) {
             header(sprintf('HTTP/1.1 %d %s', $num, $code[$num]));
@@ -186,15 +203,26 @@ class KumbiaRest extends Controller {
     }
 
     /**
+     * Envia un error al cliente junto con el mensaje
+     * @param String $text texto del error
+     * @param int $error Número del error HTTP
+     * @return Array data de error
+     */
+    protected function error($text, $error = 400) {
+        $this->setCode($error);
+        return array('error' => $text);
+    }
+
+    /**
      * Retorna los formato aceptados por el cliente ordenados por prioridad
      * interpretando la cabecera HTTP_ACCEPT
      * @return array
      */
-    static function accept() {
+    protected static function accept() {
         /* para almacenar los valores acceptados por el cliente */
         $aTypes = array();
         /* Elimina espacios, convierte a minusculas, y separa */
-        $accept = explode(',', strtolower(str_replace(' ', '', $_SERVER['HTTP_ACCEPT'])));
+        $accept = explode(',', strtolower(str_replace(' ', '', Input::server('HTTP_ACCEPT'))));
         foreach ($accept as $a) {
             $q = 1; /* Por defecto la proridad es uno, el siguiente verifica si es otra */
             if (strpos($a, ';q=')) {
@@ -207,8 +235,6 @@ class KumbiaRest extends Controller {
         arsort($aTypes);
         return $aTypes;
     }
-
-
 
     /**
      * Parse JSON
@@ -250,7 +276,7 @@ class KumbiaRest extends Controller {
     /**
      * Parse CSV
      *
-     * Convierte CSV en arrays numéricos, 
+     * Convierte CSV en arrays numéricos,
      * cada item es una linea
      * @param  string $input
      * @return array
@@ -269,7 +295,7 @@ class KumbiaRest extends Controller {
 
     /**
      * Realiza la conversion de formato de Formulario a array
-     * 
+     *
      * @param string $input
      * @return arrat
      */
@@ -282,8 +308,13 @@ class KumbiaRest extends Controller {
      * Retorna el tipo de formato de entrada
      * @return string
      */
-    protected static function getInputFormat(){
-       return isset($_SERVER["CONTENT_TYPE"]) ? $_SERVER["CONTENT_TYPE"] : '';
+    protected static function getInputFormat() {
+        $str = '';
+        if (isset($_SERVER["CONTENT_TYPE"])) {
+            $s = explode(';', $_SERVER["CONTENT_TYPE"]);
+            $str = trim($s[0]);
+        }
+        return $str;
     }
 
     /**
@@ -291,7 +322,7 @@ class KumbiaRest extends Controller {
      * @param array $validOutput Array de formatos de salida soportado
      * @return string
      */
-    protected function getOutputFormat(Array $validOutput){
+    protected function getOutputFormat(Array $validOutput) {
         /* busco un posible formato de salida */
         $accept = self::accept();
         foreach ($accept as $key => $a) {
@@ -300,6 +331,33 @@ class KumbiaRest extends Controller {
             }
         }
         return 'json';
+    }
+
+    /**
+     * Retorna todas las cabeceras enviadas por el cliente
+     * @return Array
+     */
+    protected static function getHeaders() {
+
+        /*Esta función solo existe en apache*/
+        if (function_exists('getallheaders')) {
+            return getallheaders();
+        }
+
+        $headers = array();
+
+        foreach ($_SERVER as $name => $value) {
+
+            if (substr($name, 0, 5) == 'HTTP_') {
+
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+
+            }
+
+        }
+
+        return $headers;
+
     }
 
 }

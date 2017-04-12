@@ -13,8 +13,8 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * @category   Kumbia
- * @package    Flash 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @package    Logger
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -23,12 +23,12 @@
  *
  * $fileLogger = Es el File Handle para escribir los logs
  * $transaction = Indica si hay o no transaccion
- * $quenue = array con lista de logs pendientes
+ * $queue = array con lista de logs pendientes
  *
  * Ej:
  * <code>
  * //Empieza un log en logs/logDDMMYY.txt
- * 
+ *
  *
  * Logger::debug('Loggear esto como un debug');
  *
@@ -51,7 +51,7 @@
  * </code>
  *
  * @category   Kumbia
- * @package    Flash 
+ * @package    Flash
  */
 abstract class Logger
 {
@@ -77,7 +77,7 @@ abstract class Logger
      *
      * @var array
      */
-    private static $quenue = array();
+    private static $queue = array();
     /**
      * Path donde se guardaran los logs
      *
@@ -87,11 +87,13 @@ abstract class Logger
 
     /**
      * Inicializa el Logger
+     * 
+     * @param string $name
      */
     public static function initialize($name='')
     {
-        self::$log_path = APP_PATH . 'temp/logs/';
-        if ($name === '' || $name === true) {
+        self::$log_path = APP_PATH . 'temp/logs/'; //TODO poder cambiar el path
+        if ($name === '') {
             $name = 'log' . date('Y-m-d') . '.txt';
         }
         self::$fileLogger = fopen(self::$log_path . $name, 'a');
@@ -113,7 +115,7 @@ abstract class Logger
     /**
      * Obtener el path actual
      *
-     * @return $path
+     * @return string
      */
     public static function get_path()
     {
@@ -128,22 +130,32 @@ abstract class Logger
      * @param string $name_log
      */
     public static function log($type='DEBUG', $msg, $name_log)
-    {
-        self::initialize($name_log);
-        if (!self::$fileLogger) {
-            throw new KumbiaException('No se puede enviar mensaje al log porque es invalido');
-        }
+    {  
         if (is_array($msg)) {
             $msg = print_r($msg, true);
         }
+        //TODO poder añadir otros formatos de log
         $date = date(DATE_RFC1036);
+        $msg = "[$date][$type] " . $msg ;
         if (self::$transaction) {
-            self::$quenue[] = "[$date][$type] " . $msg;
-        } else {
-            fputs(self::$fileLogger, "[$date][$type] " . $msg . PHP_EOL);
+            self::$queue[] = $msg;
+            return;
         }
+        self::write($msg, $name_log);
+    }
+    
+    /**
+     * Escribir en el log
+     * 
+     * @param string $msg
+     */
+    protected static function write($msg, $name_log)
+    {
+        self::initialize($name_log);  //TODO dejarlo abierto cuando es un commit
+        fputs(self::$fileLogger, $msg . PHP_EOL);
         self::close();
     }
+
 
     /**
      * Inicia una transacción
@@ -161,18 +173,21 @@ abstract class Logger
     public static function rollback()
     {
         self::$transaction = false;
-        self::$quenue = array();
+        self::$queue = array();
     }
 
     /**
      * Commit a una transacción
+     *
+     * @param string $name_log
      */
-    public static function commit()
+    public static function commit($name_log = '')
     {
-        self::$transaction = false;
-        foreach (self::$quenue as $msg) {
-            self::log($msg);
+        foreach (self::$queue as $msg) {
+            self::write($msg, $name_log);
         }
+        self::$queue = array();
+        self::$transaction = false;
     }
 
     /**
@@ -189,8 +204,8 @@ abstract class Logger
 
     /**
      * Genera un log de tipo WARNING
-     * 
-     * @return 
+     *
+     * @return
      * @param string $msg
      * @param string $name_log
      */
@@ -201,8 +216,8 @@ abstract class Logger
 
     /**
      * Genera un log de tipo ERROR
-     * 
-     * @return 
+     *
+     * @return
      * @param string $msg
      * @param string $name_log
      */
@@ -213,8 +228,8 @@ abstract class Logger
 
     /**
      * Genera un log de tipo DEBUG
-     * 
-     * @return 
+     *
+     * @return
      * @param string $msg
      * @param string $name_log
      */
@@ -225,8 +240,8 @@ abstract class Logger
 
     /**
      * Genera un log de tipo ALERT
-     * 
-     * @return 
+     *
+     * @return
      * @param string $msg
      * @param string $name_log
      */
@@ -237,8 +252,8 @@ abstract class Logger
 
     /**
      * Genera un log de tipo CRITICAL
-     * 
-     * @return 
+     *
+     * @return
      * @param string $msg
      * @param string $name_log
      */
@@ -249,8 +264,8 @@ abstract class Logger
 
     /**
      * Genera un log de tipo NOTICE
-     * 
-     * @return 
+     *
+     * @return
      * @param string $msg
      * @param string $name_log
      */
@@ -261,8 +276,8 @@ abstract class Logger
 
     /**
      * Genera un log de tipo INFO
-     * 
-     * @return 
+     *
+     * @return
      * @param string $msg
      * @param string $name_log
      */
@@ -273,8 +288,8 @@ abstract class Logger
 
     /**
      * Genera un log de tipo EMERGENCE
-     * 
-     * @return 
+     *
+     * @return
      * @param string $msg
      * @param string $name_log
      */
@@ -285,7 +300,7 @@ abstract class Logger
 
     /**
      * Genera un log Personalizado
-     * 
+     *
      * @param string $type
      * @param string $msg
      * @param string $name_log

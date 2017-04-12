@@ -14,7 +14,7 @@
  *
  * @category   Kumbia
  * @package    Router
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -28,162 +28,107 @@
  * @category   Kumbia
  * @package    Router
  */
-final class Router
+class Router
 {
     /**
      * Array estatico con las variables del router
      *
      * @var array
      */
-    private static $_vars = array(
-        'method' => NULL, //Método usado GET, POST, ...
-        'route' => NULL, //Ruta pasada en el GET
-        'module' => NULL, //Nombre del módulo actual
-        'controller' => 'index', //Nombre del controlador actual
-        'action' => 'index', //Nombre de la acción actual, por defecto index
-        'parameters' => array(), //Lista los parámetros adicionales de la URL
-        'controller_path' => 'index'
+
+    protected static $vars = array(
+        'method'          => null, //Método usado GET, POST, ...
+        'route'           => null, //Ruta pasada en el GET
+        'module'          => null, //Nombre del módulo actual
+        'controller'      => 'index', //Nombre del controlador actual
+        'action'          => 'index', //Nombre de la acción actual, por defecto index
+        'parameters'      => array(), //Lista los parámetros adicionales de la URL
+        'controller_path' => 'index',
+        'default_path'    => APP_PATH, //Path donde se encuentran los controller
+        'suffix'          => '_controller.php', //suffix for controler
+        'dir'             => 'controllers', //dir of controller
     );
 
-	/**
-	 * Indica si esta pendiente la ejecución de una ruta por parte del dispatcher
-	 * 
-	 * @var boolean
-	 */
-	private static $_routed = FALSE;
-    
     /**
-	 * Ejecuta una url
-	 * 
-	 * @param string $url
-	 * @return Controller
-	 */
-	public static function execute($url)
-	{
-		
-		// Se miran los parámetros por seguridad
-        if (stripos($url, '/../') !== false)
-			throw new KumbiaException("Posible intento de hack en URL: '$url'");
-			// Si hay intento de hack TODO: añadir la ip y referer en el log
-        
-        self::$_vars['route'] = $url;
-        //Método usado
-        self::$_vars['method'] = $_SERVER['REQUEST_METHOD'];
-        //Si config.ini tiene routes activados, mira si esta routed
-        if (Config::get('config.application.routes')) {
-            $url = self::_ifRouted($url);
-        }
-		// Descompone la url
-		self::_rewrite($url);
-		// Despacha la ruta actual
-		return self::_dispatch();
-	}
-    
-    /**
-     * Busca en la tabla de entutamiento si hay una ruta en config/routes.ini
-     * para el controlador, accion, id actual
-     * 
-     * @param string $url Url para enrutar
-     * @return string
+     * This is the name of router class
+     * @var String
      */
-    private static function _ifRouted($url)
+    protected static $router = 'KumbiaRouter';
+    //Es el router por defecto;
+
+    /**
+     * Indica si esta pendiente la ejecución de una ruta por parte del dispatcher
+     *
+     * @var boolean
+     */
+    protected static $routed = false;
+
+    /**
+     * Procesamiento basico del router
+     * @param string $url
+     * @return void
+     */
+    public static function init($url)
     {
-        $routes = Config::read('routes');
-        $routes = $routes['routes'];
-
-        // Si existe una ruta exacta la devuelve
-        if (isset($routes[$url])) {
-            return $routes[$url];
+        // Se miran los parámetros por seguridad
+        if (stripos($url, '/../') !== false) {
+            throw new KumbiaException("Posible intento de hack en URL: '$url'");
         }
-
-        // Si existe una ruta con el comodin * crea la nueva ruta
-        foreach ($routes as $key => $val) {
-            if ($key == '/*') {
-                return rtrim($val, '*') . $url;
-            }
-
-            if (strripos($key, '*', -1)) {
-                $key = rtrim($key, '*');
-                if (strncmp($url, $key, strlen($key)) == 0)
-                    return str_replace($key, rtrim($val, '*'), $url);
-            }
-        }
-
-        return $url;
+        // Si hay intento de hack TODO: añadir la ip y referer en el log
+        self::$vars['route'] = $url;
+        //Método usado
+        self::$vars['method'] = $_SERVER['REQUEST_METHOD'];
     }
-    
-	/**
-     * Toma $url y la descompone en (modulo), controlador, accion y argumentos
+
+    /**
+     * Ejecuta una url
      *
      * @param string $url
+     * @return Controller
      */
-    private static function _rewrite($url)
+    public static function execute($url)
     {
-        //Valor por defecto
-        if ($url == '/') return;
-
-        //Se limpia la url, en caso de que la hallan escrito con el último parámetro sin valor, es decir controller/action/
-        // Obtiene y asigna todos los parámetros de la url
-        $url_items = explode('/', trim($url, '/'));
-
-        // El primer parametro de la url es un módulo?
-        if (is_dir(APP_PATH . "controllers/$url_items[0]")) {
-            self::$_vars['module'] = $url_items[0];
-
-            // Si no hay mas parametros sale
-            if (next($url_items) === false) {
-                self::$_vars['controller_path'] = "$url_items[0]/index";
-                return;
+        self::init($url);
+        //alias
+        $router = self::$router;
+        $conf   = Config::get('config.application.routes');
+        //Si config.ini tiene routes activados, mira si esta routed
+        if ($conf) {
+            /*Esta activado el router*/
+            /* This if for back compatibility*/
+            if ($conf === '1') {
+                $url = $router::ifRouted($url);
+            } else {
+                /*Es otra clase de router*/
+                $router = self::$router = $conf;
             }
         }
 
-        // Controlador
-        self::$_vars['controller'] = current($url_items);
-        self::$_vars['controller_path'] = (self::$_vars['module']) ? "$url_items[0]/$url_items[1]" : current($url_items);
-        
-        // Si no hay mas parametros sale
-        if (next($url_items) === false) return;
+        // Descompone la url
+        self::$vars = $router::rewrite($url) + self::$vars;
 
-        // Acción
-        self::$_vars['action'] = current($url_items);
-        
-        // Si no hay mas parametros sale
-        if (next($url_items) === false) return;
-
-        // Crea los parámetros y los pasa
-        self::$_vars['parameters'] = array_slice($url_items, key($url_items));
+        // Despacha la ruta actual
+        return self::dispatch($router::getController(self::$vars));
     }
-    
-	/**
+
+    /**
      * Realiza el dispatch de la ruta actual
      *
      * @return Controller
      */
-    private static function _dispatch()
+    private static function dispatch($cont)
     {
-		// Extrae las variables para manipularlas facilmente
-        extract(self::$_vars, EXTR_OVERWRITE);
-
-        if (!include_once APP_PATH . "controllers/$controller_path" . '_controller.php')
-            throw new KumbiaException(null, 'no_controller');
-
-        View::select($action); //TODO: mover al constructor del controller base las 2 lineas
-        View::setPath($controller_path);
-		//Asigna el controlador activo
-        $app_controller = Util::camelcase($controller) . 'Controller';
-        $cont = new $app_controller($module, $controller, $action, $parameters);
-
         // Se ejecutan los filtros initialize y before
         if ($cont->k_callback(true) === false) {
             return $cont;
         }
 
         //Obteniendo el metodo
-		try {
-			$reflectionMethod = new ReflectionMethod($cont, $cont->action_name);
-		} catch (ReflectionException $e) {
-			throw new KumbiaException(null, 'no_action'); //TODO: enviar a un método del controller
-		}
+        try {
+            $reflectionMethod = new ReflectionMethod($cont, $cont->action_name);
+        } catch (ReflectionException $e) {
+            throw new KumbiaException($cont->action_name, 'no_action');//TODO: enviar a un método del controller
+        }
 
         //k_callback y __constructor metodo reservado
         if ($cont->action_name == 'k_callback' || $reflectionMethod->isConstructor()) {
@@ -195,38 +140,37 @@ final class Router
         $num_params = count($cont->parameters);
         if ($cont->limit_params && ($num_params < $reflectionMethod->getNumberOfRequiredParameters() ||
                 $num_params > $reflectionMethod->getNumberOfParameters())) {
-            throw new KumbiaException(NULL,'num_params');
+            throw new KumbiaException(null, 'num_params');
         }
-		
-		try {
-			$reflectionMethod->invokeArgs($cont, $cont->parameters);
-		} catch (ReflectionException $e) {
-			throw new KumbiaException(null, 'no_action'); //TODO: mejor no_public
-		}
+
+        try {
+            $reflectionMethod->invokeArgs($cont, $cont->parameters);
+        } catch (ReflectionException $e) {
+            throw new KumbiaException(null, 'no_action');//TODO: mejor no_public
+        }
 
         //Corre los filtros after y finalize
         $cont->k_callback();
 
         //Si esta routed internamente volver a ejecutar
-        if (self::$_routed) {
-            self::$_routed = FALSE;
-            return self::_dispatch(); // Vuelve a ejecutar el dispatcher
-        }
+        self::isRouted();
 
         return $cont;
     }
 
     /**
-     * Enruta el controlador actual a otro módulo, controlador, o a otra acción
-     * @deprecated  Ahora Redirect::route_to()
-     * @example
-     * Router::route_to("module: modulo", "controller: nombre", "action: accion", "parameters: 1/2")
+     * Redirecciona la ejecución internamente
      */
-    public static function route_to()
+    protected static function isRouted()
     {
-        call_user_func_array(array('Redirect', 'route_to'), func_get_args());
+        if (self::$routed) {
+            self::$routed = false;
+            $router = self::$router;
+            // Despacha la ruta actual
+            self::dispatch($router::getController(self::$vars));
+        }
     }
-    
+
     /**
      * Envia el valor de un atributo o el array con todos los atributos y sus valores del router
      * Mirar el atributo vars del router
@@ -239,50 +183,22 @@ final class Router
      * @param string $var (opcional) un atributo: route, module, controller, action, parameters o routed
      * @return array|string con el valor del atributo
      */
-    public static function get($var = null)
+    public static function get($var = '')
     {
-        if ($var) {
-            return self::$_vars[$var];
-        } else {
-            return self::$_vars;
-        }
+        return ($var) ? self::$vars[$var] : self::$vars;
     }
 
     /**
-     * Redirecciona la ejecución a otro controlador en un
-     * tiempo de ejecución determinado
-     * @deprecated  Ahora Redirect::to()
-     *
-     * @param string $route
-     * @param integer $seconds
-     */
-    public static function redirect($route = null, $seconds = null)
-    {
-        Redirect::to($route, $seconds);
-    }
-
-    /**
-     * Redirecciona la ejecución a una accion del controlador actual en un
-     * tiempo de ejecución determinado
-     * @deprecated Ahora Redirect::toAction()
-     * 
-     * @param string $action
-     * @param integer $seconds
-     */
-    public static function toAction($action, $seconds = null)
-    {
-        Redirect::toAction($action, $seconds);
-    }
-	
-	/**
      * Redirecciona la ejecución internamente o externamente con un routes propio
-     * 
-     * @param array $params array de $_vars (móddulo, controller, action, params, ...)
+     *
+     * @param array $params array de $vars (móddulo, controller, action, params, ...)
      * @param boolean $intern si la redirección es interna
      */
-	public static function to($params, $intern = FALSE)
-	{
-		if($intern) self::$_routed = TRUE;
-		self::$_vars = $params + self::$_vars;
-	}
+    public static function to($params, $intern = false)
+    {
+        if ($intern) {
+            self::$routed = true;
+        }
+        self::$vars = $params + self::$vars;
+    }
 }

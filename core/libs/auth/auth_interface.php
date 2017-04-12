@@ -13,8 +13,8 @@
  * to license@kumbiaphp.com so we can send you a copy immediately.
  *
  * @category   extensions
- * @package    Auth 
- * @copyright  Copyright (c) 2005-2014 Kumbia Team (http://www.kumbiaphp.com)
+ * @package    Auth
+ * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
  * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
  */
 
@@ -29,8 +29,6 @@ interface AuthInterface
 
     /**
      * Constructor del adaptador
-     *
-     * @return void
      */
     public function __construct($auth, $extra_args);
 
