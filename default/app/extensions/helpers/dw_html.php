@@ -20,6 +20,9 @@ class DwHtml extends Html {
      */
     public static function link ($action, $text, $attrs = NULL, $icon='', $loadAjax = APP_AJAX) {
         if (is_array($attrs) OR empty($attrs)) {
+            if(empty($attrs)) {
+              $attrs = array();
+            }
             if($loadAjax) {
                 if(empty($attrs['class'])) {
                     $attrs['class'] = 'js-link js-spinner js-url';

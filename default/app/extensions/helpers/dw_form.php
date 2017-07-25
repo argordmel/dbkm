@@ -484,11 +484,11 @@ class DwForm extends Form {
             $pk = $model_asoc->primary_key[0];//Tomo la llave primaria
             // Verifica si existe el argumento
             if(isset($data[2]) && isset($data[3])) {
-                $data = $model_asoc->$data[1]($data[2],$data[3]);
+                $data = $model_asoc->{$data[1]}($data[2],$data[3]);
             } else if(isset($data[2])) {
-                $data = $model_asoc->$data[1]($data[2]);
+                $data = $model_asoc->{$data[1]}($data[2]);
             } else {
-                $data = $model_asoc->$data[1]();
+                $data = $model_asoc->{$data[1]}();
             }
         } else { //Si ha enviado una data determino la llave primaria
             $model_asoc = explode('.', $field, 2);
