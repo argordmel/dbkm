@@ -5,25 +5,20 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
  * @category   Kumbia
  * @package    Auth
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ * 
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
  * Clase Base para la gestion de autenticación
  *
  * @category   Kumbia
- * @package    Auth
- * @deprecated 0.9 use KumbiaAuth
+ * @package    Auth 
  */
 abstract class Auth2 {
 
@@ -146,8 +141,6 @@ abstract class Auth2 {
      * @return bool
      */
     public function isValid() {
-        session_regenerate_id(TRUE);
-
         if ($this->_checkSession) {
             $this->_checkSession();
         }

@@ -5,17 +5,14 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
- * @category   extensions
+ * @category   Kumbia
  * @package    Auth
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ * @subpackage Adapters
+ * 
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
@@ -26,33 +23,8 @@
  */
 class ModelAuth implements AuthInterface
 {
-
     /**
-     * Nombre del archivo (si es utilizado)
-     *
-     * @var string
-     */
-    private $filename;
-    /**
-     * Servidor de autenticación (si es utilizado)
-     *
-     * @var string
-     */
-    private $server;
-    /**
-     * Nombre de usuario para conectar al servidor de autenticacion (si es utilizado)
-     *
-     * @var string
-     */
-    private $username;
-    /**
-     * Password de usuario para conectar al servidor de autenticacion (si es utilizado)
-     *
-     * @var string
-     */
-    private $password;
-    /**
-     * Atributos del modelo a comparar para autenticacion valida
+     * Atributos del modelo a comparar para autenticación válida
      */
     private $compare_attributes = array();
     /**
@@ -107,7 +79,7 @@ class ModelAuth implements AuthInterface
         }
         $result = (new $this->class)->count(join(" AND ", $where_condition));
         if ($result) {
-            $model = KumbiaActiveRecord::get($this->class)->find_first(join(" AND ", $where_condition));
+            $model = (new $this->class)->find_first(join(" AND ", $where_condition));
             $identity = array();
             foreach ($model->fields as $field) {
                 /**
@@ -123,7 +95,7 @@ class ModelAuth implements AuthInterface
     }
 
     /**
-     * Asigna los valores de los parametros al objeto autenticador
+     * Asigna los valores de los parámetros al objeto autenticador
      *
      * @param array $extra_args
      */

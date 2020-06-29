@@ -5,17 +5,13 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
  * @category   Kumbia
  * @package    Router
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ *
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
@@ -30,31 +26,42 @@
  */
 class Router
 {
+
     /**
-     * Array estatico con las variables del router
+     * Array estático con las variables del router
      *
      * @var array
      */
+    protected static $vars = [
+        // 'method'          => '', //Método usado GET, POST, ...
+        // 'route'           => '', //Ruta pasada URL
+        // 'module'          => '', //Nombre del módulo actual
+        // 'controller'      => 'index', //Nombre del controlador actual
+        // 'action'          => 'index', //Nombre de la acción actual, por defecto index
+        // 'parameters'      => [], //Lista los parámetros adicionales de la URL
+        // 'controller_path' => 'index'
+    ];
 
-    protected static $vars = array(
-        'method'          => null, //Método usado GET, POST, ...
-        'route'           => null, //Ruta pasada en el GET
-        'module'          => null, //Nombre del módulo actual
-        'controller'      => 'index', //Nombre del controlador actual
+    /**
+     * Array estático con las variables del router por defecto
+     * TODO: Convertir a constante
+     * 
+     * @var array
+     */
+    protected static $default = [
+        'module'          => '', //Nombre del módulo actual
+        'controller'      => 'index', //Nombre del controlador actual, por defecto index
         'action'          => 'index', //Nombre de la acción actual, por defecto index
-        'parameters'      => array(), //Lista los parámetros adicionales de la URL
-        'controller_path' => 'index',
-        'default_path'    => APP_PATH, //Path donde se encuentran los controller
-        'suffix'          => '_controller.php', //suffix for controler
-        'dir'             => 'controllers', //dir of controller
-    );
+        'parameters'      => [], //Lista los parámetros adicionales de la URL
+        'controller_path' => 'index'
+    ];
 
     /**
      * This is the name of router class
-     * @var String
+     * @var string
      */
     protected static $router = 'KumbiaRouter';
-    //Es el router por defecto;
+    //Es el router por defecto
 
     /**
      * Indica si esta pendiente la ejecución de una ruta por parte del dispatcher
@@ -66,6 +73,8 @@ class Router
     /**
      * Procesamiento basico del router
      * @param string $url
+     * 
+     * @throws KumbiaException
      * @return void
      */
     public static function init($url)
@@ -75,15 +84,17 @@ class Router
             throw new KumbiaException("Posible intento de hack en URL: '$url'");
         }
         // Si hay intento de hack TODO: añadir la ip y referer en el log
-        self::$vars['route'] = $url;
+        self::$default['route'] = $url;
         //Método usado
-        self::$vars['method'] = $_SERVER['REQUEST_METHOD'];
+        self::$default['method'] = $_SERVER['REQUEST_METHOD'];
     }
 
     /**
      * Ejecuta una url
      *
      * @param string $url
+     * 
+     * @throws KumbiaException
      * @return Controller
      */
     public static function execute($url)
@@ -105,7 +116,7 @@ class Router
         }
 
         // Descompone la url
-        self::$vars = $router::rewrite($url) + self::$vars;
+        self::$vars = $router::rewrite($url) + self::$default;
 
         // Despacha la ruta actual
         return self::dispatch($router::getController(self::$vars));
@@ -113,7 +124,10 @@ class Router
 
     /**
      * Realiza el dispatch de la ruta actual
+     * 
+     * @param Controller $cont  Controlador a usar
      *
+     * @throws KumbiaException
      * @return Controller
      */
     private static function dispatch($cont)
@@ -123,31 +137,25 @@ class Router
             return $cont;
         }
 
-        //Obteniendo el metodo
-        try {
-            $reflectionMethod = new ReflectionMethod($cont, $cont->action_name);
-        } catch (ReflectionException $e) {
-            throw new KumbiaException($cont->action_name, 'no_action');//TODO: enviar a un método del controller
-        }
+        if (method_exists($cont, $cont->action_name)) {
+            if (strcasecmp($cont->action_name, 'k_callback') === 0 ) {
+                throw new KumbiaException('Esta intentando ejecutar un método reservado de KumbiaPHP');
+            }
 
-        //k_callback y __constructor metodo reservado
-        if ($cont->action_name == 'k_callback' || $reflectionMethod->isConstructor()) {
-            throw new KumbiaException('Esta intentando ejecutar un método reservado de KumbiaPHP');
+            if ($cont->limit_params) { // with variadic php5.6 delete it
+                $reflectionMethod = new ReflectionMethod($cont, $cont->action_name);
+                $num_params = count($cont->parameters);
+                
+                if ($num_params < $reflectionMethod->getNumberOfRequiredParameters() ||
+                    $num_params > $reflectionMethod->getNumberOfParameters()) {
+                        
+                    throw new KumbiaException('', 'num_params');   
+                }
+                        
+            }
         }
-
-        //se verifica que los parametros que recibe
-        //la action sea la cantidad correcta
-        $num_params = count($cont->parameters);
-        if ($cont->limit_params && ($num_params < $reflectionMethod->getNumberOfRequiredParameters() ||
-                $num_params > $reflectionMethod->getNumberOfParameters())) {
-            throw new KumbiaException(null, 'num_params');
-        }
-
-        try {
-            $reflectionMethod->invokeArgs($cont, $cont->parameters);
-        } catch (ReflectionException $e) {
-            throw new KumbiaException(null, 'no_action');//TODO: mejor no_public
-        }
+        
+        call_user_func_array([$cont, $cont->action_name], $cont->parameters);
 
         //Corre los filtros after y finalize
         $cont->k_callback();
@@ -160,6 +168,9 @@ class Router
 
     /**
      * Redirecciona la ejecución internamente
+     * 
+     * @throws KumbiaException
+     * @return void
      */
     protected static function isRouted()
     {
@@ -181,6 +192,7 @@ class Router
      * <code>Router::get('controller')</code>
      *
      * @param string $var (opcional) un atributo: route, module, controller, action, parameters o routed
+     * 
      * @return array|string con el valor del atributo
      */
     public static function get($var = '')
@@ -193,12 +205,14 @@ class Router
      *
      * @param array $params array de $vars (móddulo, controller, action, params, ...)
      * @param boolean $intern si la redirección es interna
+     * 
+     * @return void
      */
-    public static function to($params, $intern = false)
+    public static function to(array $params, $intern = false)
     {
         if ($intern) {
             self::$routed = true;
         }
-        self::$vars = $params + self::$vars;
+        self::$vars = $params + self::$default;
     }
 }

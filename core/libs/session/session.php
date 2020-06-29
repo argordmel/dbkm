@@ -5,17 +5,13 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
  * @category   Kumbia
  * @package    Session
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ *
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /*Session start*/
@@ -31,6 +27,7 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 class Session
 {
     const SESSION = 'KUMBIA_SESSION';
+    const SPACE = 'default';
     /**
      * Crear o especificar el valor para un indice de la sesión
      * actual
@@ -39,7 +36,7 @@ class Session
      * @param mixed  $value
      * @param string $namespace
      */
-    public static function set($index, $value, $namespace = 'default')
+    public static function set($index, $value, $namespace = self::SPACE)
     {
         $_SESSION[self::SESSION][APP_PATH][$namespace][$index] = $value;
     }
@@ -51,7 +48,7 @@ class Session
      * @param string $namespace
      * @return mixed
      */
-    public static function get($index, $namespace='default')
+    public static function get($index, $namespace = self::SPACE)
     {
         if (isset($_SESSION[self::SESSION][APP_PATH][$namespace][$index])) {
             return $_SESSION[self::SESSION][APP_PATH][$namespace][$index];
@@ -64,7 +61,7 @@ class Session
      * @param string $index
      * @param string $namespace
      */
-    public static function delete($index, $namespace='default')
+    public static function delete($index, $namespace = self::SPACE)
     {
         unset($_SESSION[self::SESSION][APP_PATH][$namespace][$index]);
     }
@@ -76,7 +73,7 @@ class Session
      * @param string $namespace
      * @return boolean
      */
-    public static function has($index, $namespace='default')
+    public static function has($index, $namespace = self::SPACE)
     {
         return isset($_SESSION[self::SESSION][APP_PATH][$namespace][$index]);
     }
