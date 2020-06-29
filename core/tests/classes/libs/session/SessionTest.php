@@ -5,27 +5,24 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
- * @category   Kumbia
+ * @category   Test
  * @package    Session
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ *
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
- * @category Test
+ * @category    Test
+ * @package     Session
  */
-class SessionTest extends PHPUnit_Framework_TestCase
+class SessionTest extends PHPUnit\Framework\TestCase
 {
     public function setUp()
     {
-        if (session_status() == PHP_SESSION_NONE) {
+        if (session_status() !== PHP_SESSION_ACTIVE) {
             @session_start();
         }
     }
@@ -48,6 +45,8 @@ class SessionTest extends PHPUnit_Framework_TestCase
 
     public function testGetDefaultValue()
     {
+        Session::delete('test_key');
+        
         $this->assertFalse(Session::has('test_key'));
         $this->assertNull(Session::get('test_key'));
     }
@@ -71,6 +70,9 @@ class SessionTest extends PHPUnit_Framework_TestCase
 
     public function testGetWithNamespaces()
     {
+        Session::delete('test_key');
+        Session::delete('test_key', 'other');
+        
         $this->assertNull(Session::get('test_key'));
         $this->assertNull(Session::get('test_key', 'other'));
 

@@ -5,18 +5,14 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
- * @category Kumbia
- * @package Auth
+ * @category   Kumbia
+ * @package    Auth
  * @subpackage Adapters
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ * 
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
@@ -37,19 +33,19 @@ class DigestAuth implements AuthInterface
      */
     private $filename;
     /**
-     * Servidor de autenticaci�n (si es utilizado)
+     * Servidor de autenticación (si es utilizado)
      *
      * @var string
      */
     private $server;
     /**
-     * Nombre de usuario para conectar al servidor de autenticacion (si es utilizado)
+     * Nombre de usuario para conectar al servidor de autenticación (si es utilizado)
      *
      * @var string
      */
     private $username;
     /**
-     * Password de usuario para conectar al servidor de autenticacion (si es utilizado)
+     * Password de usuario para conectar al servidor de autenticación (si es utilizado)
      *
      * @var string
      */
@@ -79,7 +75,7 @@ class DigestAuth implements AuthInterface
             if (isset($extra_args[$param])) {
                 $this->$param = $extra_args[$param];
             } else {
-                throw new KumbiaException("Debe especificar el par�metro '$param' en los par�metros");
+                throw new KumbiaException("Debe especificar el parámetro '$param'.");
             }
         }
         foreach (array('username', 'password') as $param) {
@@ -95,8 +91,7 @@ class DigestAuth implements AuthInterface
      */
     public function get_identity()
     {
-        $identity = array("username" => $this->username, "realm" => $this->realm);
-        return $identity;
+        return array("username" => $this->username, "realm" => $this->realm);
     }
 
     /**
@@ -116,8 +111,8 @@ class DigestAuth implements AuthInterface
             $line = fgets($this->resource);
             $data = explode(":", $line);
 
-            if ($data[0] == $this->username) {
-                if (trim($data[2]) == md5($this->password)) {
+            if ($data[0] === $this->username) {
+                if (trim($data[2]) === md5($this->password)) {
                     $this->realm = $data[1];
                     $exists_user = true;
                     break;

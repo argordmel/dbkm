@@ -5,17 +5,13 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
  * @category   Kumbia
  * @package    Cache
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ *
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
@@ -44,7 +40,7 @@ abstract class Cache
      *
      * @var string
      */
-    protected $_id = null;
+    protected $_id;
     /**
      * Grupo de ultimo elemento solicitado
      *
@@ -76,21 +72,21 @@ abstract class Cache
     /**
      * Guarda un elemento en la cache con nombre $id y valor $value
      *
-     * @param string $value
-     * @param string $lifetime tiempo de vida con formato strtotime, utilizado para cache
-     * @param string $id
-     * @param string $group
+     * @param string $value     Contenido a cachear
+     * @param string $lifetime  Tiempo de vida con formato strtotime, utilizado para cache
+     * @param string|null $id   Identificador
+     * @param string $group     Grupo, se crea la cache con $group.$id
      * @return boolean
      */
-    abstract public function save($value, $lifetime = '', $id = false, $group = 'default');
+    abstract public function save($value, $lifetime = '', $id = null, $group = 'default');
 
     /**
      * Limpia la cache
      *
-     * @param string $group
+     * @param string|null $group
      * @return boolean
      */
-    abstract public function clean($group = false);
+    abstract public function clean($group = null);
 
     /**
      * Elimina un elemento de la cache
@@ -156,6 +152,7 @@ abstract class Cache
      * Obtiene el driver de cache indicado
      *
      * @param string $driver (file, sqlite, memsqlite, APC)
+     * @return Cache
      * */
     public static function driver($driver = '')
     {
@@ -176,6 +173,7 @@ abstract class Cache
      * Cambia el driver por defecto
      *
      * @param string $driver nombre del driver por defecto
+     * @return void
      */
     public static function setDefault($driver = 'file')
     {

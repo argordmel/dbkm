@@ -5,17 +5,13 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
  * @category   Kumbia
  * @package    Controller
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ *
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
@@ -24,7 +20,7 @@
  * @category   Kumbia
  * @package    Controller
  */
-class Controller
+abstract class Controller
 {
 
     /**
@@ -63,10 +59,12 @@ class Controller
      *
      * @var string
      */
-    public $scaffold;
+    public $scaffold = '';
 
     /**
      * Data disponble para mostrar
+     * 
+     * @var mixed
      */
     public $data;
 
@@ -98,7 +96,7 @@ class Controller
     /**
      * AfterFilter
      *
-     * @return false|null
+     * @return false|void
      */
     protected function after_filter()
     {
@@ -107,7 +105,7 @@ class Controller
     /**
      * Initialize
      *
-     * @return false|null
+     * @return false|void
      */
     protected function initialize()
     {
@@ -116,7 +114,7 @@ class Controller
     /**
      * Finalize
      *
-     * @return false|null
+     * @return false|void
      */
     protected function finalize()
     {
@@ -126,7 +124,7 @@ class Controller
      * Ejecuta los callback filter
      *
      * @param boolean $init filtros de inicio
-     * @return false|null
+     * @return false|void
      */
     final public function k_callback($init = false)
     {
@@ -139,5 +137,19 @@ class Controller
 
         $this->after_filter();
         $this->finalize();
+    }
+
+    /**
+     * Se llama cuando no existe un método
+     *
+     * @param string $name      
+     * @param array  $arguments
+     * @throws KumbiaException
+     * 
+     * @return void
+     */
+    public function __call($name, $arguments)
+    {
+        throw new KumbiaException($name, 'no_action');
     }
 }
