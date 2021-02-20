@@ -32,7 +32,7 @@ class Security {
         $key = (defined('TEXT_KEY')) ? TEXT_KEY : self::TEXT_KEY.date("Y-m-d");        
         $key = md5($id.$key.$action);
         $tam = strlen($key);
-        return $id.'.'.substr($key,0,6).substr($key,$tam-6, $tam);
+        return $id.'+'.substr($key,0,6).substr($key,$tam-6, $tam);
     }  
     
     /**
@@ -44,7 +44,7 @@ class Security {
      * @return boolean
      */
     public static function getKey($valueKey, $action='', $filter='', $popup=FALSE) {
-        $key        = explode('.', $valueKey); 
+        $key        = explode('+', $valueKey); 
         $id         = empty($key[0]) ? NULL : $key[0];
         $validKey   = self::setKey($id, $action);               
         $valid      = ($validKey === $valueKey) ? TRUE : FALSE; 
