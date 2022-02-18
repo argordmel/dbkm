@@ -5,17 +5,13 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
  * @category   Kumbia
  * @package    KumbiaRouter
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ *
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 class KumbiaRouter
@@ -31,7 +27,7 @@ class KumbiaRouter
     {
         $router = array();
         //Valor por defecto
-        if ($url == '/') {
+        if ($url === '/') {
             return $router;
         }
 
@@ -39,11 +35,11 @@ class KumbiaRouter
         // Obtiene y asigna todos los parámetros de la url
         $urlItems = explode('/', trim($url, '/'));
 
-        // El primer parametro de la url es un módulo?
+        // El primer parámetro de la url es un módulo?
         if (is_dir(APP_PATH."controllers/$urlItems[0]")) {
             $router['module'] = $urlItems[0];
 
-            // Si no hay mas parametros sale
+            // Si no hay más parámetros sale
             if (next($urlItems) === false) {
                 $router['controller_path'] = "$urlItems[0]/index";
                 return $router;
@@ -52,9 +48,9 @@ class KumbiaRouter
 
         // Controlador, cambia - por _
         $router['controller']      = str_replace('-', '_', current($urlItems));
-        $router['controller_path'] = !empty($router['module']) ? "$urlItems[0]/".$router['controller'] : $router['controller'];
+        $router['controller_path'] = isset($router['module']) ? "$urlItems[0]/".$router['controller'] : $router['controller'];
 
-        // Si no hay mas parametros sale
+        // Si no hay más parámetros sale
         if (next($urlItems) === false) {
             return $router;
         }
@@ -62,7 +58,7 @@ class KumbiaRouter
         // Acción
         $router['action'] = current($urlItems);
 
-        // Si no hay mas parametros sale
+        // Si no hay más parámetros sale
         if (next($urlItems) === false) {
             return $router;
         }
@@ -88,9 +84,9 @@ class KumbiaRouter
             return $routes[$url];
         }
 
-        // Si existe una ruta con el comodin * crea la nueva ruta
+        // Si existe una ruta con el comodín * crea la nueva ruta
         foreach ($routes as $key => $val) {
-            if ($key == '/*') {
+            if ($key === '/*') {
                 return rtrim($val, '*').$url;
             }
 
@@ -106,13 +102,17 @@ class KumbiaRouter
 
     /**
      * Carga y devuelve una instancia del controllador
+     * 
+     * @throws KumbiaException
+     * 
+     * @return Controller
      */
     public static function getController($param)
     {
         // Extrae las variables para manipularlas facilmente
         extract($param, EXTR_OVERWRITE);
-        if (!include_once "$default_path{$dir}/$controller_path{$suffix}") {
-            throw new KumbiaException(null, 'no_controller');
+        if (!include_once APP_PATH."controllers/{$controller_path}_controller.php") {
+            throw new KumbiaException('', 'no_controller');
         }
         //Asigna el controlador activo
         $app_controller = Util::camelcase($controller).'Controller';

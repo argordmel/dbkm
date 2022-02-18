@@ -5,18 +5,14 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately..
+ * with this package in the file LICENSE.
  *
- * @category Kumbia
- * @package Auth
+ * @category   Kumbia
+ * @package    Auth
  * @subpackage Adapters
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ * 
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
@@ -81,7 +77,7 @@ class Kerberos5Auth implements AuthInterface
     {
 
         if (!extension_loaded("kadm5")) {
-            throw new KumbiaException("Debe cargar la extensi�n de php llamada kadm5");
+            throw new KumbiaException("Debe cargar la extensión de php llamada kadm5");
         }
 
         foreach (array('server', 'username', 'principal', 'password') as $param) {
