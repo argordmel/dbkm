@@ -21,7 +21,7 @@ Documentación
 
 Instalación
 -------------------
-Para instalar el DBKM simplemente lo descargas, creas una base de datos e importas el archivo backup-1.sql.gz ubicado en la carpeta "app/temp/backup", editas el databases.ini y databases.org.ini con los parámetros de conexión.
+Para instalar el DBKM simplemente lo descargas, creas una base de datos e importas el archivo backup-1.sql.gz ubicado en la carpeta "default/app/temp/backup", editas el databases.ini y databases.org.ini con los parámetros de conexión.
 
 Usuario: admin
 
