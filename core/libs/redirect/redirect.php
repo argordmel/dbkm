@@ -5,19 +5,14 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
  * @category   Kumbia
- * @package    Router
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ * @package    Redirect
+ *
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
-
 /**
  * Clase para redireccionar peticiones
  *
@@ -34,6 +29,8 @@ class Redirect
      * @param string $route ruta a la que será redirigida la petición.
      * @param integer $seconds segundos que se esperarán antes de redirigir
      * @param integer $statusCode código http de la respuesta, por defecto 302
+     * 
+     * @return void
      */
     public static function to($route = '', $seconds = 0, $statusCode = 302)
     {
@@ -43,11 +40,11 @@ class Redirect
 
         if ($seconds) {
             header("Refresh: $seconds; url=$route");
-        } else {
-            header('Location: '.$route, TRUE, $statusCode);
-            $_SESSION['KUMBIA.CONTENT'] = ob_get_clean();
-            View::select(null, null);
+            return;
         }
+        header('Location: '.$route, TRUE, $statusCode);
+        $_SESSION['KUMBIA.CONTENT'] = ob_get_clean();
+        View::select(null, null);
     }
 
     /**
@@ -57,6 +54,8 @@ class Redirect
      * @param string $action acción del controlador actual a la que se redirige
      * @param integer $seconds segundos que se esperarán antes de redirigir
      * @param integer $statusCode código http de la respuesta, por defecto 302
+     * 
+     * @return void
      */
     public static function toAction($action, $seconds = 0, $statusCode = 302)
     {
@@ -67,6 +66,8 @@ class Redirect
      * Enrutamiento interno
      * @example
      * Redirect::intern("module: modulo", "controller: nombre", "action: accion", "parameters: 1/2")
+     * 
+     * @return void
      */
     public static function internal()
     {
@@ -96,6 +97,8 @@ class Redirect
      * @deprecated Se mantiene por legacy temporalmente
      * @example
      * Redirect::route_to("module: modulo", "controller: nombre", "action: accion", "parameters: 1/2")
+     * 
+     * @return void
      */
     public static function route_to() {
         self::internal(func_get_args());

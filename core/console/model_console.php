@@ -5,39 +5,34 @@
  * LICENSE
  *
  * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- * It is also available through the world-wide-web at this URL:
- * http://wiki.kumbiaphp.com/Licencia
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to license@kumbiaphp.com so we can send you a copy immediately.
+ * with this package in the file LICENSE.
  *
  * @category   Kumbia
  * @package    Console
- * @copyright  Copyright (c) 2005 - 2017 Kumbia Team (http://www.kumbiaphp.com)
- * @license    http://wiki.kumbiaphp.com/Licencia     New BSD License
+ *
+ * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
 /**
- * Consola para manejar modelos
+ * Consola para manejar modelos.
  *
  * @category   Kumbia
  * @package    Console
  */
 class ModelConsole
 {
-
     /**
-     * Comando de consola para crear un modelo
+     * Comando de consola para crear un modelo.
      *
-     * @param array $params parametros nombrados de la consola
-     * @param string $model modelo
+     * @param array  $params parametros nombrados de la consola
+     * @param string $model  modelo
      * @throw KumbiaException
      */
     public function create($params, $model)
     {
         // nombre de archivo
-        $file = APP_PATH . 'models';
+        $file = APP_PATH.'models';
 
         // obtiene el path
         $path = explode('/', trim($model, '/'));
@@ -56,19 +51,18 @@ class ModelConsole
 
         // si no existe o se sobreescribe
         if (!is_file($file) ||
-                Console::input("El modelo existe, �desea sobrescribirlo? (s/n): ", array('s', 'n')) == 's') {
-
+            Console::input('El modelo existe, desea sobrescribirlo? (s/n): ', array('s', 'n')) == 's') {
             // nombre de clase
             $class = Util::camelcase($model_name);
 
             // codigo de modelo
             ob_start();
-            include __DIR__ . '/generators/model.php';
-            $code = '<?php' . PHP_EOL . ob_get_clean();
+            include __DIR__.'/generators/model.php';
+            $code = '<?php'.PHP_EOL.ob_get_clean();
 
             // genera el archivo
             if (file_put_contents($file, $code)) {
-                echo "-> Creado modelo $model_name en: $file" . PHP_EOL;
+                echo "-> Creado modelo $model_name en: $file".PHP_EOL;
             } else {
                 throw new KumbiaException("No se ha logrado crear el archivo \"$file\"");
             }
@@ -76,16 +70,16 @@ class ModelConsole
     }
 
     /**
-     * Comando de consola para eliminar un modelo
+     * Comando de consola para eliminar un modelo.
      *
-     * @param array $params parametros nombrados de la consola
-     * @param string $model modelo
+     * @param array  $params parametros nombrados de la consola
+     * @param string $model  modelo
      * @throw KumbiaException
      */
     public function delete($params, $model)
     {
         // nombre de archivo
-        $file = APP_PATH . 'models/' . trim($model, '/');
+        $file = APP_PATH.'models/'.trim($model, '/');
 
         // si es un directorio
         if (is_dir($file)) {
@@ -98,10 +92,9 @@ class ModelConsole
 
         // mensaje
         if ($success) {
-            echo "-> Eliminado: $file" . PHP_EOL;
+            echo "-> Eliminado: $file".PHP_EOL;
         } else {
             throw new KumbiaException("No se ha logrado eliminar \"$file\"");
         }
     }
-
 }
