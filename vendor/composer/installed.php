@@ -5,7 +5,7 @@
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '27b4e41aa7f8c7c3628bbf50b696ffe0d763b9fd',
+        'reference' => 'c58acb6674cc5f3c86070fa1cefdffad09243388',
         'name' => 'kumbia/dbkm',
         'dev' => true,
     ),
@@ -16,7 +16,7 @@
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '27b4e41aa7f8c7c3628bbf50b696ffe0d763b9fd',
+            'reference' => 'c58acb6674cc5f3c86070fa1cefdffad09243388',
             'dev_requirement' => false,
         ),
         'kumbia/framework' => array(
