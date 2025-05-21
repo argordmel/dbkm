@@ -60,7 +60,8 @@ class DwHtml extends Html {
         if($icon) {
             $text = "<i class=\"fa fa-pd-expand $icon\"></i> $text";
         }
-        return "<a href=\"$action\" $attrs >$text</a>";
+
+        return "<a href=\"$action\" " . Tag::getAttrs($attrs) . ">$text</a>";
     }
 
 

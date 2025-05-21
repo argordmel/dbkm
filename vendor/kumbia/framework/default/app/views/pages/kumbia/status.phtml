@@ -1,0 +1,68 @@
+<div id='info'>
+<?php
+    // Controlando si se ejecuta en windows para que no de problemas la funcion
+    if (PHP_OS == 'WINNT') {
+        echo strftime("%#d de %B del %Y") , '<br/>';
+    } else {
+        echo strftime("%e de %B del %Y") , '<br/>';
+    }
+    
+
+    /**
+     * Verificando permisos del dir temp/
+     */
+    if (!is_writable(APP_PATH.'temp')) {
+        $tmp = "Debes darle permiso a: '".basename(APP_PATH)."/temp/'";
+    } else {
+        $tmp = 'Directorio temp... ok';
+    }
+    
+    $status = PRODUCTION ? 'Production' : 'Development';
+
+
+    /**
+     * Configuracion del config.php
+     */
+    $config = Config::read('config');
+
+    if (isset($config['application']['cache_driver'])) {
+        $cahe_driver = $config['application']['cache_driver'];
+    } else {
+        $cache_driver = 'No ha seleccionado un driver para la cache';
+    }
+
+    $locale = str_replace(';', '<br>', setlocale(LC_ALL, '0'));
+    
+    if (! $timezone = date_default_timezone_get()) {
+        $timezone = 'No se ha especificado un Timezone.';
+    }
+?>
+        <h2>config.php <span class='app'> de la aplicación '<?= basename(dirname(APP_PATH)) ?>'</span></h2>
+
+        <div id="conf">
+        <h4>Directorio temp/:</h4>
+        <p><?= $tmp ?></p>
+
+        <h4>Estado Actual del Framework: <span><?= $status ?></span></h4>
+        <p>Ver <a href='https://github.com/KumbiaPHP/Documentation/blob/master/es/to-install.md#modos-de-una-aplicaci%C3%B3n'>Modos de ejecución</a></p>
+
+        <h4>Base de Datos: <span><?= $config['application']['database'] ?></span></h4>
+        <p>Datos de la conexión a la BD que será utilizada, ver configuración <a href="https://github.com/KumbiaPHP/Documentation/blob/master/es/active-record.md#configurando-conexi%C3%B3n-a-la-base-de-datos">databases.php</a>.</p>
+        
+        <h4>Cache Driver: <span><?= $cahe_driver ?></span></h4>
+        <p>Driver que se utilizará para realizar las operaciones de cache.</p>
+
+        <h4>Charset: <span><?= APP_CHARSET ?></span></h4>
+        <p>Codificación de caracteres. Recomendado UTF-8</p>
+
+        <h2>Valores del servidor</h2>
+        <p>Como cambiar estos valores <a href=#>enlace TODO</a></p>
+        
+        <h4>TimeZone: <span><?= $timezone ?></span></h4>
+        <p>Zona horaria que usará la aplicación.</p>
+
+        <h4>Locale:</h4>
+        <span><?= $locale ?></span>
+        <p>Localización. Característica que depende de los locale instalados en el servidor.</p>
+        </div>
+</div>

@@ -1,0 +1,54 @@
+{
+    "packages": [
+        {
+            "name": "kumbia/framework",
+            "version": "v1.1.5",
+            "version_normalized": "1.1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KumbiaPHP/KumbiaPHP.git",
+                "reference": "72235c00af4a51300df17e1922ec27c4f40732b9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KumbiaPHP/KumbiaPHP/zipball/72235c00af4a51300df17e1922ec27c4f40732b9",
+                "reference": "72235c00af4a51300df17e1922ec27c4f40732b9",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "mockery/mockery": ">=0.9",
+                "php": ">=5.4",
+                "phpunit/phpunit": ">=4.0"
+            },
+            "time": "2021-07-22T12:05:45+00:00",
+            "type": "project",
+            "installation-source": "dist",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "The KumbiaPHP framework",
+            "homepage": "https://kumbiaphp.com",
+            "support": {
+                "forum": "http://foro.kumbiaphp.com/",
+                "group": "https://groups.google.com/group/kumbia",
+                "issues": "https://github.com/KumbiaPHP/KumbiaPHP/issues",
+                "slack": "https://slack.kumbiaphp.com",
+                "source": "https://github.com/KumbiaPHP/KumbiaPHP",
+                "wiki": "http://wiki.kumbiaphp.com"
+            },
+            "funding": [
+                {
+                    "url": "https://opencollective.com/kumbiaphp",
+                    "type": "open_collective"
+                }
+            ],
+            "install-path": "../kumbia/framework"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
