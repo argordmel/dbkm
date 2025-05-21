@@ -9,7 +9,7 @@
  *
  * @category   Kumbia
  *
- * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2023 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 require_once __DIR__.'/controller.php';
@@ -43,11 +43,11 @@ abstract class KumbiaRest extends Controller
      * callback que devuelva los datos interpretado.
      */
     protected $_inputType = [
-        'application/json' => ['self', 'parseJSON'],
-        'application/xml' => ['self', 'parseXML'],
-        'text/xml' => ['self', 'parseXML'],
-        'text/csv' => ['self', 'parseCSV'],
-        'application/x-www-form-urlencoded' => ['self', 'parseForm']
+        'application/json' => [self::class, 'parseJSON'],
+        'application/xml' => [self::class, 'parseXML'],
+        'text/xml' => [self::class, 'parseXML'],
+        'text/csv' => [self::class, 'parseCSV'],
+        'application/x-www-form-urlencoded' => [self::class, 'parseForm']
     ];
 
     /**
@@ -185,7 +185,7 @@ abstract class KumbiaRest extends Controller
             $q = 1; /* Por defecto la prioridad es 1, el siguiente verifica si es otra */
             if (strpos($a, ';q=')) {
                 /* parte el "mime/type;q=X" en dos: "mime/type" y "X" */
-                list($a, $q) = explode(';q=', $a);
+                [$a, $q] = explode(';q=', $a);
             }
             $aTypes[$a] = $q;
         }

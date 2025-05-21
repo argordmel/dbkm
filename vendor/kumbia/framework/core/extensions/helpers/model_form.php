@@ -10,7 +10,7 @@
  * @category   KumbiaPHP
  * @package    Helpers
  *
- * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2024 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
@@ -23,23 +23,24 @@
 class ModelForm
 {
     /**
+     * Generate a form from model automatically
+     * -
      * Genera un form de un modelo (objeto) automáticamente.
      *
-     * @param object $model
-     * @param string $action
      */
-    public static function create($model, $action = '')
+    public static function create(object $model, string $action = ''): void
     {
-        $model_name = get_class($model);
+        $model_name = $model::class;
         if (!$action) {
             $action = ltrim(Router::get('route'), '/');
         }
+        // separar para diferentes ORM u otros formatos json, ini, xml, array,...
 
         echo '<form action="', PUBLIC_PATH.$action, '" method="post" id="', $model_name, '" class="scaffold">' , PHP_EOL;
         $pk = $model->primary_key[0];
         echo '<input id="', $model_name, '_', $pk, '" name="', $model_name, '[', $pk, ']" class="id" value="', $model->$pk , '" type="hidden">' , PHP_EOL;
 
-        $fields = array_diff($model->fields, $model->_at, $model->_in, $model->primary_key);
+        $fields = array_diff($model->fields, [...$model->_at, ...$model->_in, ...$model->primary_key]);
 
         foreach ($fields as $field) {
             $tipo = trim(preg_replace('/(\(.*\))/', '', $model->_data_type[$field])); //TODO: recoger tamaño y otros valores
@@ -48,9 +49,11 @@ class ModelForm
             $formName = $model_name.'['.$field.']';
 
             if (in_array($field, $model->not_null)) {
-                echo "<label for=\"$formId\" class=\"required\">$alias *</label>" , PHP_EOL;
+                echo "<label class=\"required\">$alias" , PHP_EOL;
+                $required = ' required';
             } else {
-                echo "<label for=\"$formId\">$alias</label>" , PHP_EOL;
+                echo "<label>$alias" , PHP_EOL;
+                $required = '';
             }
 
             switch ($tipo) {
@@ -60,20 +63,20 @@ class ModelForm
                 case 'real': case 'decimal': case 'numeric':
                 case 'year': case 'day': case 'int unsigned': // Números
 
-                    if (strripos($field, '_id', -3)) {
-                        echo Form::dbSelect($model_name.'.'.$field, null, null, 'Seleccione', '', $model->$field);
+                    if (str_ends_with($field, '_id')) {
+                        echo Form::dbSelect($model_name.'.'.$field, null, null, 'Seleccione', $required, $model->$field);
                         break;
                     }
 
-                    echo "<input id=\"$formId\" type=\"number\" name=\"$formName\" value=\"{$model->$field}\">" , PHP_EOL;
+                    echo "<input id=\"$formId\" type=\"number\" name=\"$formName\" value=\"{$model->$field}\"$required>" , PHP_EOL;
                     break;
 
-                case 'date': // Usar el js de datetime
-                    echo "<input id=\"$formId\" type=\"date\" name=\"$formName\" value=\"{$model->$field}\">" , PHP_EOL;
+                case 'date':
+                    echo "<input id=\"$formId\" type=\"date\" name=\"$formName\" value=\"{$model->$field}\"$required>" , PHP_EOL;
                     break;
 
                 case 'datetime': case 'timestamp':
-                    echo "<input id=\"$formId\" type=\"datetime\" name=\"$formName\" value=\"{$model->$field}\">" , PHP_EOL;
+                    echo "<input id=\"$formId\" type=\"datetime-local\" name=\"$formName\" value=\"{$model->$field}\"$required>" , PHP_EOL;
                     break;
 
                 case 'enum': case 'set': case 'bool':
@@ -87,14 +90,15 @@ class ModelForm
 
                 case 'text': case 'mediumtext': case 'longtext': // Usar textarea
                 case 'blob': case 'mediumblob': case 'longblob':
-                    echo "<textarea id=\"$formId\" name=\"$formName\">{$model->$field}</textarea>" , PHP_EOL;
+                    echo "<textarea id=\"$formId\" name=\"$formName\"$required>{$model->$field}</textarea>" , PHP_EOL;
                     break;
 
                 default: //text,tinytext,varchar, char,etc se comprobara su tamaño
-                    echo "<input id=\"$formId\" type=\"text\" name=\"$formName\" value=\"{$model->$field}\">" , PHP_EOL;
+                    echo "<input id=\"$formId\" type=\"text\" name=\"$formName\" value=\"{$model->$field}\"$required>" , PHP_EOL;
             }
+            echo '</label>';
         }
-        echo '<input type="submit" value="Enviar" />' , PHP_EOL;
-        echo '</form>' , PHP_EOL;
+        echo '<input type="submit">' , PHP_EOL;
+        echo '</form>' , PHP_EOL; 
     }
 }

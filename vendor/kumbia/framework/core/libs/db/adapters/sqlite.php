@@ -11,7 +11,7 @@
  * @package    Db
  * @subpackage Adapters
  *
- * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2023 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
@@ -314,7 +314,7 @@ class DbSQLite extends DbBase implements DbBaseInterface
     {
         $table = addslashes(strtolower($table));
         if (strpos($table, '.')) {
-            list($schema, $table) = explode('.', $table);
+            [$schema, $table] = explode('.', $table);
         }
         $num = $this->fetch_one("SELECT COUNT(*) FROM sqlite_master WHERE name = '$table'");
 

@@ -1,9 +1,10 @@
 ![KumbiaPHP logo](https://rawgit.com/kumbiaphp/kumbiaphp/master/default/public/img/kumbiaphp.svg)
 
+[![PHPUnit](https://github.com/KumbiaPHP/KumbiaPHP/actions/workflows/phpunit.yml/badge.svg)](https://github.com/KumbiaPHP/KumbiaPHP/actions/workflows/phpunit.yml)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/KumbiaPHP/KumbiaPHP/badges/quality-score.png)](https://scrutinizer-ci.com/g/KumbiaPHP/KumbiaPHP)
 [![Code Climate](https://codeclimate.com/github/KumbiaPHP/KumbiaPHP/badges/gpa.svg)](https://codeclimate.com/github/KumbiaPHP/KumbiaPHP)
 [![Slack](https://slack.kumbiaphp.com/badge.svg)](https://slack.kumbiaphp.com)
-![PHP7 ready](https://rawgit.com/kumbiaphp/kumbiaphp/master/default/public/img/php7.svg)
+![PHP8 ready](/default/public/img/php8.svg?sanitize=true)
 
 English | [Español](README.md)
 
@@ -11,7 +12,8 @@ Fast and easy php framework
 
 ---
 # Welcome to KumbiaPHP Framework
-* Require PHP 5.4, recommended PHP 5.6, 7.1, 7.2 or 7.3
+* v1.2 require PHP 8.0
+* Til v1.1.x require PHP 5.4, recommended 7.x or 8.x
 ## Manual v1:
 
 https://github.com/KumbiaPHP/Documentation/tree/master/en

@@ -10,7 +10,7 @@
  * @category   Kumbia
  * @package    Core
  *
- * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2023 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
@@ -33,10 +33,7 @@ require CORE_PATH.'kumbia/kumbia_version.php';
  *
  * @return void
  */
-set_exception_handler(function($e) {
-    KumbiaException::handleException($e);
-});
-
+set_exception_handler(static fn($e) => KumbiaException::handleException($e));
 
 // @see Autoload
 require CORE_PATH.'kumbia/autoload.php';

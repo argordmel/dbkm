@@ -9,7 +9,7 @@
  *
  * @category   Kumbia
  *
- * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2023 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
@@ -58,9 +58,9 @@ class Load
      * @param string $model  modelo a instanciar en small_case
      * @param array  $params parámetros para instanciar el modelo
      *
-     * @return obj model
+     * @return object model
      */
-    public static function model($model, array $params = array())
+    public static function model($model, array $params = [])
     {
         //Nombre de la clase
         $Model = Util::camelcase(basename($model));
@@ -78,7 +78,7 @@ class Load
     /**
      * Carga modelos.
      *
-     * @param string $model en small_case
+     * @param string|array $model en small_case
      * @throw KumbiaException
      */
     public static function models($model)

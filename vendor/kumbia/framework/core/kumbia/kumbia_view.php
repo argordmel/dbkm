@@ -9,7 +9,7 @@
  *
  * @category   View
  *
- * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2023 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 
@@ -58,7 +58,7 @@ class KumbiaView
      *
      * @var array
      */
-    protected static $_cache = array('type' => false, 'time' => false, 'group' => false);
+    protected static $_cache = ['type' => false, 'time' => false, 'group' => false];
 
     /**
      * Datos del Controlador actual.
@@ -66,6 +66,21 @@ class KumbiaView
      * @var array
      */
     protected static $_controller;
+
+    /**
+     * Initialize view
+     *
+     * @param string $view
+     * @param string $path
+     * @return void
+     */
+    public static function init($view, $path)
+    {
+        self::$_view = $view;
+        self::$_path = $path.'/';
+        //self::$init = true;
+        // TODO add defaults if init executed (workerman, ngx-php,...)
+    }
 
     /**
      * Cambia el view y opcionalmente el template.
@@ -203,7 +218,7 @@ class KumbiaView
     {
         $file = APP_PATH.'views/'.self::getPath();
         //Si no existe el view y es scaffold
-        if (!is_file($file) && ($scaffold = self::$_controller['scaffold'])) {
+        if (!is_file($file) && ($scaffold = self::$_controller['scaffold'] ?? null)) {
             $file = APP_PATH."views/_shared/scaffolds/$scaffold/".self::$_view.'.phtml';
         }
 
@@ -373,7 +388,7 @@ class KumbiaView
             return self::$_controller;
         }
 
-        return isset(self::$_controller[$var]) ? self::$_controller[$var] : null;
+        return self::$_controller[$var] ?? null;
     }
 }
 

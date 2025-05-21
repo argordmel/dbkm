@@ -1,4 +1,5 @@
 <?php
+
 /**
  * KumbiaPHP web & app Framework
  *
@@ -10,7 +11,7 @@
  * @category   KumbiaPHP
  * @package    Helpers
  *
- * @copyright  Copyright (c) 2005 - 2020 KumbiaPHP Team (http://www.kumbiaphp.com)
+ * @copyright  Copyright (c) 2005 - 2023 KumbiaPHP Team (http://www.kumbiaphp.com)
  * @license    https://github.com/KumbiaPHP/KumbiaPHP/blob/master/LICENSE   New BSD License
  */
 /**
@@ -54,11 +55,11 @@ class Form
     {
         // Obtiene considerando el patrón de formato form.field
         $formField = explode('.', $field, 2);
-        list($id, $name) = self::fieldName($formField);
+        [$id, $name] = self::fieldName($formField);
         // Verifica en $_POST
         if (Input::hasPost($field)) {
             $value = $is_check ?
-            Input::post($field) == $value : Input::post($field);
+                Input::post($field) == $value : Input::post($field);
         } elseif ($is_check) {
             $value = $check;
         } elseif ($tmp_val = self::getFromModel($formField)) {
@@ -67,10 +68,26 @@ class Form
         }
         // Filtrar caracteres especiales
         if (!$is_check && $value !== null && $filter) {
-            $value = htmlspecialchars($value, ENT_COMPAT, APP_CHARSET);
+            if (is_array($value)) {
+                $value = self::filterArrayValues($value);
+            } else {
+                $value = htmlspecialchars($value, ENT_COMPAT, APP_CHARSET);
+            }
         }
         // Devuelve los datos
         return array($id, $name, $value);
+    }
+
+    private static function filterArrayValues(array $array)
+    {
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                $value = self::filterArrayValues($value);
+            } else {
+                $value = htmlspecialchars($value, ENT_COMPAT, APP_CHARSET);
+            }
+        }
+        return $array;
     }
 
     /**
@@ -88,7 +105,7 @@ class Form
         }
         $form = (object) $form;
 
-        return isset($form->{$formField[1]}) ? $form->{$formField[1]} : null;
+        return $form->{$formField[1]} ?? null;
     }
 
     /**
@@ -101,7 +118,7 @@ class Form
     protected static function fieldName(array $field)
     {
         return isset($field[1]) ?
-                    array("{$field[0]}_{$field[1]}", "{$field[0]}[{$field[1]}]") : array($field[0], $field[0]);
+            array("{$field[0]}_{$field[1]}", "{$field[0]}[{$field[1]}]") : array($field[0], $field[0]);
     }
 
     /**
@@ -144,14 +161,14 @@ class Form
      * @param string       $value
      * @param string|array $attrs
      */
-    protected static function tag($tag, $field, $attrs = '', $value = null, $extra = '', $close = true)
+    protected static function tag($tag, $field, $attrs = '', $value = '', $extra = '', $close = true)
     {
         $attrs = Tag::getAttrs($attrs);
         $end = $close ? ">{{value}}</$tag>" : '/>';
         // Obtiene name, id y value (solo para autoload) para el campo y los carga en el scope
-        list($id, $name, $value) = self::getFieldData($field, $value);
+        [$id, $name, $value] = self::getFieldData($field, $value);
 
-        return str_replace('{{value}}', $value, "<$tag id=\"$id\" name=\"$name\" $extra $attrs $end");
+        return str_replace('{{value}}', (string) $value, "<$tag id=\"$id\" name=\"$name\" $extra $attrs $end");
     }
 
     /*
@@ -163,7 +180,7 @@ class Form
      * @param string $value
      * @return string
      */
-    public static function input($type, $field, $attrs = '', $value = null)
+    public static function input($type, $field, $attrs = '', $value = '')
     {
         return self::tag('input', $field, $attrs, $value, "type=\"$type\" value=\"{{value}}\"", false);
     }
@@ -181,9 +198,9 @@ class Form
     {
         $attrs = Tag::getAttrs($attrs);
         if ($action) {
-            $action = PUBLIC_PATH.$action;
+            $action = PUBLIC_PATH . $action;
         } else {
-            $action = PUBLIC_PATH.ltrim(Router::get('route'), '/');
+            $action = PUBLIC_PATH . ltrim(Router::get('route'), '/');
         }
 
         return "<form action=\"$action\" method=\"$method\" $attrs>";
@@ -315,10 +332,10 @@ class Form
     {
         $attrs = Tag::getAttrs($attrs);
         // Obtiene name, id y value (solo para autoload) para el campo y los carga en el scope
-        list($id, $name, $value) = self::getFieldData($field, $value);
+        [$id, $name, $value] = self::getFieldData($field, $value);
         //Si se quiere agregar blank
         $options = empty($blank) ? '' :
-        '<option value="">'.htmlspecialchars($blank, ENT_COMPAT, APP_CHARSET).'</option>';
+            '<option value="">' . htmlspecialchars($blank, ENT_COMPAT, APP_CHARSET) . '</option>';
         foreach ($data as $k => $v) {
             $val = self::selectValue($v, $k, $itemId);
             $text = self::selectShow($v, $show);
@@ -340,8 +357,11 @@ class Form
      */
     public static function selectValue($item, $key, $id)
     {
-        return htmlspecialchars(is_object($item) ? $item->$id : $key,
-                                ENT_COMPAT, APP_CHARSET);
+        return htmlspecialchars(
+            is_object($item) ? $item->$id : $key,
+            ENT_COMPAT,
+            APP_CHARSET
+        );
     }
 
     /**
@@ -356,7 +376,7 @@ class Form
     public static function selectedValue($value, $key)
     {
         return ((is_array($value) && in_array($key, $value)) || $key === $value) ?
-                'selected="selected"' : '';
+            'selected="selected"' : '';
     }
 
     /**
@@ -388,7 +408,7 @@ class Form
     {
         $attrs = Tag::getAttrs($attrs);
         // Obtiene name y id para el campo y los carga en el scope
-        list($id, $name, $checked) = self::getFieldDataCheck($field, $checkValue, $checked);
+        [$id, $name, $checked] = self::getFieldDataCheck($field, $checkValue, $checked);
 
         if ($checked) {
             $checked = 'checked="checked"';
@@ -411,7 +431,7 @@ class Form
     {
         $attrs = Tag::getAttrs($attrs);
         // Obtiene name y id para el campo y los carga en el scope
-        list($id, $name, $checked) = self::getFieldDataCheck($field, $radioValue, $checked);
+        [$id, $name, $checked] = self::getFieldDataCheck($field, $radioValue, $checked);
 
         if ($checked) {
             $checked = 'checked="checked"';
@@ -440,7 +460,7 @@ class Form
     {
         $attrs = Tag::getAttrs($attrs);
 
-        return '<input type="image" src="'.PUBLIC_PATH."img/$img\" $attrs/>";
+        return '<input type="image" src="' . PUBLIC_PATH . "img/$img\" $attrs/>";
     }
 
     /**
@@ -507,8 +527,8 @@ class Form
             $data = $model_asoc->find("columns: $pk,$show", "order: $show asc"); //mejor usar array
         } else {
             $data = (isset($data[2])) ?
-            $model_asoc->{$data[1]}($data[2]) :
-            $model_asoc->{$data[1]}();
+                $model_asoc->{$data[1]}($data[2]) :
+                $model_asoc->{$data[1]}();
         }
 
         return self::select($field, $data, $attrs, $value, $blank, $pk, $show);
@@ -532,7 +552,7 @@ class Form
         $attrs = Tag::getAttrs($attrs);
 
         // Obtiene name y id, y los carga en el scope
-        list($id, $name) = self::getFieldData($field, false);
+        [$id, $name] = self::getFieldData($field, false);
 
         return "<input id=\"$id\" name=\"$name\" type=\"file\" $attrs/>";
     }
@@ -546,7 +566,7 @@ class Form
      *
      * @return string
      */
-    public static function textarea($field, $attrs = '', $value = null)
+    public static function textarea($field, $attrs = '', $value = '')
     {
         return self::tag('textarea', $field, $attrs, $value);
     }
@@ -560,7 +580,7 @@ class Form
      *
      * @return string
      */
-    public static function date($field, $attrs = '', $value = null)
+    public static function date($field, $attrs = '', $value = '')
     {
         return self::input('date', $field, $attrs, $value);
     }
@@ -605,7 +625,7 @@ class Form
      */
     public static function datetime($field, $attrs = '', $value = null)
     {
-        return self::input('datetime', $field, $attrs, $value);
+        return self::input('datetime-local', $field, $attrs, $value);
     }
 
     /**
